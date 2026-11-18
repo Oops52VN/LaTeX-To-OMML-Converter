@@ -1645,10 +1645,10 @@ class WebMainWindow(QMainWindow):
         self.launch_time = time.time()
         self.loading_dismissed = False
         self.setWindowTitle(" ")
-        # 16x16 100% transparent icon to guarantee Windows caption bar never renders any icon
-        transparent_pixmap = QPixmap(16, 16)
-        transparent_pixmap.fill(Qt.transparent)
-        self.setWindowIcon(QIcon(transparent_pixmap))
+        # Set the application icon so Windows Taskbar and Alt+Tab render app.ico properly
+        icon_path = resource_path("icons/app.ico")
+        if os.path.exists(icon_path):
+            self.setWindowIcon(QIcon(icon_path))
         self.setFixedSize(1100, 700)
         self.setWindowFlags(
             (self.windowFlags() | Qt.CustomizeWindowHint | Qt.WindowTitleHint | Qt.WindowSystemMenuHint | Qt.WindowMinimizeButtonHint | Qt.WindowCloseButtonHint)
@@ -2185,18 +2185,10 @@ class WebMainWindow(QMainWindow):
             style &= ~WS_THICKFRAME
             ctypes.windll.user32.SetWindowLongW(hwnd, GWL_STYLE, style)
 
-            # Set WS_EX_DLGMODALFRAME so Windows suppresses caption icon
+            # Set WS_EX_DLGMODALFRAME so Windows suppresses caption icon while preserving taskbar icon
             ex_style = ctypes.windll.user32.GetWindowLongW(hwnd, GWL_EXSTYLE)
             ex_style |= WS_EX_DLGMODALFRAME
             ctypes.windll.user32.SetWindowLongW(hwnd, GWL_EXSTYLE, ex_style)
-
-            # Clear class icons so Windows never falls back to any class icon
-            try:
-                SetClassLongPtr = getattr(ctypes.windll.user32, 'SetClassLongPtrW', ctypes.windll.user32.SetClassLongW)
-                SetClassLongPtr(hwnd, GCLP_HICONSM, 0)
-                SetClassLongPtr(hwnd, GCLP_HICON, 0)
-            except Exception:
-                pass
 
             ctypes.windll.user32.SetWindowTextW(hwnd, "")
             ctypes.windll.user32.SetWindowPos(hwnd, 0, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED)
@@ -2382,6 +2374,9 @@ if __name__ == "__main__":
         pass
 
     app = QApplication(sys.argv)
+    app_icon_path = resource_path("icons/app.ico")
+    if os.path.exists(app_icon_path):
+        app.setWindowIcon(QIcon(app_icon_path))
     
     # Pre-set dark palette and background before any window is shown to eliminate Windows default white background flash
     dark_bg = QColor(20, 21, 24)  # #141518

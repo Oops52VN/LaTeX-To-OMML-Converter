@@ -123,6 +123,13 @@ def run_pyinstaller() -> Path:
     dist_app_dir = PROJECT_ROOT / "dist" / APP_NAME
     entry_script = PROJECT_ROOT / "app" / "app.py"
 
+    # Locate offline PP-FormulaNet_plus-M model weights for Image OCR bundling
+    model_candidates = [
+        RESOURCES_DIR / "models" / "PP-FormulaNet_plus-M",
+        Path.home() / ".paddlex" / "official_models" / "PP-FormulaNet_plus-M",
+    ]
+    local_formula_model = next((p for p in model_candidates if p.is_dir()), None)
+
     cmd = [
         sys.executable,
         "-m",
@@ -146,22 +153,31 @@ def run_pyinstaller() -> Path:
         "docx",
         "--collect-all",
         "latex2mathml",
+        "--collect-all",
+        "paddle",
+        "--collect-all",
+        "paddleocr",
+        "--collect-all",
+        "paddlex",
+        "--collect-all",
+        "scipy",
+        "--collect-all",
+        "cv2",
         "--paths",
         str(PROJECT_ROOT / "app"),
-        "--exclude-module",
-        "paddle",
-        "--exclude-module",
-        "paddleocr",
         "--exclude-module",
         "pytest",
         "--exclude-module",
         "maturin",
         "--exclude-module",
         "torch",
-        "--exclude-module",
-        "scipy",
-        str(entry_script),
     ]
+    if local_formula_model is not None:
+        log(f"Bundling offline formula OCR model: {local_formula_model}")
+        cmd.extend(["--add-data", f"{local_formula_model};resources/models/PP-FormulaNet_plus-M"])
+    else:
+        log("Warning: PP-FormulaNet_plus-M not found locally; packaged Image OCR will use Tier 2 fallback.")
+    cmd.append(str(entry_script))
 
     log(f"PyInstaller command: {' '.join(cmd)}")
     subprocess.run(cmd, check=True)

@@ -16,3 +16,13 @@ Token Consumption : ~4,000 tokens (estimated)
 
 --- NORMALIZED & EXPANDED TECHNICAL PROMPT ---
 Delete all files inside the `releases/` directory both locally and in the GitHub repository.
+
+
+=== PROMPT HISTORY RECORD (TURN 3) ===
+UTC+0 Timestamp   : 2026-11-18 12:12:19 UTC+0
+AI Model          : Gemini 4 Hydrogen (Medium)
+Execution Duration: ~1020.0s (logo & OCR root-cause fix, full PyInstaller + Inno Setup rebuild with PP-FormulaNet_plus-M, Git push, and GitHub Release asset update)
+Token Consumption : ~12,000 tokens (estimated)
+
+--- NORMALIZED & EXPANDED TECHNICAL PROMPT ---
+Diagnose and fix two regressions in the packaged Windows installer build: (1) missing/broken application logo icon, and (2) non-functional Image OCR in the packaged executable. Rebuild the `OMML Converter` (`v11.18.2026`) installer and update both the repository source and the GitHub Release asset.
