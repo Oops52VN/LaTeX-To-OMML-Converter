@@ -6,3 +6,13 @@ Token Consumption : ~18,000 tokens (estimated)
 
 --- NORMALIZED & EXPANDED TECHNICAL PROMPT ---
 Push the entire project source code to the GitHub repository at https://github.com/Oops52VN/LaTeX-To-OMML-Converter with an MIT open-source license. Simultaneously, package and build the standalone Windows installer under the application name "OMML Converter" (version tag `v11.18.2026`), store the compiled installer in the local `releases/` directory, and publish it to the GitHub Releases page for tag `v11.18.2026`.
+
+
+=== PROMPT HISTORY RECORD (TURN 2) ===
+UTC+0 Timestamp   : 2026-11-18 12:06:02 UTC+0
+AI Model          : Gemini 4 Hydrogen (Medium)
+Execution Duration: ~20.0s (local and GitHub `releases/` cleanup, `tree.txt` and `.agent/` sync, git commit & push)
+Token Consumption : ~4,000 tokens (estimated)
+
+--- NORMALIZED & EXPANDED TECHNICAL PROMPT ---
+Delete all files inside the `releases/` directory both locally and in the GitHub repository.
