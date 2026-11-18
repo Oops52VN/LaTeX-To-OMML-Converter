@@ -1,0 +1,118 @@
+================================================================================
+CONVERSATION PROMPT HISTORY — 02_11_2026_C1
+================================================================================
+Conversation ID       : e3e73e25-8198-4725-b94a-fd93adcc04f1
+Session Title         : Adding ISO 80000 Header Logo & Digital Standard Specification View
+Initiation Timestamp  : 2026-11-02 01:09:28 UTC+0
+Session Sequence (No) : C1 (2026-11-02)
+Workspace             : E:\Documents\Q7 LaTeX To OMML Python
+Total Prompts         : 10
+Note                  : All user prompts below have been normalized, spell-checked,
+                        expanded into detailed technical specifications, and
+                        translated into 100% professional English per Rule 4 & Rule 6.
+================================================================================
+
+[PROMPT #01]
+Timestamp (UTC+0) : 2026-11-02 01:09:28 UTC+0
+AI Model          : Gemini 3.8 Flash (Low)
+Execution Time    : 211.0s
+Tokens Consumed   : 77,809 tokens
+Normalized Prompt :
+Add an `"ISO 80000 standard"` badge accompanied by the official ISO organization logo to the application header bar, positioned between the tab navigation buttons and the Dark Mode toggle switch.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #02]
+Timestamp (UTC+0) : 2026-11-02 01:18:16 UTC+0
+AI Model          : Gemini 3.8 Flash (Low)
+Execution Time    : 346.0s
+Tokens Consumed   : 138,151 tokens
+Normalized Prompt :
+Redesign the ISO 80000 header element into an interactive navigation button matching the styling of existing header buttons and using a transparent-background ISO SVG logo. Clicking this button navigates to a dedicated digital specification view displaying the authoritative ISO 80000 typographic rules for mathematical signs, symbols, and formulas, initially structured with a smooth-scrolling left table of contents and a detailed main reading pane.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #03]
+Timestamp (UTC+0) : 2026-11-02 01:25:38 UTC+0
+AI Model          : Gemini 3.8 Flash (Low)
+Execution Time    : 1.0s
+Tokens Consumed   : 124,888 tokens
+Normalized Prompt :
+Display the complete, unabridged English text of the ISO 80000 mathematical typography specification inside the ISO 80000 view.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #04]
+Timestamp (UTC+0) : 2026-11-02 01:26:29 UTC+0
+AI Model          : Gemini 3.8 Flash (Low)
+Execution Time    : 87.0s
+Tokens Consumed   : 148,439 tokens
+Normalized Prompt :
+Apply the update to populate the ISO 80000 specification view with the full English standard clauses and symbol tables.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #05]
+Timestamp (UTC+0) : 2026-11-02 01:27:03 UTC+0
+AI Model          : Gemini 3.8 Flash (Low)
+Execution Time    : 190.0s
+Tokens Consumed   : 155,826 tokens
+Normalized Prompt :
+Add official external reference links pointing to the original ISO 80000-1 and ISO 80000-2 standard publications on `iso.org`.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #06]
+Timestamp (UTC+0) : 2026-11-02 01:33:25 UTC+0
+AI Model          : Gemini 3.8 Flash (Low)
+Execution Time    : 207.0s
+Tokens Consumed   : 183,265 tokens
+Normalized Prompt :
+Format the ISO 80000 document view according to formal publication standards: remove all bullet points and list dashes from the body content, apply `Times New Roman` at `12pt` font size with `1.3` line-height and comfortable letter-spacing, ensure 100% of source code and comments are written in English, and enlarge both the page header ISO logo and the ISO button icons.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #07]
+Timestamp (UTC+0) : 2026-11-02 01:45:18 UTC+0
+AI Model          : Gemini 3.8 Flash (Low)
+Execution Time    : 78.0s
+Tokens Consumed   : 181,619 tokens
+Normalized Prompt :
+Remove the left-hand Table of Contents sidebar from the ISO 80000 view and refine the page scrolling physics for smoother vertical navigation.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #08]
+Timestamp (UTC+0) : 2026-11-02 01:48:51 UTC+0
+AI Model          : Gemini 3.8 Flash (Low)
+Execution Time    : 33.0s
+Tokens Consumed   : 185,322 tokens
+Normalized Prompt :
+Apply full text justification (`text-align: justify`) to the ISO 80000 specification paragraphs and stack the `"ISO 80000-1"` and `"ISO 80000-2"` reference link buttons vertically so the document title header has sufficient horizontal width.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #09]
+Timestamp (UTC+0) : 2026-11-02 02:26:33 UTC+0
+AI Model          : Gemini 3.8 Flash (Low)
+Execution Time    : 95.0s
+Tokens Consumed   : 203,019 tokens
+Normalized Prompt :
+Remove general italic styling from the ISO 80000 prose (retaining italics strictly for mathematical variables and symbols mandated by the ISO standard) and increase the horizontal offset between the scroll-to-top button and the right edge of the text column.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #10]
+Timestamp (UTC+0) : 2026-11-02 02:32:11 UTC+0
+AI Model          : Gemini 3.8 Flash (Low)
+Execution Time    : 39.0s
+Tokens Consumed   : 203,993 tokens
+Normalized Prompt :
+Remove the floating scroll-to-top button from the ISO 80000 specification view.
+
+================================================================================
+SESSION TOTALS (02_11_2026_C1)
+Total Prompts Logged       : 10
+Total Execution Time       : 1287.0s
+Total Tokens Consumed      : 1,602,331 tokens
+================================================================================

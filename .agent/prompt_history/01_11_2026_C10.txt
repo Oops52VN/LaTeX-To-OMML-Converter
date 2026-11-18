@@ -1,0 +1,118 @@
+================================================================================
+CONVERSATION PROMPT HISTORY — 01_11_2026_C10
+================================================================================
+Conversation ID       : 9776cfe6-048c-41e0-9ced-e270e49a39b4
+Session Title         : LaTeX Tab UI Refinements, Splash Screen Choreography & Tab Transitions
+Initiation Timestamp  : 2026-11-01 18:08:07 UTC+0
+Session Sequence (No) : C10 (2026-11-01)
+Workspace             : E:\Documents\Q7 LaTeX To OMML Python
+Total Prompts         : 9
+Note                  : All user prompts below have been normalized, spell-checked,
+                        expanded into detailed technical specifications, and
+                        translated into 100% professional English per Rule 4 & Rule 6.
+================================================================================
+
+[PROMPT #01]
+Timestamp (UTC+0) : 2026-11-01 18:08:07 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 876.0s
+Tokens Consumed   : 257,020 tokens
+Normalized Prompt :
+Execute two sets of enhancements across UI and application lifecycle performance:
+Task 1 — `LATEX` Tab UI Refinements:
+1. Remove the `"PRESETS"` bar, the `"Save .docx"` button, and the `"OMML XML"` tab button.
+2. Capitalize `"COPY OMML"` and style the button with an emerald green background and white text.
+3. Shorten the status messages below the OMML preview column and remove the conversion elapsed-time counter.
+4. Fix the `"VISUAL RENDER"` button text color so it turns white when active in Dark Mode.
+5. Align the total width (start and end edges) of the main `LATEX` workspace container with the header bar above.
+Task 2 — Startup & Shutdown Performance Optimization:
+1. Eliminate application freeze when clicking the window close button (`closeEvent`).
+2. Eliminate the initial white flash on Windows startup so the dark splash loading background appears instantaneously.
+3. Keep the startup loading screen visible for at least 1.5 seconds followed by a smooth fade-out transition.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #02]
+Timestamp (UTC+0) : 2026-11-01 18:29:20 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 230.0s
+Tokens Consumed   : 225,495 tokens
+Normalized Prompt :
+Fix the visual glitch where a white-background loading layer overlaps the splash screen during its fade-out transition.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #03]
+Timestamp (UTC+0) : 2026-11-01 18:36:00 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 145.0s
+Tokens Consumed   : 236,237 tokens
+Normalized Prompt :
+Delay the entrance animation of the `"YOUR DATA IS GUARANTEED ABSOLUTELY SECURE"` caption and security shield icon so they fade in 700ms after the startup splash screen has completely disappeared.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #04]
+Timestamp (UTC+0) : 2026-11-01 18:39:36 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 89.0s
+Tokens Consumed   : 236,810 tokens
+Normalized Prompt :
+Reduce the post-splash entrance delay for the `"YOUR DATA IS GUARANTEED ABSOLUTELY SECURE"` caption and shield icon from 700ms to 500ms.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #05]
+Timestamp (UTC+0) : 2026-11-01 18:43:53 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 149.0s
+Tokens Consumed   : 255,977 tokens
+Normalized Prompt :
+Sequence the splash screen exit animation so that the splash text fades out completely before the splash screen background begins to fade out.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #06]
+Timestamp (UTC+0) : 2026-11-01 18:47:27 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 83.0s
+Tokens Consumed   : 259,033 tokens
+Normalized Prompt :
+Set the splash screen hold duration to 2.0 seconds and ensure the splash text disappears completely before the background overlay begins its fade-out transition.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #07]
+Timestamp (UTC+0) : 2026-11-01 19:00:11 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 1432.0s
+Tokens Consumed   : 233,157 tokens
+Normalized Prompt :
+Investigate why the recent UI and splash screen updates are not appearing when launching `app.py`, synchronize all modified files and cache headers, and verify that `app.py` loads the updated `UI/UI_updated.html`.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #08]
+Timestamp (UTC+0) : 2026-11-01 19:29:55 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 790.0s
+Tokens Consumed   : 83,937 tokens
+Normalized Prompt :
+Design and implement smooth, hardware-accelerated page transition animations when switching between the `FILE`, `LATEX`, and `IMAGE` tabs to create a seamless user experience.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #09]
+Timestamp (UTC+0) : 2026-11-02 01:53:01 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 392.0s
+Tokens Consumed   : 140,509 tokens
+Normalized Prompt :
+Remove the artificial entrance delay on the `"YOUR DATA IS GUARANTEED ABSOLUTELY SECURE"` caption and security shield icon so they are immediately visible when the main view reveals.
+
+================================================================================
+SESSION TOTALS (01_11_2026_C10)
+Total Prompts Logged       : 9
+Total Execution Time       : 4186.0s
+Total Tokens Consumed      : 1,928,175 tokens
+================================================================================

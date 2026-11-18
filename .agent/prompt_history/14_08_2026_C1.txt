@@ -1,0 +1,128 @@
+================================================================================
+CONVERSATION PROMPT HISTORY — 14_08_2026_C1
+================================================================================
+Conversation ID       : 098f8b30-213d-46ad-a643-61d6c64caa8b
+Session Title         : Workspace Cleanup, Dependency Installer & Release Packaging
+Initiation Timestamp  : 2026-08-14 09:25:03 UTC+0
+Session Sequence (No) : C1 (2026-08-14)
+Workspace             : E:\Documents\Q7 LaTeX To OMML Python
+Total Prompts         : 11
+Note                  : All user prompts below have been normalized, spell-checked,
+                        expanded into detailed technical specifications, and
+                        translated into 100% professional English per Rule 4 & Rule 6.
+================================================================================
+
+[PROMPT #01]
+Timestamp (UTC+0) : 2026-08-14 09:25:03 UTC+0
+AI Model          : Gemini 3.1 Pro (High)
+Execution Time    : 57.0s
+Tokens Consumed   : 33,473 tokens
+Normalized Prompt :
+Scan the entire project workspace to reconstruct context after migrating to a new development machine without the previous `agent.md` orientation file. Formulate a comprehensive cleanup plan identifying all obsolete, temporary, and one-time development files and directories that can be safely removed without affecting core application functionality.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #02]
+Timestamp (UTC+0) : 2026-08-14 09:27:26 UTC+0
+AI Model          : Gemini 3.1 Pro (High)
+Execution Time    : 50.0s
+Tokens Consumed   : 39,296 tokens
+Normalized Prompt :
+Approve and execute the proposed workspace cleanup plan, permanently removing all identified one-off development scripts, temporary debug artifacts, and redundant directories.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #03]
+Timestamp (UTC+0) : 2026-08-14 09:33:05 UTC+0
+AI Model          : Gemini 3.1 Pro (High)
+Execution Time    : 35.0s
+Tokens Consumed   : 43,009 tokens
+Normalized Prompt :
+Rewrite the project dependency specification into a structured Markdown document (`Requirements.md`) that details all required Python libraries (`PyQt5`, `PyQtWebEngine`, `lxml`, `latex2mathml`, `python-docx`, `pywin32`) as well as the critical Microsoft Office `MML2OMML.XSL` stylesheet asset extracted from Microsoft Word.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #04]
+Timestamp (UTC+0) : 2026-08-14 09:35:18 UTC+0
+AI Model          : Gemini 3.1 Pro (High)
+Execution Time    : 13.0s
+Tokens Consumed   : 43,638 tokens
+Normalized Prompt :
+Translate and standardize the entire `Requirements.md` specification document into 100% professional English.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #05]
+Timestamp (UTC+0) : 2026-08-14 09:37:15 UTC+0
+AI Model          : Gemini 3.1 Pro (High)
+Execution Time    : 31.0s
+Tokens Consumed   : 49,161 tokens
+Normalized Prompt :
+Develop an automated Python dependency installer script that installs all packages listed in the project requirements, automatically launches `app.py`, inspects runtime execution logs for any missing module errors (`ModuleNotFoundError` / `ImportError`), and iteratively installs any missing dependencies until the application starts cleanly.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #06]
+Timestamp (UTC+0) : 2026-08-14 09:43:47 UTC+0
+AI Model          : Gemini 3.1 Pro (High)
+Execution Time    : 35.0s
+Tokens Consumed   : 54,985 tokens
+Normalized Prompt :
+Adopt a minimalist root directory structure after removing legacy `.bat` and `.txt` files: standardize the dependency documentation filename as `Requirements.md` and rename the automated dependency installer script to `install_requirements.py`.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #07]
+Timestamp (UTC+0) : 2026-08-14 09:50:43 UTC+0
+AI Model          : Gemini 3.1 Pro (High)
+Execution Time    : 385.0s
+Tokens Consumed   : 74,690 tokens
+Normalized Prompt :
+Perform a manual test build of the application first to identify and resolve any packaging errors, then create an automated release packaging script (`build_release.py`) that compiles the entire application and outputs the distributable package into the `releases/` directory.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #08]
+Timestamp (UTC+0) : 2026-08-14 10:08:24 UTC+0
+AI Model          : Gemini 3.1 Pro (High)
+Execution Time    : 58.0s
+Tokens Consumed   : 82,944 tokens
+Normalized Prompt :
+Fix the packaged executable runtime crash (`FileNotFoundError: ... _internal\latex2mathml\unimathsymbols.txt`) by explicitly bundling the `latex2mathml` data files (`unimathsymbols.txt`) in PyInstaller, and upgrade the release pipeline to compile the output into a single standalone Windows installer executable (`setup.exe`) for end-user installation.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #09]
+Timestamp (UTC+0) : 2026-08-14 10:13:23 UTC+0
+AI Model          : Gemini 3.1 Pro (High)
+Execution Time    : 165.0s
+Tokens Consumed   : 102,289 tokens
+Normalized Prompt :
+Download and bundle a portable installation of Inno Setup 6 directly inside the project's `tools/InnoSetup/` directory so that `build_release.py` can compile the single-file `setup.exe` installer self-contained without requiring a separate system-wide Inno Setup installation.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #10]
+Timestamp (UTC+0) : 2026-08-14 10:19:05 UTC+0
+AI Model          : Gemini 3.1 Flash (High)
+Execution Time    : 7.0s
+Tokens Consumed   : 101,307 tokens
+Normalized Prompt :
+Verify whether `build_release.py` includes an automated post-build cleanup routine that removes all intermediate build directories and temporary packaging artifacts while preserving only the final installer executable inside `releases/`.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #11]
+Timestamp (UTC+0) : 2026-08-14 10:28:12 UTC+0
+AI Model          : Gemini 3.1 Flash (High)
+Execution Time    : 244.0s
+Tokens Consumed   : 126,815 tokens
+Normalized Prompt :
+Diagnose and fix the issue in `build_release.py` where intermediate packaging directories (`build/`, `dist/`, `.spec`, `.iss`) remained on disk after execution and the final compiled `setup.exe` installer was missing from the `releases/` directory. Ensure the Inno Setup compilation completes deterministically and all intermediate build artifacts are cleaned up afterward.
+
+================================================================================
+SESSION TOTALS (14_08_2026_C1)
+Total Prompts Logged       : 11
+Total Execution Time       : 1080.0s
+Total Tokens Consumed      : 751,607 tokens
+================================================================================

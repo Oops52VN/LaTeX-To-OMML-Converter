@@ -1,0 +1,725 @@
+/* Scoped VS Code Markdown Preview Stylesheet - Isolated to #view-readme */
+
+
+#view-readme .vscode-markdown-content /*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+html,
+#view-readme #readme-content-scroll.vscode-body {
+
+	font-family: var(--markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", system-ui, "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--markdown-line-height, 22px);
+	word-wrap: break-word;
+
+}
+
+#view-readme #readme-content-scroll.vscode-body {
+
+	padding-top: 1em;
+
+}
+
+#view-readme .vscode-markdown-content h1,
+#view-readme .vscode-markdown-content h2,
+#view-readme .vscode-markdown-content h3,
+#view-readme .vscode-markdown-content h4,
+#view-readme .vscode-markdown-content h5,
+#view-readme .vscode-markdown-content h6,
+#view-readme .vscode-markdown-content p,
+#view-readme .vscode-markdown-content ol,
+#view-readme .vscode-markdown-content ul,
+#view-readme .vscode-markdown-content pre {
+
+	margin-top: 0;
+
+}
+
+#view-readme .vscode-markdown-content h1,
+#view-readme .vscode-markdown-content h2,
+#view-readme .vscode-markdown-content h3,
+#view-readme .vscode-markdown-content h4,
+#view-readme .vscode-markdown-content h5,
+#view-readme .vscode-markdown-content h6 {
+
+	font-weight: 600;
+	margin-top: 24px;
+	margin-bottom: 16px;
+	line-height: 1.25;
+
+}
+
+#view-readme #code-csp-warning {
+
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+
+}
+
+#view-readme #code-csp-warning:hover {
+
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+
+}
+
+#view-readme.scrollBeyondLastLine {
+
+	margin-bottom: calc(100vh - 22px);
+
+}
+
+#view-readme.showEditorSelection .code-line {
+
+	position: relative;
+
+}
+
+#view-readme .vscode-markdown-content .code-line-diff {
+
+	border-radius: 2px;
+	box-shadow: -4px 0 0 transparent;
+
+}
+
+#view-readme .vscode-markdown-content .code-line-diff-added {
+
+	background-color: var(--vscode-diffEditor-insertedTextBackground);
+	box-shadow: -4px 0 0 var(--vscode-diffEditorGutter-insertedLineBackground);
+
+}
+
+#view-readme .vscode-markdown-content .code-line-diff-deleted {
+
+	background-color: var(--vscode-diffEditor-removedTextBackground);
+	box-shadow: -4px 0 0 var(--vscode-diffEditorGutter-removedLineBackground);
+
+}
+
+#view-readme .vscode-markdown-content .vscode-high-contrast .code-line-diff-added {
+
+	outline: 1px solid var(--vscode-diffEditor-insertedTextBorder);
+
+}
+
+#view-readme .vscode-markdown-content .vscode-high-contrast .code-line-diff-deleted {
+
+	outline: 1px solid var(--vscode-diffEditor-removedTextBorder);
+
+}
+
+#view-readme .vscode-markdown-content ::highlight(diff-inner-added) {
+
+	background-color: var(--vscode-diffEditor-insertedTextBackground);
+
+}
+
+#view-readme .vscode-markdown-content ::highlight(diff-inner-deleted) {
+
+	background-color: var(--vscode-diffEditor-removedTextBackground);
+
+}
+
+#view-readme .vscode-markdown-content [data-diff-start],
+#view-readme .vscode-markdown-content [data-diff-end] {
+
+	display: contents;
+
+}
+
+#view-readme .vscode-markdown-content .diff-change-indicator {
+
+	position: relative;
+	height: 4px;
+	overflow: visible;
+	z-index: 1;
+
+}
+
+#view-readme .vscode-markdown-content .diff-change-indicator::before {
+
+	content: "";
+	position: absolute;
+	top: -4px;
+	left: -12px;
+	right: 0;
+	height: 12px;
+	background-color: var(--vscode-diffEditorGutter-removedLineBackground, var(--vscode-diffEditor-removedTextBackground));
+	clip-path: polygon(
+		0px 0px,
+		4px 4px,
+		100% 4px,
+		100% 8px,
+		4px 8px,
+		0px 12px
+	);
+	pointer-events: none;
+
+}
+
+#view-readme .vscode-markdown-content .diff-change-indicator-arrow {
+
+	display: block;
+	position: absolute;
+	top: -4px;
+	left: -12px;
+	width: 12px;
+	height: 12px;
+	cursor: pointer;
+	z-index: 2;
+
+}
+
+#view-readme .vscode-markdown-content .diff-change-indicator-arrow:hover > .diff-change-indicator-tooltip,
+#view-readme .vscode-markdown-content .diff-change-indicator-arrow > .diff-change-indicator-tooltip:hover {
+
+	display: block;
+
+}
+
+#view-readme .vscode-markdown-content .diff-change-indicator-arrow > .diff-change-indicator-tooltip {
+
+	left: 8px;
+	top: 100%;
+	right: auto;
+	width: max-content;
+	max-width: 80vw;
+
+}
+
+#view-readme .vscode-markdown-content .code-line-diff-modified.code-line-diff-added {
+
+	box-shadow: none;
+
+}
+
+#view-readme .vscode-markdown-content .diff-change-indicator-modification {
+
+	height: 2px;
+	background: repeating-linear-gradient(
+		90deg,
+		var(--vscode-diffEditorGutter-removedLineBackground, var(--vscode-diffEditor-removedTextBackground)) 0px,
+		var(--vscode-diffEditorGutter-removedLineBackground, var(--vscode-diffEditor-removedTextBackground)) 4px,
+		transparent 4px,
+		transparent 8px
+	);
+
+}
+
+#view-readme .vscode-markdown-content .diff-change-indicator-modification .diff-change-indicator-arrow {
+
+	background: inherit;
+
+}
+
+#view-readme .vscode-markdown-content .diff-modification-gutter {
+
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: -12px;
+	width: 4px;
+	z-index: 5;
+	background-color: var(--vscode-editorGutter-modifiedBackground, #1b81a8);
+	cursor: pointer;
+
+}
+
+#view-readme .vscode-markdown-content .diff-modification-gutter:hover > .diff-change-indicator-tooltip,
+#view-readme .vscode-markdown-content .diff-modification-gutter > .diff-change-indicator-tooltip:hover {
+
+	display: block;
+
+}
+
+#view-readme .vscode-markdown-content .diff-modification-gutter > .diff-change-indicator-tooltip {
+
+	left: 4px;
+	top: 0;
+	right: auto;
+	width: max-content;
+	max-width: 80vw;
+
+}
+
+#view-readme .vscode-markdown-content .diff-change-indicator-tooltip {
+
+	display: none;
+	position: absolute;
+	top: 100%;
+	left: 0;
+	right: 0;
+	z-index: 10;
+	background-color: var(--vscode-editor-background);
+	border: 1px solid var(--vscode-editorWidget-border, var(--vscode-contrastBorder, rgba(127, 127, 127, 0.35)));
+	border-radius: 3px;
+	max-height: min(400px, 80vh);
+	overflow-y: auto;
+	overflow-x: hidden;
+	overscroll-behavior: contain;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+
+}
+
+#view-readme .vscode-markdown-content .diff-change-indicator-tooltip pre {
+
+	margin: 0;
+	font-size: 0.9em;
+	background: transparent;
+	border: 0;
+	white-space: pre-wrap;
+	word-break: break-word;
+	color: var(--vscode-editor-foreground);
+
+}
+
+#view-readme .vscode-markdown-content .diff-tooltip-deleted {
+
+	background-color: var(--vscode-diffEditor-removedTextBackground);
+	border-left: 4px solid var(--vscode-diffEditorGutter-removedLineBackground, var(--vscode-diffEditor-removedTextBackground));
+	padding: 2px 6px;
+
+}
+
+#view-readme .vscode-markdown-content .diff-tooltip-added {
+
+	background-color: var(--vscode-diffEditor-insertedTextBackground);
+	border-left: 4px solid var(--vscode-diffEditorGutter-insertedLineBackground, var(--vscode-diffEditor-insertedTextBackground));
+	padding: 2px 6px;
+
+}
+
+#view-readme .vscode-markdown-content .diff-tooltip-inner-deleted,
+#view-readme .vscode-markdown-content .diff-tooltip-inner-added {
+
+	box-decoration-break: clone;
+
+}
+
+#view-readme .vscode-markdown-content .diff-tooltip-inner-deleted {
+
+	background-color: var(--vscode-diffEditor-removedTextBackground);
+	text-decoration: line-through;
+	text-decoration-color: var(--vscode-editor-foreground);
+
+}
+
+#view-readme .vscode-markdown-content .diff-tooltip-inner-added {
+
+	background-color: var(--vscode-diffEditor-insertedTextBackground);
+
+}
+
+#view-readme.showEditorSelection :not(tr,
+#view-readme .vscode-markdown-content ul,
+#view-readme .vscode-markdown-content ol).code-active-line:before,
+#view-readme.showEditorSelection :not(tr,
+#view-readme .vscode-markdown-content ul,
+#view-readme .vscode-markdown-content ol).code-line:hover:before {
+
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+
+}
+
+#view-readme .vscode-markdown-content .vscode-high-contrast.showEditorSelection  :not(tr,
+#view-readme .vscode-markdown-content ul,
+#view-readme .vscode-markdown-content ol).code-line .code-line:hover:before {
+
+	border-left: none;
+
+}
+
+#view-readme.showEditorSelection li.code-active-line:before,
+#view-readme.showEditorSelection li.code-line:hover:before {
+
+	left: -30px;
+
+}
+
+#view-readme .vscode-markdown-content .vscode-light.showEditorSelection .code-active-line:before {
+
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+
+}
+
+#view-readme .vscode-markdown-content .vscode-light.showEditorSelection .code-line:hover:before {
+
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+
+}
+
+#view-readme .vscode-markdown-content .vscode-dark.showEditorSelection .code-active-line:before {
+
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+
+}
+
+#view-readme .vscode-markdown-content .vscode-dark.showEditorSelection .code-line:hover:before {
+
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+
+}
+
+#view-readme .vscode-markdown-content .vscode-high-contrast.showEditorSelection .code-active-line:before {
+
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+
+}
+
+#view-readme .vscode-markdown-content .vscode-high-contrast.showEditorSelection .code-line:hover:before {
+
+	border-left: 3px solid rgba(255, 160, 0, 1);
+
+}
+
+#view-readme .vscode-markdown-content sub,
+#view-readme .vscode-markdown-content sup {
+
+	line-height: 1.4;
+
+}
+
+#view-readme .vscode-markdown-content ul ul:first-child,
+#view-readme .vscode-markdown-content ul ol:first-child,
+#view-readme .vscode-markdown-content ol ul:first-child,
+#view-readme .vscode-markdown-content ol ol:first-child {
+
+	margin-bottom: 0;
+
+}
+
+#view-readme .vscode-markdown-content img,
+#view-readme .vscode-markdown-content video {
+
+	max-width: 100%;
+	max-height: 100%;
+
+}
+
+#view-readme .vscode-markdown-content a {
+
+	text-decoration: none;
+
+}
+
+#view-readme .vscode-markdown-content a:hover {
+
+	text-decoration: underline;
+
+}
+
+#view-readme .vscode-markdown-content a:focus,
+#view-readme .vscode-markdown-content input:focus,
+#view-readme .vscode-markdown-content select:focus,
+#view-readme .vscode-markdown-content textarea:focus {
+
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+
+}
+
+#view-readme .vscode-markdown-content p {
+
+	margin-bottom: 16px;
+
+}
+
+#view-readme .vscode-markdown-content li p {
+
+	margin-bottom: 0.7em;
+
+}
+
+#view-readme .vscode-markdown-content ul,
+#view-readme .vscode-markdown-content ol {
+
+	margin-bottom: 0.7em;
+
+}
+
+#view-readme .vscode-markdown-content hr {
+
+	border: 0;
+	height: 1px;
+	border-bottom: 1px solid;
+
+}
+
+#view-readme .vscode-markdown-content h1 {
+
+	font-size: 2em;
+	margin-top: 0;
+	padding-bottom: 0.3em;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+
+}
+
+#view-readme .vscode-markdown-content h2 {
+
+	font-size: 1.5em;
+	padding-bottom: 0.3em;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+
+}
+
+#view-readme .vscode-markdown-content h3 {
+
+	font-size: 1.25em;
+
+}
+
+#view-readme .vscode-markdown-content h4 {
+
+	font-size: 1em;
+
+}
+
+#view-readme .vscode-markdown-content h5 {
+
+	font-size: 0.875em;
+
+}
+
+#view-readme .vscode-markdown-content h6 {
+
+	font-size: 0.85em;
+
+}
+
+#view-readme .vscode-markdown-content table {
+
+	border-collapse: collapse;
+	margin-bottom: 0.7em;
+
+}
+
+#view-readme .vscode-markdown-content th {
+
+	text-align: left;
+	border-bottom: 1px solid;
+
+}
+
+#view-readme .vscode-markdown-content th,
+#view-readme .vscode-markdown-content td {
+
+	padding: 5px 10px;
+
+}
+
+#view-readme .vscode-markdown-content table > tbody > tr + tr > td {
+
+	border-top: 1px solid;
+
+}
+
+#view-readme .vscode-markdown-content blockquote {
+
+	margin: 0;
+	padding: 0px 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+	border-radius: 2px;
+
+}
+
+#view-readme .vscode-markdown-content code {
+
+	font-family: var(--vscode-editor-font-family, "SF Mono", Monaco, Menlo, Consolas, "Ubuntu Mono", "Liberation Mono", "DejaVu Sans Mono", "Courier New", monospace);
+	font-size: 1em;
+	line-height: 1.357em;
+
+}
+
+#view-readme.wordWrap pre {
+
+	white-space: pre-wrap;
+
+}
+
+#view-readme .vscode-markdown-content pre:not(.hljs),
+#view-readme .vscode-markdown-content pre.hljs code > div {
+
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+
+}
+
+#view-readme .vscode-markdown-content pre code {
+
+	display: inline-block;
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+	background: none;
+
+}
+
+#view-readme .vscode-markdown-content pre {
+
+	position: relative;
+	background-color: var(--vscode-textCodeBlock-background);
+	border: 1px solid var(--vscode-widget-border);
+
+}
+
+#view-readme .vscode-markdown-content .code-block-copy-button {
+
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	padding: 0;
+	border: 1px solid var(--vscode-widget-border, rgba(127, 127, 127, 0.35));
+	border-radius: 4px;
+	background-color: var(--vscode-textCodeBlock-background, var(--vscode-editor-background));
+	color: var(--vscode-editor-foreground);
+	cursor: pointer;
+	opacity: 0;
+	transition: opacity 0.15s ease;
+
+}
+
+#view-readme .vscode-markdown-content pre:hover > .code-block-copy-button,
+#view-readme .vscode-markdown-content .code-block-copy-button:focus {
+
+	opacity: 1;
+
+}
+
+#view-readme .vscode-markdown-content .code-block-copy-button:hover {
+
+	background-color: var(--vscode-toolbar-hoverBackground, rgba(90, 93, 94, 0.31));
+
+}
+
+#view-readme .vscode-markdown-content .code-block-copy-button:active {
+
+	background-color: var(--vscode-toolbar-activeBackground, rgba(99, 102, 103, 0.31));
+
+}
+
+#view-readme .vscode-markdown-content .code-block-copy-button.copied {
+
+	color: var(--vscode-testing-iconPassed, #73c991);
+	opacity: 1;
+
+}
+
+#view-readme .vscode-markdown-content .vscode-high-contrast h1 {
+
+	border-color: rgb(0, 0, 0);
+
+}
+
+#view-readme .vscode-markdown-content .vscode-light th {
+
+	border-color: rgba(0, 0, 0, 0.69);
+
+}
+
+#view-readme .vscode-markdown-content .vscode-dark th {
+
+	border-color: rgba(255, 255, 255, 0.69);
+
+}
+
+#view-readme .vscode-markdown-content .vscode-light h1,
+#view-readme .vscode-markdown-content .vscode-light h2,
+#view-readme .vscode-markdown-content .vscode-light hr,
+#view-readme .vscode-markdown-content .vscode-light td {
+
+	border-color: rgba(0, 0, 0, 0.18);
+
+}
+
+#view-readme .vscode-markdown-content .vscode-dark h1,
+#view-readme .vscode-markdown-content .vscode-dark h2,
+#view-readme .vscode-markdown-content .vscode-dark hr,
+#view-readme .vscode-markdown-content .vscode-dark td {
+
+	border-color: rgba(255, 255, 255, 0.18);
+
+}
+
+#view-readme .vscode-markdown-content table.frontmatter {
+
+	margin-bottom: 16px;
+	border-collapse: collapse;
+
+}
+
+#view-readme .vscode-markdown-content table.frontmatter th,
+#view-readme .vscode-markdown-content table.frontmatter td {
+
+	padding: 6px 13px;
+	border: 1px solid var(--vscode-widget-border, rgba(127, 127, 127, 0.35));
+	text-align: left;
+	vertical-align: top;
+
+}
+
+#view-readme .vscode-markdown-content table.frontmatter th {
+
+	font-weight: 600;
+	white-space: nowrap;
+
+}
+
+#view-readme .vscode-markdown-content table.frontmatter td > ul {
+
+	margin: 0;
+	padding-left: 1.2em;
+
+}
+
+#view-readme .vscode-markdown-content pre.frontmatter {
+
+	margin-bottom: 16px;
+
+}
+
+#view-readme .vscode-markdown-content .frontmatter-error {
+
+	margin-bottom: 16px;
+	padding: 8px 13px;
+	border-left: 4px solid var(--vscode-editorError-foreground, #f48771);
+	background: var(--vscode-inputValidation-errorBackground, rgba(244, 135, 113, 0.1));
+	color: var(--vscode-editorError-foreground, #f48771);
+
+}
+
+#view-readme .vscode-markdown-content .frontmatter-error pre {
+
+	margin: 6px 0 0;
+	white-space: pre-wrap;
+	color: inherit;
+	background: transparent;
+	padding: 0;
+
+}

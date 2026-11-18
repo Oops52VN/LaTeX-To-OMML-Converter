@@ -1,0 +1,25 @@
+=== PROMPT HISTORY RECORD ===
+UTC+0 Timestamp   : 2026-11-17 15:32:06 UTC+0
+AI Model          : Gemini 4 Hydrogen (High)
+Execution Duration: ~180.0s (diagnosis, Rust/Python/UI fixes, release build, and E2E verification)
+Token Consumption : ~62,000 tokens (estimated)
+
+--- NORMALIZED & EXPANDED TECHNICAL PROMPT ---
+Investigate and resolve the following two defect reports in the `FILE` tab pipeline:
+1. DOCX-to-OMML Conversion Failure on Mixed Prose & LaTeX (`Mixed_English_LaTeX_Formulas.docx`):
+   - While `10000_Formulas.docx` converts and renders at 100% accuracy, `Mixed_English_LaTeX_Formulas.docx` fails conversion and rendering (0% pass rate), swallowing entire English sentences into OMML math blocks when formulas lack explicit `$` / `$$` delimiters and emitting block `<m:oMathPara>` elements inside inline prose paragraphs.
+   - Refactor the Rust tokenizer/scanner and DOCX XML stream transformer (and Python fallback) to accurately isolate raw LaTeX expressions embedded within natural-language prose and emit inline `<m:oMath>` vs. display `<m:oMathPara>` based on paragraph context.
+2. Multi-File Preview & Cache Conflicts and Inefficiency:
+   - Display data conflict: Preview cache/state between input and output `.docx` files conflicts or overwrites active selections, causing an input file selection to display output file content.
+   - Inefficient caching: Re-selecting a previously previewed file re-triggers the full preview rendering pipeline instead of serving the cached preview immediately.
+   - Redesign `PreviewCacheManager`, `PersistentWordPdfEngine`, `EdgePdfPreviewHost`, and `UI.html` click/loader coordination to provide versioned two-tier caching (3-page partial + full PDF), prioritized Stage 1 vs. Stage 2 scheduling, strict file-identity/sequence guards, and zero-latency cache hits.
+
+
+=== PROMPT HISTORY RECORD (TURN 2) ===
+UTC+0 Timestamp   : 2026-11-18 05:36:53 UTC+0
+AI Model          : Gemini 4 Hydrogen (High)
+Execution Duration: ~150.0s (final GUI E2E verification, site-packages binary sync, and documentation logging)
+Token Consumption : ~24,000 tokens (estimated)
+
+--- NORMALIZED & EXPANDED TECHNICAL PROMPT ---
+Resume and complete the verification and deployment of the mixed-prose LaTeX-to-OMML conversion fixes and multi-file preview/cache pipeline updates after background task interruption.

@@ -1,0 +1,260 @@
+================================================================================
+CONVERSATION PROMPT HISTORY — 02_11_2026_C3
+================================================================================
+Conversation ID       : aa8024a7-406f-41b7-ae9a-251d82ebefaf
+Session Title         : Comprehensive Workspace Cleanup, Modular Restructure & .agent Governance
+Initiation Timestamp  : 2026-11-02 12:36:44 UTC+0
+Session Sequence (No) : C3 (2026-11-02)
+Workspace             : E:\Documents\Q7 LaTeX To OMML Python
+Total Prompts         : 21
+Note                  : All user prompts below have been normalized, spell-checked,
+                        expanded into detailed technical specifications, and
+                        translated into 100% professional English per Rule 4 & Rule 6.
+================================================================================
+
+[PROMPT #01]
+Timestamp (UTC+0) : 2026-11-02 12:36:44 UTC+0
+AI Model          : Claude Sonnet 5.5 (High)
+Execution Time    : 158.0s
+Tokens Consumed   : 70,808 tokens
+Normalized Prompt :
+Conduct a comprehensive audit, cleanup, and structural optimization of the project directory and development environment according to the following specifications:
+1. Identify and remove all junk files and caches:
+   - Python runtime and compilation caches (`__pycache__/`, `.pyc`, `.pyo`, `.pyd`).
+   - Testing and coverage artifacts (`.pytest_cache/`, `.tox/`, `.nox/`, `.coverage`, `htmlcov/`, `.hypothesis/`).
+   - Linter, formatter, and type-checker caches (`.mypy_cache/`, `.ruff_cache/`, `.black/`, `.flake8`, `.cache/`).
+   - Build and packaging artifacts (`build/`, `dist/`, `*.egg-info/`, `*.egg`, and Rust `target/`).
+   - OS and IDE artifacts not part of shared configuration (`.DS_Store`, `Thumbs.db`, `.idea/workspace.xml`, `*.swp`, `*~`).
+   - Logs and temporary files (`*.log`, `tmp/`, `temp/`, `*.bak`).
+2. Filter and handle temporary test scripts:
+   - Scan and identify short-term ad-hoc Python test, scratch, and debug scripts (e.g., `scratch/`, `test_temp_*.py`, `debug_*.py`) located outside the official `tests/` suite, clearly separating official unit/integration tests from ad-hoc scripts before removal.
+3. Detect and handle duplicate files and dead/unused assets:
+   - Identify byte-identical duplicate files via SHA-256 checksums and temporary copy files (`*_copy.py`, `*_v2.py`, `*.old`).
+   - Run static reference analysis to locate orphaned Python modules and unlinked static assets (images, mock `.json`, `.csv`, `.dump` files).
+4. Mandatory safety mechanism and summary report:
+   - Present a dry-run checklist (file/folder path, size, and deletion reason) and obtain user confirmation before permanently deleting any files.
+   - Protect critical resources (`.git/`, `.env`, `venv/`, `.venv/`).
+   - Output a final summary table listing index, path, category (Cache / Ad-hoc Test / Duplicate / Unused Asset), and reclaimed storage size, followed by total items removed and total disk space freed.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #02]
+Timestamp (UTC+0) : 2026-11-02 12:42:09 UTC+0
+AI Model          : Claude Sonnet 5.5 (Low)
+Execution Time    : 1.0s
+Tokens Consumed   : 60,620 tokens
+Normalized Prompt :
+Evaluate whether the `benchmarks/` directory, the `tools/` directory, and the remaining top-level files in the project root directory (excluding `app.py`) can be safely deleted without breaking application functionality or build workflows.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #03]
+Timestamp (UTC+0) : 2026-11-02 12:45:15 UTC+0
+AI Model          : Claude Sonnet 5.5 (Low)
+Execution Time    : 6.0s
+Tokens Consumed   : 63,503 tokens
+Normalized Prompt :
+Inspect the `icons/` directory, compute file hashes, and analyze all codebase references to determine which icon and logo files are actively used and which are redundant or unreferenced.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #04]
+Timestamp (UTC+0) : 2026-11-02 12:45:58 UTC+0
+AI Model          : Claude Sonnet 5.5 (Low)
+Execution Time    : 20.0s
+Tokens Consumed   : 68,296 tokens
+Normalized Prompt :
+Proceed with deleting the duplicate `icons/logo_transparent.png` file and perform a thorough reference check across the codebase for `icons/logo.png` and `icons/logo.ico`.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #05]
+Timestamp (UTC+0) : 2026-11-02 12:48:34 UTC+0
+AI Model          : Claude Sonnet 5.5 (Low)
+Execution Time    : 21.0s
+Tokens Consumed   : 77,409 tokens
+Normalized Prompt :
+Audit all files and subdirectories inside the `UI/` directory (`UI_updated.html`, `UI/assets/`, and `UI/pdfjs/`) to identify unreferenced libraries, duplicate assets, and dead files that can be safely removed.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #06]
+Timestamp (UTC+0) : 2026-11-02 12:49:36 UTC+0
+AI Model          : Claude Sonnet 5.5 (Low)
+Execution Time    : 11.0s
+Tokens Consumed   : 78,061 tokens
+Normalized Prompt :
+Delete the unreferenced `UI/pdfjs/` directory and duplicate `UI/assets/iso_logo.svg` file, and further inspect `UI/assets/katex/mhchem.min.js` (and remove it if unused).
+
+--------------------------------------------------------------------------------
+
+[PROMPT #07]
+Timestamp (UTC+0) : 2026-11-02 12:50:47 UTC+0
+AI Model          : Claude Sonnet 5.5 (Low)
+Execution Time    : 1.0s
+Tokens Consumed   : 77,387 tokens
+Normalized Prompt :
+Confirm that the application launches and operates properly after removing `UI/pdfjs/`, `UI/assets/iso_logo.svg`, and `UI/assets/katex/mhchem.min.js`.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #08]
+Timestamp (UTC+0) : 2026-11-02 12:51:06 UTC+0
+AI Model          : Claude Sonnet 5.5 (Low)
+Execution Time    : 4.0s
+Tokens Consumed   : 79,403 tokens
+Normalized Prompt :
+Delete the unreferenced `icons/logo.png` and `icons/logo.ico` files, and create a comprehensive `.gitignore` file at the project root to prevent cache, build, and temporary files from being tracked.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #09]
+Timestamp (UTC+0) : 2026-11-02 12:52:58 UTC+0
+AI Model          : Claude Sonnet 5.5 (Low)
+Execution Time    : 92.0s
+Tokens Consumed   : 110,858 tokens
+Normalized Prompt :
+Reorganize all files in the project root directory into clean, modular subdirectories (`app/`, `resources/`, `core/`), retaining only documentation (`README.md`), dependency specifications, a dependency installation script (`install.bat`), and an application launcher script (`run.bat`) at the root level. Update all internal file path references accordingly.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #10]
+Timestamp (UTC+0) : 2026-11-02 12:56:13 UTC+0
+AI Model          : Claude Sonnet 5.5 (Low)
+Execution Time    : 6.0s
+Tokens Consumed   : 104,436 tokens
+Normalized Prompt :
+Create a standard `requirements.txt` file listing all required Python packages at the project root, update `install.bat` and `README.md` to use `requirements.txt`, and delete `Requirements.md`.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #11]
+Timestamp (UTC+0) : 2026-11-02 12:58:27 UTC+0
+AI Model          : Claude Sonnet 5.5 (Low)
+Execution Time    : 1.0s
+Tokens Consumed   : 104,671 tokens
+Normalized Prompt :
+Explain the architectural reasoning behind placing the `python/` subdirectory inside `rust_core/` (`core/`) and clarify why the Python application source folder was named `src/` (`app/`) instead of `python_core/`.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #12]
+Timestamp (UTC+0) : 2026-11-02 13:00:58 UTC+0
+AI Model          : Claude Sonnet 5.5 (Low)
+Execution Time    : 19.0s
+Tokens Consumed   : 111,343 tokens
+Normalized Prompt :
+Rename `resources/UI/UI_updated.html` to `UI.html` and rename sibling asset files in `resources/UI/assets/` to follow a concise, self-explanatory naming convention (`iso_logo_transparent.svg` to `iso.svg`, `tailwindcss.js` to `tailwind.js`), updating all references in the codebase.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #13]
+Timestamp (UTC+0) : 2026-11-02 13:02:46 UTC+0
+AI Model          : Claude Sonnet 5.5 (Low)
+Execution Time    : 25.0s
+Tokens Consumed   : 115,530 tokens
+Normalized Prompt :
+Fix the launch error `python: can't open file '...\src\app.py': [Errno 2] No such file or directory` by updating `run.bat`, `install.bat`, and `README.md` to match the renamed `app/` and `core/` directory structure.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #14]
+Timestamp (UTC+0) : 2026-11-02 13:04:14 UTC+0
+AI Model          : Claude Sonnet 5.5 (Low)
+Execution Time    : 175.0s
+Tokens Consumed   : 149,434 tokens
+Normalized Prompt :
+Diagnose and fix the issue where launching the application causes the Windows blue busy/loading ring (`IDC_APPSTARTING`) to appear around the mouse cursor. Defer headless Word COM initialization (`PersistentWordPdfEngine`) until after the main window renders, and update `run.bat` to launch via `pythonw`.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #15]
+Timestamp (UTC+0) : 2026-11-02 13:09:11 UTC+0
+AI Model          : Claude Sonnet 5.5 (Low)
+Execution Time    : 39.0s
+Tokens Consumed   : 154,200 tokens
+Normalized Prompt :
+Generate a detailed plaintext project directory tree in `tree.txt` (100% in English) covering the entire repository:
+1. List every source, asset, and configuration file while excluding auto-generated build/cache folders (`target/`, `__pycache__/`, `.pytest_cache/`) and individual font files.
+2. Annotate each file and directory with its functional purpose in the project workflow and its importance level (`[CORE]`, `[IMPORTANT]`, `[SUPPORT]`, `[CONFIG]`).
+3. Include a structured summary table below the directory tree explaining how the core files operate and interconnect across the runtime pipeline.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #16]
+Timestamp (UTC+0) : 2026-11-02 13:12:37 UTC+0
+AI Model          : Claude Sonnet 5.5 (Low)
+Execution Time    : 40.0s
+Tokens Consumed   : 165,971 tokens
+Normalized Prompt :
+Reformat `tree.txt` programmatically so that all columns, rows, tree prefixes, importance tags, descriptions, and ASCII table borders are strictly aligned and symmetrical.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #17]
+Timestamp (UTC+0) : 2026-11-02 13:37:44 UTC+0
+AI Model          : Gemini 4 Argon (Low)
+Execution Time    : 151.0s
+Tokens Consumed   : 122,467 tokens
+Normalized Prompt :
+Configure and strictly enforce the following four governance rules inside the `.agent/` workspace directory:
+1. Read and analyze all orientation and context files inside `.agent/` before executing any task.
+2. Record and update the current session's walkthrough in `.agent/walkthroughes/<DD>_<MM>_<YYYY>.md` (100% in English).
+3. Archive every completed implementation plan from the session in `.agent/implementation_plans_done/P<STT>_<DD>_<MM>_<YYYY>.md` (100% in English).
+4. Log the complete user prompt history across sessions in `.agent/prompt_history/Conversation_<DD>_<MM>_<YYYY>.txt` as plaintext, including the UTC+0 timestamp, selected AI model, total execution time, and token consumption for each turn. Do not store raw user text; normalize, fix spelling, expand technical descriptions concisely, and translate all prompts into accurate professional English before saving.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #18]
+Timestamp (UTC+0) : 2026-11-02 13:45:47 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 150.0s
+Tokens Consumed   : 158,983 tokens
+Normalized Prompt :
+Incorporate additional project structure management and language standardization rules into `.agent/rules/agent_workflow_rules.md`:
+1. Mandatory `tree.txt` synchronization: Automatically update and maintain `tree.txt` whenever any change occurs in the repository filesystem (including adding, editing, moving, or deleting files/directories).
+2. Exception for `.agent/`: In `tree.txt`, only display `.agent/` as a top-level directory entry; do not list or expand internal walkthrough, implementation plan, rule, or prompt history files in the tree diagram.
+3. Language standardization: All source code, commit messages, documentation, walkthroughs, implementation plans, prompt histories, code comments, and technical notes must be written in 100% English unless the user explicitly requests another specific language.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #19]
+Timestamp (UTC+0) : 2026-11-02 13:50:52 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 159.0s
+Tokens Consumed   : 182,326 tokens
+Normalized Prompt :
+Incorporate a strict single-line constraint for the `PURPOSE` column in `tree.txt` into `.agent/rules/agent_workflow_rules.md`, ensuring that `PURPOSE` descriptions never wrap or break onto multiple lines, and regenerate `tree.txt` to strictly adhere to single-line entries per file/directory.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #20]
+Timestamp (UTC+0) : 2026-11-02 13:54:40 UTC+0
+AI Model          : Gemini 4 Argon (Low)
+Execution Time    : 550.0s
+Tokens Consumed   : 275,663 tokens
+Normalized Prompt :
+Execute the workspace governance rules defined in `.agent/rules/agent_workflow_rules.md`: audit and extract the complete historical record of all user prompts, session walkthroughs, and completed implementation plans across every conversation session in this project (`14_08_2026`, `01_11_2026`, and `02_11_2026`). Ensure all records are accurately processed, normalized, formatted, and archived into their respective target directories (`.agent/prompt_history/`, `.agent/walkthroughes/`, and `.agent/implementation_plans_done/`) adhering strictly to the established naming conventions, metadata specifications, and 100% English language standards.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #21]
+Timestamp (UTC+0) : 2026-11-02 14:25:27 UTC+0
+AI Model          : Claude Opus 4.6 (Thinking)
+Execution Time    : 65.0s
+Tokens Consumed   : 185,400 tokens
+Normalized Prompt :
+Correct the file naming convention logic in `.agent/rules/agent_workflow_rules.md` so that walkthroughs, implementation plans, and prompt histories belonging to distinct working sessions or conversations on the same date are separated into individual per-session files rather than merged into a single date file:
+1. Update the standard naming conventions to:
+   - Walkthrough file: `<DD>_<MM>_<YYYY>_W<No>.md` (e.g., `02_11_2026_W1.md`)
+   - Implementation Plan file: `<DD>_<MM>_<YYYY>_P<No>.md` (e.g., `02_11_2026_P1.md`)
+   - Prompt History file: `<DD>_<MM>_<YYYY>_C<No>.txt` (e.g., `02_11_2026_C1.txt`)
+   where `<No>` is the ascending sequential number (`1, 2, 3...`) for each distinct session or task on that date.
+2. Immediately apply these updated conventions to split and restructure all archived files across `.agent/walkthroughes/`, `.agent/implementation_plans_done/`, and `.agent/prompt_history/`.
+
+================================================================================
+SESSION TOTALS (02_11_2026_C3)
+Total Prompts Logged       : 21
+Total Execution Time       : 1694.0s
+Total Tokens Consumed      : 2,516,769 tokens
+================================================================================

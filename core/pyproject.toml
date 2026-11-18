@@ -1,0 +1,22 @@
+[build-system]
+requires = ["maturin>=1.7,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "quast-core"
+version = "0.1.0"
+description = "High-performance Rust extension core for QUAST LaTeX to OMML"
+authors = [{ name = "QUAST Architecture Team" }]
+readme = "../README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "lxml>=5.0.0",
+    "latex2mathml>=3.77.0",
+]
+
+[tool.maturin]
+python-source = "python"
+module-name = "quast_core._quast_core"
+features = ["pyo3/extension-module", "pyo3/abi3-py38"]
+strip = true
+opt-level = 3

@@ -1,0 +1,26 @@
+================================================================================
+USER PROMPT HISTORY LOG
+================================================================================
+Timestamp (UTC+0)    : 2026-11-03 12:57:15 UTC+0
+AI Model             : gemini-2.5-pro
+Execution Duration   : 42 seconds
+Token Consumption    : ~11,500 tokens
+--------------------------------------------------------------------------------
+Technical Specification & Normalized Request:
+The user reported an aesthetic defect regarding the visual framing of Figure 1
+("screenshots/file_batch_mode_preview.png") in the README view:
+"Image 1 was cropped improperly; it still exposes a dark/black border/background
+contour around the application window frame." An annotated screenshot was provided
+highlighting the residual black seam.
+
+The objective is to:
+1. Inspect the pixel perimeter of "screenshots/file_batch_mode_preview.png" to
+   diagnose the root cause of the dark/black perimeter line.
+2. Cleanly reconstruct or repair the window frame perimeter so that it seamlessly
+   matches the clean, light-mode background ([235, 237, 242]) and window border
+   ([211, 215, 222]) present in the other application screenshots
+   ("latex_live_studio.png", etc.).
+3. Ensure no loss of resolution (1920x1200) or degradation of the core formula
+   preview and UI components within the screenshot.
+4. Verify the updated asset and document the root cause and remediation.
+================================================================================

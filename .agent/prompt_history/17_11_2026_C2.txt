@@ -1,0 +1,66 @@
+=== PROMPT HISTORY RECORD ===
+UTC+0 Timestamp   : 2026-11-17 15:02:22 UTC+0
+AI Model          : Gemini 4 Hydrogen (Medium)
+Execution Duration: ~20.0s
+Token Consumption : ~6,500 tokens (estimated)
+
+--- NORMALIZED & EXPANDED TECHNICAL PROMPT ---
+Update `README.md` with the following documentation refinements:
+1. Add a concise description of the application's role directly in the opening hero section of `README.md`.
+2. Remove all badges related to programming languages (Python, Rust, PyO3/Maturin), software version, direct contact (Telegram), nationality/origin (Vietnam), and AI models/methodology (Google Antigravity, Gemini engines) from both the top badge block and the author section.
+3. Update all GitHub repository URLs and clone instructions from `https://github.com/Oops52VN/QUAST_LaTeX_To_OMML_Converter` to `https://github.com/Oops52VN/LaTeX-To-OMML-Converter`.
+
+
+=== PROMPT HISTORY RECORD (TURN 2) ===
+UTC+0 Timestamp   : 2026-11-17 15:06:25 UTC+0
+AI Model          : Gemini 4 Hydrogen (Medium)
+Execution Duration: ~8.0s
+Token Consumption : ~2,000 tokens (estimated)
+
+--- NORMALIZED & EXPANDED TECHNICAL PROMPT ---
+Refine the opening application role description in `README.md` to explicitly emphasize its two core capabilities:
+1. Automatically detecting LaTeX symbols and formulas within `.docx` documents, converting them into native OMML, and returning the converted output `.docx` file.
+2. Converting LaTeX input and formula screenshots (via offline OCR) into OMML for direct copy-and-paste into Microsoft Word without formatting errors.
+
+
+=== PROMPT HISTORY RECORD (TURN 3) ===
+UTC+0 Timestamp   : 2026-11-17 15:12:27 UTC+0
+AI Model          : Gemini 4 Hydrogen (Medium)
+Execution Duration: ~5.0s
+Token Consumption : ~1,800 tokens (estimated)
+
+--- NORMALIZED & EXPANDED TECHNICAL PROMPT ---
+Remove the inline table of contents navigation bar from the hero section of `README.md`, left-align the application role description, and format each core capability as its own separate line/bullet item.
+
+
+=== PROMPT HISTORY RECORD (TURN 4) ===
+UTC+0 Timestamp   : 2026-11-17 15:14:25 UTC+0
+AI Model          : Gemini 4 Hydrogen (Low)
+Execution Duration: ~8.0s
+Token Consumption : ~2,200 tokens (estimated)
+
+--- NORMALIZED & EXPANDED TECHNICAL PROMPT ---
+Update `README.md` with the following removals:
+1. Remove the `Live Preview: KaTeX Engine` and `Syntax: LaTeX 2ε` badges from the hero badge block.
+2. Remove all `[!IMPORTANT]` alert marker lines from blockquotes.
+3. Remove the entire Section 13 (`Author, Contact & License`).
+
+
+=== PROMPT HISTORY RECORD (TURN 5) ===
+UTC+0 Timestamp   : 2026-11-17 15:19:42 UTC+0
+AI Model          : Gemini 4 Hydrogen (Low)
+Execution Duration: ~8.0s
+Token Consumption : ~2,500 tokens (estimated)
+
+--- NORMALIZED & EXPANDED TECHNICAL PROMPT ---
+Diagnose and fix the broken badge image in the built-in offline README viewer (`resources/UI/UI.html`) by updating `shieldsMap` so the updated GitHub badge URL (`GitHub-LaTeX--To--OMML--Converter`) maps to `assets/shields/shield_1.svg`.
+
+
+=== PROMPT HISTORY RECORD (TURN 6) ===
+UTC+0 Timestamp   : 2026-11-17 15:34:48 UTC+0
+AI Model          : Gemini 4 Hydrogen (Low)
+Execution Duration: ~4.0s
+Token Consumption : ~1,200 tokens (estimated)
+
+--- NORMALIZED & EXPANDED TECHNICAL PROMPT ---
+Add a concise note to the Batch `.docx` Conversion bullet in the opening description of `README.md` stating that while the application can detect un-delimited LaTeX code without `$`, wrapping formulas in `$$...$$` is recommended.

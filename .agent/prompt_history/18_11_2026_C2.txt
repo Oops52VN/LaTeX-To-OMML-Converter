@@ -1,0 +1,28 @@
+=== PROMPT HISTORY RECORD ===
+UTC+0 Timestamp   : 2026-11-18 11:27:18 UTC+0
+AI Model          : Gemini 4 Hydrogen (Medium)
+Execution Duration: ~190.0s (full-codebase network audit, offline hardening edits, verification, and documentation logging)
+Token Consumption : ~22,000 tokens (estimated)
+
+--- NORMALIZED & EXPANDED TECHNICAL PROMPT ---
+Audit the entire application codebase (Python backend, Rust core, QtWebEngine/WebView2 hosts, OCR engine, and frontend UI/assets) for any network connectivity or remote resource requests. Ensure the application operates 100% offline/locally and eliminate any source code paths that perform network access.
+
+
+=== PROMPT HISTORY RECORD (TURN 2) ===
+UTC+0 Timestamp   : 2026-11-18 11:44:08 UTC+0
+AI Model          : Gemini 4 Hydrogen (Medium)
+Execution Duration: ~35.0s (README inspection, Figure_Docx_2.png insertion, figure renumbering, and documentation logging)
+Token Consumption : ~6,000 tokens (estimated)
+
+--- NORMALIZED & EXPANDED TECHNICAL PROMPT ---
+Section 3.1 of `README.md` is missing one screenshot (`screenshots/Figure_Docx_2.png`). Add the missing figure to Section 3.1 and update subsequent figure numbers accordingly.
+
+
+=== PROMPT HISTORY RECORD (TURN 3) ===
+UTC+0 Timestamp   : 2026-11-18 11:46:42 UTC+0
+AI Model          : Gemini 4 Hydrogen (Medium)
+Execution Duration: ~30.0s (broken image root-cause analysis, UI.html path mapping fix, verification, and documentation logging)
+Token Consumption : ~5,500 tokens (estimated)
+
+--- NORMALIZED & EXPANDED TECHNICAL PROMPT ---
+Fix the broken image display in the application's ABOUT/README view where `Figure 2` (`screenshots/Figure_Docx_2.png`) fails to load because `imgReplacements` in `resources/UI/UI.html` does not rewrite `screenshots/Figure_Docx_2.png` to `../../screenshots/Figure_Docx_2.png`.

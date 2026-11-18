@@ -1,0 +1,37 @@
+================================================================================
+CONVERSATION PROMPT LOG: 02_11_2026_C10.txt
+================================================================================
+Timestamp (UTC+0)      : 2026-11-02 19:20:52 UTC+0
+AI Model               : Gemini 3.8 Flash (Medium)
+Execution Duration     : ~75 seconds
+Token Consumption      : ~36,000 tokens (est. input + tool calls + output)
+--------------------------------------------------------------------------------
+
+[NORMALIZED TECHNICAL SPECIFICATION]
+The user instructed the assistant to strictly adhere to `.agent/rules/agent_workflow_rules.md` and execute the following task:
+"Phân tích, lập kế hoạch /plan sửa toàn bộ các vấn đề liên quan đến độ mượt và kịch bản animation và lỗi hiển thị markdown README.md và tự động thực hiện kế hoạch"
+(Analyze, plan (/plan) to fix all issues related to smoothness, animation scenarios, and markdown rendering defects in README.md, and automatically execute the plan).
+
+Engineering diagnostics identified several defect clusters across rendering, performance, and animation physics:
+1. Markdown Rendering Defects in `README.md`:
+   - Mermaid Vector Graphics Stripping: `initMarkdownParser()` stripped `class="language-mermaid"` due to highlight.js fallback behavior, preventing all 3 architecture diagrams (Presentation Architecture Flowchart, 3-Stage Pipeline Diagram, Sequence Diagram) from rendering as SVGs.
+   - Offline Badge Stall & Broken Shields: 19 `img.shields.io` badges in `README.md` were not mapped to local SVG assets (`assets/shields/shield_*.svg`) during live loading from disk, causing network timeouts and broken images in offline environments.
+   - Incomplete KaTeX Syntax & Math Delimiters: Math parser regex only matched `$$...$$` and `$..$`, ignoring `\[...\]` and `\(...\)` syntax while failing to protect escaped `\$`.
+   - Inline Code Typography: Inline `<code>` elements lacked background chips, borders, and padding, causing identifiers to blend into body text.
+   - Theme Desynchronization for Mermaid: Switching between dark and light modes failed to re-render Mermaid diagrams in the active theme colors.
+   - Heading Anchor Links: Markdown headings lacked slug IDs, breaking table-of-contents in-page navigation.
+2. Smoothness & Kinetic Scrolling Stutter:
+   - CSS vs. JS Conflict: `#readme-content-scroll` and `#iso-content-scroll` declared inline `scroll-behavior: smooth;` which continuously fought the 60fps JavaScript rAF kinetic momentum loop.
+   - Kinetic Scroll Desynchronization: `initReadmeSmoothScroll()` omitted position synchronization when starting a wheel scroll or dragging native scrollbars, causing abrupt jumps back to 0.
+3. Animation Scenarios & Tab Transitions:
+   - Sidebar Collapse/Expand Snapping: 250ms tab transition timer prematurely hid the sidebar before the 280ms CSS transition finished; restoring the sidebar lacked display frame flush.
+
+Required Remediation:
+1. Update `initMarkdownParser()` to preserve `language-mermaid` and generate GitHub-standard slug IDs on headings.
+2. Preprocess live `README.md` text to map all 19 shields to local SVG files (`assets/shields/shield_*.svg`) for 100% offline privacy and zero latency.
+3. Upgrade `renderKaTeXInReadme()` to support `$$...$$`, `\[...\]`, `$...$`, and `\(...\)` with escaped `\$` shielding.
+4. Implement dynamic Mermaid re-rendering upon dark/light theme switching (`reRenderMermaidDiagrams()`).
+5. Remove `scroll-behavior: smooth;` and deploy a critically damped kinetic momentum engine with position synchronization and delta normalization.
+6. Align sidebar and tab transition timings to 240–260ms with double rAF frame flushing.
+7. Verify 100% test pass rate, 0 Level-2 console errors, and full SVG/KaTeX rendering.
+================================================================================

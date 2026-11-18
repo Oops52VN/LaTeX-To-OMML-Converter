@@ -1,0 +1,28 @@
+================================================================================
+CONVERSATION PROMPT RECORD
+================================================================================
+Timestamp (UTC+0): 2026-11-05 17:18:09 UTC+0
+AI Model: Gemini 3.8 Flash (High)
+Execution Duration: 820 seconds
+Token Consumption: ~38,500 tokens
+
+--------------------------------------------------------------------------------
+TRANSFORMED & NORMALIZED TECHNICAL SPECIFICATION (ENGLISH)
+--------------------------------------------------------------------------------
+User Request:
+"Package the entire application into a single standalone Windows setup installer executable, designate it as the trial release ('bản thử nghiệm'), and output the deliverable into the releases directory."
+
+Technical Context & Requirements:
+1. Single-File Windows Setup Installer:
+   The user requires a standalone, single-file Windows setup installer ("bộ cài duy nhất") that bundles all runtime Python libraries (PyQt5, PyQtWebEngine, lxml, python-docx, latex2mathml, pywin32), the compiled Rust native accelerator (quast_core), WebView2 runtime loader, static assets (UI.html, KaTeX fonts, CSS, JavaScript engines, MML2OMML.XSL), and documentation. The installer must deploy the application cleanly to standard installation targets without requiring pre-installed Python, Cargo, or external dependencies.
+2. Trial Release Branding & Naming:
+   The output package must be explicitly designated and branded as the trial release ("bản thử nghiệm"):
+   - Output installer binary: `releases/Ban_Thu_Nghiem_Setup.exe` (with direct alias `releases/Ban_Thu_Nghiem.exe`).
+   - Setup Title & Wizard: "QUAST LaTeX to OMML - Bản thử nghiệm".
+   - Target Program Group & Shortcuts: "QUAST LaTeX to OMML (Bản thử nghiệm)" on Desktop and Start Menu.
+3. Automated Toolchain & Compilation Pipeline:
+   - Establish `build_release.py` to automate PyInstaller application freezing (`--onedir`, `--windowed`) and Inno Setup 6 compilation (`tools/InnoSetup/ISCC.exe`).
+   - Auto-generate multi-resolution application icons (`resources/icons/app.ico`).
+   - Ensure clean post-build deterministic cleanup of intermediate build directories (`build/`, `dist/`, `.spec`, `.iss`), leaving only the final single-file installer in `releases/`.
+   - Provide a convenient one-click developer batch script (`package.bat`).
+================================================================================

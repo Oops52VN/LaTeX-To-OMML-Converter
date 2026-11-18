@@ -1,0 +1,280 @@
+# -*- coding: utf-8 -*-
+"""
+build_release.py
+Automated release packaging pipeline for OMML Converter.
+Compiles the full application into a standalone single-file Windows installer:
+    releases/OMML_Converter_Setup_v11.18.2026.exe
+
+Pipeline Steps:
+1. Environment & Pre-requisite Verification (PyInstaller, PyQt5, etc.)
+2. Icon Generation (converts resources/UI/assets/logo.png to resources/icons/app.ico if missing)
+3. Portable Inno Setup 6 Toolchain Resolution (auto-installs to tools/InnoSetup if missing)
+4. PyInstaller Staging Compilation (frozen application in dist/OMML Converter/)
+5. Inno Setup Script Generation (OMML_Converter.iss)
+6. Single-File Windows Installer Compilation (releases/OMML_Converter_Setup_v11.18.2026.exe)
+7. Deterministic Post-Build Artifact Cleanup (removes build/, dist/, .spec, .iss)
+"""
+
+import os
+import sys
+import shutil
+import hashlib
+import subprocess
+import urllib.request
+from pathlib import Path
+
+
+PROJECT_ROOT = Path(__file__).resolve().parent
+RELEASES_DIR = PROJECT_ROOT / "releases"
+TOOLS_DIR = PROJECT_ROOT / "tools"
+INNO_DIR = TOOLS_DIR / "InnoSetup"
+ISCC_EXE = INNO_DIR / "ISCC.exe"
+RESOURCES_DIR = PROJECT_ROOT / "resources"
+ICONS_DIR = RESOURCES_DIR / "icons"
+APP_ICO = ICONS_DIR / "app.ico"
+LOGO_PNG = RESOURCES_DIR / "UI" / "assets" / "logo.png"
+
+APP_NAME = "OMML Converter"
+APP_VERSION = "11.18.2026"
+RELEASE_TAG = f"v{APP_VERSION}"
+INSTALLER_BASENAME = f"OMML_Converter_Setup_{RELEASE_TAG}"
+
+INNO_SETUP_DOWNLOAD_URL = "https://github.com/jrsoftware/issrc/releases/download/is-6_3_3/innosetup-6.3.3.exe"
+
+
+def log(msg: str):
+    print(f"[build_release] {msg}")
+
+
+def ensure_icon():
+    """Ensure resources/icons/app.ico exists; generate from logo.png if missing."""
+    if APP_ICO.exists():
+        return
+    log(f"Generating icon {APP_ICO} from {LOGO_PNG}...")
+    ICONS_DIR.mkdir(parents=True, exist_ok=True)
+    try:
+        from PIL import Image
+        img = Image.open(LOGO_PNG)
+        sizes = [(16, 16), (24, 24), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)]
+        img.save(str(APP_ICO), format="ICO", sizes=sizes)
+        log(f"Generated {APP_ICO} successfully.")
+    except Exception as e:
+        log(f"Warning: Failed to generate app.ico: {e}")
+
+
+def ensure_inno_setup() -> Path:
+    """Ensure Inno Setup compiler (ISCC.exe) is present in tools/InnoSetup."""
+    if ISCC_EXE.exists():
+        return ISCC_EXE
+
+    log("Inno Setup compiler not found in tools/InnoSetup. Downloading installer...")
+    TOOLS_DIR.mkdir(parents=True, exist_ok=True)
+    installer_path = TOOLS_DIR / "innosetup_setup.exe"
+
+    try:
+        urllib.request.urlretrieve(INNO_SETUP_DOWNLOAD_URL, str(installer_path))
+        log(f"Downloaded Inno Setup installer ({installer_path.stat().st_size:,} bytes).")
+        log(f"Installing Inno Setup silently into {INNO_DIR}...")
+        cmd = [
+            str(installer_path),
+            "/VERYSILENT",
+            "/SUPPRESSMSGBOXES",
+            "/NORESTART",
+            f"/DIR={INNO_DIR}",
+        ]
+        res = subprocess.run(cmd, check=True)
+        if res.returncode != 0:
+            raise RuntimeError(f"Inno Setup installation returned non-zero exit code: {res.returncode}")
+    finally:
+        if installer_path.exists():
+            installer_path.unlink()
+
+    if not ISCC_EXE.exists():
+        raise FileNotFoundError(f"ISCC.exe was not created at expected path: {ISCC_EXE}")
+
+    log(f"Inno Setup ready at: {ISCC_EXE}")
+    return ISCC_EXE
+
+
+def clean_intermediate_artifacts():
+    """Remove build directories and temporary packaging files."""
+    log("Cleaning temporary build artifacts...")
+    for d in [PROJECT_ROOT / "build", PROJECT_ROOT / "dist"]:
+        if d.exists():
+            shutil.rmtree(d, ignore_errors=True)
+
+    for f in PROJECT_ROOT.glob("*.spec"):
+        try:
+            f.unlink()
+        except OSError:
+            pass
+
+    for f in PROJECT_ROOT.glob("*.iss"):
+        try:
+            f.unlink()
+        except OSError:
+            pass
+
+
+def run_pyinstaller() -> Path:
+    """Freeze application into dist/OMML Converter via PyInstaller."""
+    log("Running PyInstaller to compile application binaries...")
+
+    dist_app_dir = PROJECT_ROOT / "dist" / APP_NAME
+    entry_script = PROJECT_ROOT / "app" / "app.py"
+
+    cmd = [
+        sys.executable,
+        "-m",
+        "PyInstaller",
+        "--noconfirm",
+        "--onedir",
+        "--windowed",
+        "--name",
+        APP_NAME,
+        "--icon",
+        str(APP_ICO),
+        "--add-data",
+        f"{RESOURCES_DIR};resources",
+        "--add-data",
+        f"{PROJECT_ROOT / 'screenshots'};screenshots",
+        "--add-data",
+        f"{PROJECT_ROOT / 'README.md'};.",
+        "--collect-all",
+        "quast_core",
+        "--collect-all",
+        "docx",
+        "--collect-all",
+        "latex2mathml",
+        "--paths",
+        str(PROJECT_ROOT / "app"),
+        "--exclude-module",
+        "paddle",
+        "--exclude-module",
+        "paddleocr",
+        "--exclude-module",
+        "pytest",
+        "--exclude-module",
+        "maturin",
+        "--exclude-module",
+        "torch",
+        "--exclude-module",
+        "scipy",
+        str(entry_script),
+    ]
+
+    log(f"PyInstaller command: {' '.join(cmd)}")
+    subprocess.run(cmd, check=True)
+
+    target_exe = dist_app_dir / f"{APP_NAME}.exe"
+    if not target_exe.exists():
+        raise FileNotFoundError(f"PyInstaller output executable missing: {target_exe}")
+
+    log(f"PyInstaller build succeeded: {target_exe} ({target_exe.stat().st_size:,} bytes).")
+    return dist_app_dir
+
+
+def generate_inno_script(dist_app_dir: Path) -> Path:
+    """Generate Inno Setup compilation script (.iss)."""
+    iss_file = PROJECT_ROOT / "OMML_Converter.iss"
+    RELEASES_DIR.mkdir(parents=True, exist_ok=True)
+
+    iss_content = f"""[Setup]
+AppId={{{{5D99B167-3A21-4E65-9B2F-9C8F31E8D2E4}}}}
+AppName={APP_NAME}
+AppVersion={APP_VERSION}
+AppPublisher=OOPS52 - QUAST
+DefaultDirName={{autopf}}\\{APP_NAME}
+DefaultGroupName={APP_NAME}
+OutputDir={RELEASES_DIR}
+OutputBaseFilename={INSTALLER_BASENAME}
+SetupIconFile={APP_ICO}
+Compression=lzma2/ultra64
+SolidCompression=yes
+WizardStyle=modern
+ArchitecturesInstallIn64BitMode=x64compatible
+UninstallDisplayIcon={{app}}\\{APP_NAME}.exe
+
+[Languages]
+Name: "english"; MessagesFile: "compiler:Default.isl"
+
+[Tasks]
+Name: "desktopicon"; Description: "{{cm:CreateDesktopIcon}}"; GroupDescription: "{{cm:AdditionalIcons}}"
+
+[Files]
+Source: "{dist_app_dir}\\*"; DestDir: "{{app}}"; Flags: ignoreversion recursesubdirs createallsubdirs
+
+[Icons]
+Name: "{{group}}\\{APP_NAME}"; Filename: "{{app}}\\{APP_NAME}.exe"; IconFilename: "{{app}}\\_internal\\resources\\icons\\app.ico"
+Name: "{{group}}\\{{cm:UninstallProgram,{APP_NAME}}}"; Filename: "{{uninstallexe}}"
+Name: "{{autodesktop}}\\{APP_NAME}"; Filename: "{{app}}\\{APP_NAME}.exe"; Tasks: desktopicon; IconFilename: "{{app}}\\_internal\\resources\\icons\\app.ico"
+
+[Run]
+Filename: "{{app}}\\{APP_NAME}.exe"; Description: "{{cm:LaunchProgram,{APP_NAME}}}"; Flags: nowait postinstall skipifsilent
+"""
+    iss_file.write_text(iss_content, encoding="utf-8")
+    log(f"Generated Inno Setup script: {iss_file}")
+    return iss_file
+
+
+def compile_installer(iss_file: Path) -> Path:
+    """Compile the single-file installer using ISCC.exe."""
+    log(f"Compiling Windows installer via {ISCC_EXE}...")
+    cmd = [str(ISCC_EXE), str(iss_file)]
+    subprocess.run(cmd, check=True)
+
+    installer_exe = RELEASES_DIR / f"{INSTALLER_BASENAME}.exe"
+    if not installer_exe.exists():
+        raise FileNotFoundError(f"Compiled installer missing: {installer_exe}")
+
+    return installer_exe
+
+
+def calculate_sha256(filepath: Path) -> str:
+    h = hashlib.sha256()
+    with open(filepath, "rb") as f:
+        while chunk := f.read(1024 * 1024):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def main():
+    log("=== Starting Automated Single-File Release Packaging Pipeline ===")
+    RELEASES_DIR.mkdir(parents=True, exist_ok=True)
+
+    ensure_icon()
+    ensure_inno_setup()
+
+    # Step 1: Clean previous builds
+    clean_intermediate_artifacts()
+
+    # Step 2: PyInstaller freeze
+    dist_app_dir = run_pyinstaller()
+
+    # Step 3: Generate Inno Setup script
+    iss_file = generate_inno_script(dist_app_dir)
+
+    # Step 4: Compile Inno Setup installer
+    installer_exe = compile_installer(iss_file)
+
+    # Step 5: Post-build cleanup
+    clean_intermediate_artifacts()
+
+    # Step 6: Report
+    size_mb = installer_exe.stat().st_size / (1024 * 1024)
+    sha256 = calculate_sha256(installer_exe)
+
+    print("\n" + "=" * 80)
+    print("PACKAGE BUILD COMPLETED SUCCESSFULLY")
+    print("=" * 80)
+    print(f"Installer Executable : {installer_exe}")
+    print(f"Version              : {RELEASE_TAG}")
+    print(f"File Size            : {size_mb:.2f} MB ({installer_exe.stat().st_size:,} bytes)")
+    print(f"SHA-256 Checksum     : {sha256}")
+    print("Package Type         : Single-file Windows Installer (Inno Setup 6, LZMA2 Solid)")
+    print(f"Application Target   : {APP_NAME} ({RELEASE_TAG})")
+    print("=" * 80 + "\n")
+
+
+if __name__ == "__main__":
+    main()

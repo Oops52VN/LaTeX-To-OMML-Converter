@@ -1,0 +1,60 @@
+================================================================================
+CONVERSATION PROMPT HISTORY — 01_11_2026_C6
+================================================================================
+Conversation ID       : 8d44152f-5015-4889-8d03-c4910d34581b
+Session Title         : Fix PDF Preview Fidelity & Plan Microsoft Edge WebView2 Integration
+Initiation Timestamp  : 2026-11-01 13:24:43 UTC+0
+Session Sequence (No) : C6 (2026-11-01)
+Workspace             : E:\Documents\Q7 LaTeX To OMML Python
+Total Prompts         : 4
+Note                  : All user prompts below have been normalized, spell-checked,
+                        expanded into detailed technical specifications, and
+                        translated into 100% professional English per Rule 4 & Rule 6.
+================================================================================
+
+[PROMPT #01]
+Timestamp (UTC+0) : 2026-11-01 13:24:43 UTC+0
+AI Model          : Gemini 4 Argon (Low)
+Execution Time    : 815.0s
+Tokens Consumed   : 122,228 tokens
+Normalized Prompt :
+Audit and fix the DOCX-to-PDF preview pipeline:
+1. Ensure the background PDF export preserves 100% of the original `.docx` page geometry, margins, orientation, fonts, and layout, removing any hidden preprocessing functions that forcibly alter page margins, font sizes, or paper dimensions.
+2. Fix the preview loading overlay lifecycle so the spinner hides reliably once the PDF finishes rendering.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #02]
+Timestamp (UTC+0) : 2026-11-01 13:42:10 UTC+0
+AI Model          : Gemini 4 Argon (Low)
+Execution Time    : 312.0s
+Tokens Consumed   : 134,282 tokens
+Normalized Prompt :
+Formulate an implementation plan (`/plan`) to replace the slow, non-interactive QtWebEngine PDF previewer with the native Microsoft Edge WebView2 PDF Viewer (powered by Adobe Acrobat inside Microsoft Edge) and accelerate PDF loading speed.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #03]
+Timestamp (UTC+0) : 2026-11-01 15:05:54 UTC+0
+AI Model          : Gemini 4 Argon (Low)
+Execution Time    : 1074.0s
+Tokens Consumed   : 148,828 tokens
+Normalized Prompt :
+Approve the Microsoft Edge WebView2 PDF Viewer integration and two-stage progressive PDF export plan for implementation.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #04]
+Timestamp (UTC+0) : 2026-11-01 15:25:15 UTC+0
+AI Model          : Gemini 4 Argon (Low)
+Execution Time    : 2.0s
+Tokens Consumed   : 1,106 tokens
+Normalized Prompt :
+Retry the interrupted tool execution step to complete the WebView2 integration turn.
+
+================================================================================
+SESSION TOTALS (01_11_2026_C6)
+Total Prompts Logged       : 4
+Total Execution Time       : 2203.0s
+Total Tokens Consumed      : 406,444 tokens
+================================================================================

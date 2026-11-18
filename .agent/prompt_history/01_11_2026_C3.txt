@@ -1,0 +1,65 @@
+================================================================================
+CONVERSATION PROMPT HISTORY — 01_11_2026_C3
+================================================================================
+Conversation ID       : ca49b526-00c2-4f6e-b60e-1acbd476a485
+Session Title         : Hybrid Python + Rust (PyO3) Architecture Plan & ISO 80000-2 Math Compliance
+Initiation Timestamp  : 2026-11-01 10:33:42 UTC+0
+Session Sequence (No) : C3 (2026-11-01)
+Workspace             : E:\Documents\Q7 LaTeX To OMML Python
+Total Prompts         : 4
+Note                  : All user prompts below have been normalized, spell-checked,
+                        expanded into detailed technical specifications, and
+                        translated into 100% professional English per Rule 4 & Rule 6.
+================================================================================
+
+[PROMPT #01]
+Timestamp (UTC+0) : 2026-11-01 10:33:42 UTC+0
+AI Model          : Gemini 4 Argon (Low)
+Execution Time    : 134.0s
+Tokens Consumed   : 66,552 tokens
+Normalized Prompt :
+Act as a Software Architect and Senior Backend Engineer specializing in Python, Rust, and PyO3. Formulate a detailed Implementation Plan (`/plan`) to build a high-performance Hybrid Python + Rust (`PyO3` / `maturin`) architecture (`quast_core`) capable of processing hundreds of `.docx` files or thousands of pages concurrently across three core workloads:
+1. DOCX Batch I/O & XML Streaming Engine:
+   - Leverage `zip`, zero-allocation `quick-xml` event streaming, and `rayon` data parallelism to parse and repackage Word `.docx` archives without holding the Python GIL.
+2. High-Speed Regex & Formula Tokenizer:
+   - Scan multi-megabyte text buffers for inline (`$...$`) and display (`$$...$$`) math segments, handle escaped `\$` characters, and shield code blocks (`` `...` ``, ```` ```...``` ````) using a single-pass DFA/SIMD state machine and Rust's `regex` crate.
+3. Pure-Rust Math Image Preprocessing (for the Image OCR pipeline):
+   - Implement grayscale conversion, 3x3 branchless median denoising, integral-image Sauvola adaptive binarization, and automatic bounding-box cropping in pure Rust (`image` + `rayon`) to avoid heavy C++ OpenCV binary dependencies.
+Include workspace structure, `Cargo.toml` specifications, zero-copy FFI boundary design, `py.allow_threads` GIL-release strategy, cross-platform wheel packaging, and a benchmark suite comparing Rust against pure Python.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #02]
+Timestamp (UTC+0) : 2026-11-01 10:37:47 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 848.0s
+Tokens Consumed   : 231,753 tokens
+Normalized Prompt :
+Approve and execute the Hybrid Python + Rust (`quast_core`) implementation plan: create the Cargo/Maturin project structure, implement all three Rust core modules (`tokenizer`, `docx_engine`, `image_proc`), compile the native extension in release mode, integrate it with `app.py`, and run automated unit tests and performance benchmarks.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #03]
+Timestamp (UTC+0) : 2026-11-01 11:38:51 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 339.0s
+Tokens Consumed   : 238,248 tokens
+Normalized Prompt :
+Diagnose and fix the formula conversion failure encountered when batch-converting `1000_cong_thuc_toan_latex.docx` into `OMML_1000_cong_thuc_toan_latex.docx`, ensuring raw and delimited LaTeX expressions inside paragraphs are recognized and converted into valid `<m:oMath>` blocks.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #04]
+Timestamp (UTC+0) : 2026-11-01 11:51:42 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 1089.0s
+Tokens Consumed   : 191,827 tokens
+Normalized Prompt :
+Fix the remaining 2D mathematical rendering defects in converted `.docx` files so that all generated OMML equations strictly comply with ISO 80000-2 typographic standards—specifically ensuring that parentheses, brackets, binomial coefficients (`\binom{n}{k}`), and superscripted delimiters (`(-1)^k`) generate stretchy 2D `<m:d>` delimiter elements rather than flat 1D characters.
+
+================================================================================
+SESSION TOTALS (01_11_2026_C3)
+Total Prompts Logged       : 4
+Total Execution Time       : 2410.0s
+Total Tokens Consumed      : 728,380 tokens
+================================================================================

@@ -1,0 +1,32 @@
+================================================================================
+CONVERSATION PROMPT RECORD
+================================================================================
+Timestamp (UTC+0): 2026-11-03 14:16:27 UTC+0
+AI Model: Gemini 3.8 Flash
+Execution Duration: 38 seconds
+Token Consumption: ~14,500 tokens
+
+--------------------------------------------------------------------------------
+TRANSFORMED & NORMALIZED TECHNICAL SPECIFICATION (ENGLISH)
+--------------------------------------------------------------------------------
+User Defect Report:
+"The README documentation tab exhibits noticeable frame drops, stuttering, and transition lag (jank) upon its first opening."
+
+Technical Context & Root-Cause Diagnosis:
+1. Synchronous Render Colliding with Active Transitions:
+   When switching to the README tab (`switchTab('readme')`), Chromium initiates a 260ms view cross-fade transition and a 250ms sidebar collapse animation. Simultaneously, `ensureReadmeLoaded()` invoked `processAndRenderReadme()`, performing blocking Markdown compilation via `markdown-it`, injecting a massive DOM tree into `#readme-markdown-body`, executing Highlight.js on code blocks, and synchronously walking the entire document with a `TreeWalker` to evaluate 26 KaTeX equations.
+2. Synchronous Image Decoding Stalls:
+   Large PNG screenshot images embedded within the markdown lacked asynchronous decoding (`decoding="async"`), causing Chromium to block the UI Main Thread for 150ms–350ms during image dimension calculations and bitmap rasterization.
+3. Lack of Background Pre-warming:
+   The application deferred README fetching, parsing, and math compilation until the moment the user clicked the tab, forcing cold evaluation during the critical transition window.
+
+Remediation Scope & Objectives:
+1. Implement Background Idle Pre-warming (`scheduleReadmePrewarm`):
+   Schedule non-blocking background fetching, parsing, and rendering during application idle intervals via `requestIdleCallback` (fallback to `setTimeout`). Because the README view container is hidden during initial launch, DOM insertion occurs off-screen with zero layout reflow or repaint impact.
+2. Decouple Tab Transition from Heavy DOM Injection:
+   If the user navigates to the README tab before background pre-warming completes, defer markdown processing until after the 260ms view transition animation finishes (`setTimeout(ensureReadmeLoaded, 270)`).
+3. Incremental Animation Frame Chunking for KaTeX:
+   Refactor `renderKaTeXInReadme` to process mathematical equations in discrete batches (6 equations per frame) scheduled via `requestAnimationFrame`, strictly capping per-frame CPU scripting time under 3ms.
+4. Asynchronous Image Decoding & Lazy Loading:
+   Automatically tag all parsed markdown `<img>` elements with `loading="lazy"` and `decoding="async"` to eliminate synchronous rasterization stalls.
+================================================================================

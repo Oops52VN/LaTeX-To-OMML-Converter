@@ -1,0 +1,23 @@
+================================================================================
+CONVERSATION PROMPT RECORD
+================================================================================
+Timestamp (UTC+0): 2026-11-08 08:38:43 UTC+0
+AI Model: Gemini 3.8 Flash (Low)
+Execution Duration: ~75 seconds
+Token Consumption: ~18,500 tokens
+
+--------------------------------------------------------------------------------
+TRANSFORMED & NORMALIZED TECHNICAL SPECIFICATION (ENGLISH) - TURN 1
+--------------------------------------------------------------------------------
+User Request:
+"Enable text highlighting and copying functionality on the AI interpretation view (/luan-giai-ai)."
+
+Technical Context & Objectives:
+1. Investigation & Root Cause Identification:
+   - Identify CSS and JSX restrictions blocking user selection (user-select: none / Tailwind select-none) across the AI interpretation module (AiInterpretationGeminiView).
+2. Code Modification:
+   - Remove root-level select-none class from the top container of AiInterpretationGeminiView.jsx.
+   - Explicitly configure text selection properties (user-select: text !important) in AiInterpretationGeminiView.css for .gemini-reading-body and .gemini-ai-bubble.
+   - Maintain UI element protection for buttons and navigation items while providing styled Oriental theme selection highlights (::selection).
+3. Verification:
+   - Validate that text highlighting and clipboard copying operate seamlessly across desktop and mobile browsers.

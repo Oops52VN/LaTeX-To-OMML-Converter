@@ -1,0 +1,3649 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LaTeX to OMML Converter</title>
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <!-- Tailwind CSS -->
+    <script src="assets/tailwind.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="assets/fontawesome.min.css">
+    <!-- KaTeX for pixel-perfect mathematical typography -->
+    <link rel="stylesheet" href="assets/katex/katex.min.css">
+    <script src="assets/katex/katex.min.js"></script>
+    <!-- VS Code Standard Markdown CSS -->
+    <link rel="stylesheet" href="assets/vscode-markdown.css">
+    <!-- GitHub Markdown Fallback Styles for GFM tables and badges -->
+    <link rel="stylesheet" href="assets/github-markdown.min.css">
+    <!-- Highlight.js Syntax Highlighting Styles (Dark & Light) -->
+    <link rel="stylesheet" id="hljs-theme" href="assets/github-dark.min.css">
+    <!-- Highlight.js Syntax Highlighting Engine -->
+    <script src="assets/highlight.min.js"></script>
+    <!-- Markdown-It Engine (VS Code Standard Parser) -->
+    <script src="assets/markdown-it.min.js"></script>
+    <!-- Marked.js Fallback Engine -->
+    <script src="assets/marked.min.js"></script>
+    <!-- Mermaid.js Vector Diagram Engine -->
+    <script>
+        // Polyfill Array.prototype.at and String.prototype.at for older Chromium / QtWebEngine
+        if (!Array.prototype.at) {
+            Array.prototype.at = function(n) {
+                n = Math.trunc(n) || 0;
+                if (n < 0) n += this.length;
+                if (n < 0 || n >= this.length) return undefined;
+                return this[n];
+            };
+        }
+        if (!String.prototype.at) {
+            String.prototype.at = function(n) {
+                n = Math.trunc(n) || 0;
+                if (n < 0) n += this.length;
+                if (n < 0 || n >= this.length) return "";
+                return this.charAt(n);
+            };
+        }
+        if (typeof Object.hasOwn !== 'function') {
+            Object.hasOwn = function(obj, prop) {
+                if (obj === null || obj === undefined) return false;
+                return Object.prototype.hasOwnProperty.call(obj, prop);
+            };
+        }
+        if (typeof window.structuredClone !== 'function') {
+            window.structuredClone = function(obj) {
+                if (obj === undefined) return undefined;
+                return JSON.parse(JSON.stringify(obj));
+            };
+        }
+    </script>
+    <script src="assets/mermaid.min.js"></script>
+    <!-- Offline README Bundle Data -->
+    <script src="assets/readme_bundle.js"></script>
+    
+    <style>
+        /* Base Styling */
+        /* System fallback fonts for offline fast loading */
+        
+        /* 
+           5-Color Minimalist Design System with Dual Theme (Dark / Light)
+           Gentle background colors, easy on the eyes, natural contrast.
+        */
+        :root, [data-theme="dark"] {
+            /* Dark Mode (Default) - Eye-friendly, natural, non-glaring */
+            --bg-base: #141518;
+            --bg-surface: #1c1d22;
+            --bg-elevated: #24262c;
+            --border-subtle: #2d3037;
+            --border-hover: #3f424b;
+            --text-primary: #e6e8ec;
+            --text-muted: #8b909c;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --input-bg: #101114;
+            --item-hover: #1e2026;
+            --item-active: #232836;
+            --item-active-border: #3b82f6;
+            --scrollbar-thumb: #2d3037;
+            --scrollbar-thumb-hover: #3e424c;
+            --shadow-panel: 0 4px 16px rgba(0, 0, 0, 0.35);
+        }
+
+        [data-theme="light"] {
+            /* Light Mode - Soft silver-gray tone, warm, non-glaring */
+            --bg-base: #ebedf2;
+            --bg-surface: #ffffff;
+            --bg-elevated: #f1f3f7;
+            --border-subtle: #d3d7de;
+            --border-hover: #b4bac5;
+            --text-primary: #181c24;
+            --text-muted: #5e6573;
+            --accent: #2563eb;
+            --accent-hover: #1d4ed8;
+            --input-bg: #f8f9fa;
+            --item-hover: #f1f3f8;
+            --item-active: #eff6ff;
+            --item-active-border: #93c5fd;
+            --scrollbar-thumb: #cbd1db;
+            --scrollbar-thumb-hover: #9ca3af;
+            --shadow-panel: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            overflow: hidden !important;
+            box-sizing: border-box !important;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-base) !important;
+            color: var(--text-primary);
+            padding: 7px !important;
+            overflow: hidden !important;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        /* Minimalist Panels */
+        .glass-panel {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-panel);
+            transition: background 0.2s ease, border-color 0.2s ease;
+        }
+
+        /* Minimalist Buttons - responsive feedback */
+        .glass-button {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+            cursor: pointer;
+        }
+
+        .glass-button:hover:not(.active) {
+            background: var(--item-hover);
+            border-color: var(--border-hover);
+            color: var(--text-primary);
+        }
+
+        .glass-button:active {
+            transform: scale(0.98);
+        }
+
+        .glass-button.active {
+            background: var(--bg-surface);
+            border-color: var(--accent);
+            color: var(--accent);
+            box-shadow: 0 1px 4px rgba(37, 99, 235, 0.15);
+        }
+
+        /* Header App Title: Blends naturally into background */
+        .header-title-container {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            padding: 0 0.5rem 0 0;
+            flex-shrink: 0;
+            overflow: hidden;
+            width: calc(33% + 8px);
+            min-width: 288px;
+            max-width: calc(33% + 8px);
+        }
+
+        /* Dynamic Header Logo: Invert color between themes */
+        #header-app-logo {
+            filter: invert(1);
+            transition: filter 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        [data-theme="light"] #header-app-logo {
+            filter: none;
+        }
+
+        .header-title {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            user-select: none;
+            white-space: nowrap;
+        }
+
+                /* Smooth Page & View Transitions */
+        main {
+            gap: 8px;
+            transition: gap 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        main.no-sidebar-gap {
+            gap: 0px !important;
+        }
+
+        #sidebar {
+            transition: max-width 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                        min-width 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                        width 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                        opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                        margin 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            transform-origin: left center;
+            will-change: max-width, opacity, transform;
+        }
+        #sidebar.sidebar-collapsed {
+            max-width: 0 !important;
+            min-width: 0 !important;
+            width: 0 !important;
+            opacity: 0 !important;
+            transform: translateX(-24px) scaleX(0.96) !important;
+            margin-right: 0 !important;
+            padding-right: 0 !important;
+            padding-left: 0 !important;
+            border-width: 0 !important;
+            pointer-events: none !important;
+            overflow: hidden !important;
+        }
+        #sidebar.sidebar-collapsed + #main-section {
+            margin-left: 0 !important;
+        }
+
+        #main-section {
+            transition: width 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                        max-width 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        #preview-loader-overlay {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            box-sizing: border-box !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            z-index: 50 !important;
+            background: var(--bg-surface) !important;
+            transition: opacity 0.18s ease-out !important;
+        }
+
+        #preview-loader-overlay.loader-hidden {
+            display: none !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+
+        #preview-loader-overlay.loader-active {
+            display: flex !important;
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
+
+        /* Minimalist Large Spinner: 72px diameter, 2.5px thin stroke */
+        .minimal-spinner-container {
+            position: relative;
+            width: 72px;
+            height: 72px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .minimal-spinner-track {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            border: 2.5px solid var(--border-subtle);
+            box-sizing: border-box;
+        }
+
+        .minimal-spinner-blade {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            border: 2.5px solid transparent;
+            border-top-color: var(--accent);
+            box-sizing: border-box;
+            animation: minimal-spin-kf 0.9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+
+        @keyframes minimal-spin-kf {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* File Lists - No bullets, perfectly aligned */
+        #input-file-list, #output-file-list {
+            list-style: none !important;
+            list-style-type: none !important;
+            margin: 0 !important;
+            padding: 4px !important;
+        }
+
+        #input-file-list *, #output-file-list * {
+            list-style: none !important;
+            list-style-type: none !important;
+        }
+
+        .file-list-item {
+            list-style: none !important;
+            list-style-type: none !important;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+        }
+
+        .file-list-item::marker,
+        .file-list-item::before {
+            content: none !important;
+            display: none !important;
+        }
+
+        .tab-view-container {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            box-sizing: border-box !important;
+            transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
+        }
+        .tab-view-hidden {
+            display: none !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+        .tab-view-entering {
+            display: flex !important;
+            opacity: 0 !important;
+            transform: translateY(10px) scale(0.995) !important;
+            pointer-events: none !important;
+            z-index: 10;
+        }
+        .tab-view-active {
+            display: flex !important;
+            opacity: 1 !important;
+            transform: translateY(0) scale(1) !important;
+            pointer-events: auto !important;
+            z-index: 10;
+        }
+        .tab-view-exiting {
+            display: flex !important;
+            opacity: 0 !important;
+            transform: translateY(-8px) scale(0.995) !important;
+            pointer-events: none !important;
+            z-index: 5;
+        }
+
+        .nav-tab {
+            position: relative;
+            overflow: hidden;
+            transition: background 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                        border-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                        color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                        box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .nav-tab::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0%;
+            height: 2px;
+            background: var(--accent);
+            border-radius: 9999px;
+            transform: translateX(-50%);
+            transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+            opacity: 0;
+        }
+        .nav-tab.active::after {
+            width: 60%;
+            opacity: 1;
+        }
+        .nav-tab.active {
+            background: var(--bg-surface) !important;
+            border-color: var(--accent) !important;
+            color: var(--accent) !important;
+            box-shadow: 0 2px 10px rgba(37, 99, 235, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            transform: translateY(-1px);
+        }
+        .nav-tab:not(.active):hover {
+            background: var(--item-hover);
+            border-color: var(--border-hover);
+            color: var(--text-primary);
+            transform: translateY(-0.5px);
+        }
+        .nav-tab:active {
+            transform: scale(0.97) translateY(0);
+        }
+
+        /* Scrollbars */
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: var(--scrollbar-thumb);
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: var(--scrollbar-thumb-hover);
+        }
+        button:focus { outline: none !important; }
+
+        /* Theme Toggle Lever (Switch between Dark / Light mode) */
+        .theme-toggle-switch {
+            position: relative;
+            cursor: pointer;
+            border-radius: 9999px;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            outline: none !important;
+        }
+        .theme-toggle-switch:hover {
+            border-color: var(--accent) !important;
+            transform: scale(1.02);
+        }
+        .theme-toggle-switch:active #theme-switch-thumb {
+            transform: scale(0.92);
+        }
+
+        /* MathML Fallback Styling for QtWebEngine / Chromium */
+        math {
+            font-family: 'Cambria Math', 'STIX Two Math', 'Latin Modern Math', 'DejaVu Sans', serif;
+            font-size: 1.35rem;
+            color: var(--text-primary);
+            line-height: 1.4;
+        }
+        mfrac {
+            display: inline-flex !important;
+            flex-direction: column !important;
+            vertical-align: -0.6em !important;
+            text-align: center !important;
+            padding: 0 0.25em !important;
+        }
+        mfrac > :first-child {
+            border-bottom: 1.5px solid currentColor !important;
+            padding-bottom: 0.1em !important;
+        }
+        mfrac > :last-child {
+            padding-top: 0.1em !important;
+        }
+        msqrt {
+            display: inline-flex !important;
+            align-items: center !important;
+            border-top: 1.5px solid currentColor !important;
+            padding: 0 0.25em 0 0.1em !important;
+            margin-left: 0.75em !important;
+            position: relative !important;
+        }
+        msqrt::before {
+            content: "√" !important;
+            position: absolute !important;
+            left: -0.65em !important;
+            top: -0.2em !important;
+            font-size: 1.2em !important;
+        }
+        msup > :last-child {
+            font-size: 0.75em !important;
+            vertical-align: 0.5em !important;
+        }
+        msub > :last-child {
+            font-size: 0.75em !important;
+            vertical-align: -0.3em !important;
+        }
+        msubsup {
+            display: inline-flex !important;
+            align-items: center !important;
+        }
+        msubsup > :nth-child(2) {
+            font-size: 0.75em !important;
+            vertical-align: -0.3em !important;
+        }
+        msubsup > :nth-child(3) {
+            font-size: 0.75em !important;
+            vertical-align: 0.5em !important;
+        }
+        mtable {
+            display: inline-table !important;
+            vertical-align: middle !important;
+            text-align: center !important;
+            border-collapse: separate !important;
+            border-spacing: 0.6em 0.3em !important;
+            margin: 0 0.2em !important;
+        }
+        mtr {
+            display: table-row !important;
+        }
+        mtd {
+            display: table-cell !important;
+            padding: 0.2em 0.4em !important;
+            text-align: center !important;
+        }
+        mo {
+            padding: 0 0.15em !important;
+        }
+            /* Ensure VISUAL RENDER button text is always pure white in both dark and light modes */
+        #tab-res-visual {
+            color: #ffffff !important;
+        }
+
+        /* Ensure main-section matches header width exactly when sidebar is hidden */
+        #sidebar.hidden, #sidebar[hidden] {
+            display: none !important;
+        }
+        #sidebar.hidden + #main-section, #sidebar[hidden] + #main-section {
+            margin-left: 0 !important;
+        }
+
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+        /* Prominent Notice Banner on File Page (Replaces old Status Bar) */
+        .notice-badge-idle {
+            background: rgba(148, 163, 184, 0.08) !important;
+            border: 1px solid rgba(148, 163, 184, 0.25) !important;
+            color: #94a3b8 !important;
+        }
+        [data-theme="light"] .notice-badge-idle {
+            background: rgba(100, 116, 139, 0.08) !important;
+            border: 1px solid rgba(100, 116, 139, 0.25) !important;
+            color: #64748b !important;
+        }
+        .notice-badge-ready {
+            background: rgba(59, 130, 246, 0.12) !important;
+            border: 1px solid rgba(59, 130, 246, 0.4) !important;
+            color: #60a5fa !important;
+            box-shadow: 0 0 14px rgba(59, 130, 246, 0.18);
+        }
+        [data-theme="light"] .notice-badge-ready {
+            background: rgba(37, 99, 235, 0.1) !important;
+            border: 1px solid rgba(37, 99, 235, 0.35) !important;
+            color: #2563eb !important;
+            box-shadow: 0 0 14px rgba(37, 99, 235, 0.12);
+        }
+        .notice-badge-processing {
+            background: rgba(245, 158, 11, 0.12) !important;
+            border: 1px solid rgba(245, 158, 11, 0.4) !important;
+            color: #f59e0b !important;
+            box-shadow: 0 0 14px rgba(245, 158, 11, 0.18);
+        }
+        [data-theme="light"] .notice-badge-processing {
+            background: rgba(217, 119, 6, 0.12) !important;
+            border: 1px solid rgba(217, 119, 6, 0.4) !important;
+            color: #b45309 !important;
+            box-shadow: 0 0 14px rgba(217, 119, 6, 0.12);
+        }
+        .notice-badge-rendering {
+            background: rgba(168, 85, 247, 0.12) !important;
+            border: 1px solid rgba(168, 85, 247, 0.4) !important;
+            color: #c084fc !important;
+            box-shadow: 0 0 14px rgba(168, 85, 247, 0.18);
+        }
+        [data-theme="light"] .notice-badge-rendering {
+            background: rgba(147, 51, 234, 0.1) !important;
+            border: 1px solid rgba(147, 51, 234, 0.35) !important;
+            color: #9333ea !important;
+            box-shadow: 0 0 14px rgba(147, 51, 234, 0.12);
+        }
+        .notice-badge-done {
+            background: rgba(16, 185, 129, 0.12) !important;
+            border: 1px solid rgba(16, 185, 129, 0.4) !important;
+            color: #10b981 !important;
+            box-shadow: 0 0 14px rgba(16, 185, 129, 0.18);
+        }
+        [data-theme="light"] .notice-badge-done {
+            background: rgba(16, 185, 129, 0.12) !important;
+            border: 1px solid rgba(16, 185, 129, 0.4) !important;
+            color: #047857 !important;
+            box-shadow: 0 0 14px rgba(16, 185, 129, 0.12);
+        }
+        .notice-badge-error {
+            background: rgba(239, 68, 68, 0.12) !important;
+            border: 1px solid rgba(239, 68, 68, 0.4) !important;
+            color: #ef4444 !important;
+            box-shadow: 0 0 14px rgba(239, 68, 68, 0.18);
+        }
+        [data-theme="light"] .notice-badge-error {
+            background: rgba(220, 38, 38, 0.12) !important;
+            border: 1px solid rgba(220, 38, 38, 0.4) !important;
+            color: #dc2626 !important;
+            box-shadow: 0 0 14px rgba(220, 38, 38, 0.12);
+        }
+    
+        /* --- VS Code Official Markdown Preview Theme Integration --- */
+        #view-readme {
+            --vscode-font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", system-ui, "Ubuntu", "Droid Sans", sans-serif;
+            --vscode-editor-font-family: "Cascadia Code", Consolas, "Courier New", monospace;
+            font-family: var(--vscode-font-family);
+        }
+        [data-theme="dark"] #view-readme {
+            --vscode-editor-foreground: #cccccc;
+            --vscode-editor-background: transparent;
+            --vscode-textCodeBlock-background: rgba(255, 255, 255, 0.04);
+            --vscode-widget-border: var(--border-subtle);
+            --vscode-editorWidget-border: var(--border-subtle);
+            --fgColor-default: #cccccc;
+            --fgColor-muted: #8b949e;
+            --bgColor-default: transparent;
+            --bgColor-muted: rgba(255, 255, 255, 0.04);
+            --borderColor-default: var(--border-subtle);
+        }
+        [data-theme="light"] #view-readme {
+            --vscode-editor-foreground: #24292f;
+            --vscode-editor-background: transparent;
+            --vscode-textCodeBlock-background: rgba(0, 0, 0, 0.03);
+            --vscode-widget-border: var(--border-subtle);
+            --vscode-editorWidget-border: var(--border-subtle);
+            --fgColor-default: #24292f;
+            --fgColor-muted: #57606a;
+            --bgColor-default: transparent;
+            --bgColor-muted: rgba(0, 0, 0, 0.03);
+            --borderColor-default: var(--border-subtle);
+        }
+        #view-readme .vscode-markdown-content {
+            font-size: 14.5px;
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+        #view-readme .vscode-markdown-content h1,
+        #view-readme .vscode-markdown-content h2 {
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 0.3em;
+            margin-top: 1.5em;
+            margin-bottom: 0.8em;
+            font-weight: 600;
+        }
+        #view-readme .vscode-markdown-content h1 { font-size: 1.85em; }
+        #view-readme .vscode-markdown-content h2 { font-size: 1.4em; }
+        #view-readme .vscode-markdown-content h3 { font-size: 1.2em; font-weight: 600; margin-top: 1.2em; }
+        #view-readme .vscode-markdown-content pre {
+            background-color: var(--bg-surface) !important;
+            border: 1px solid var(--border-subtle) !important;
+            border-radius: 6px !important;
+            padding: 14px 18px !important;
+            margin: 16px 0 !important;
+        }
+        #view-readme .vscode-markdown-content code {
+            font-family: var(--vscode-editor-font-family);
+            font-size: 12.5px;
+        }
+        #view-readme .vscode-markdown-content :not(pre) > code {
+            font-family: var(--vscode-editor-font-family);
+            font-size: 12.5px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: var(--vscode-textCodeBlock-background);
+            border: 1px solid var(--border-subtle);
+            color: var(--accent);
+            word-break: break-word;
+        }
+        #view-readme .vscode-markdown-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 18px 0;
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        #view-readme .vscode-markdown-content th, 
+        #view-readme .vscode-markdown-content td {
+            border: 1px solid var(--border-subtle) !important;
+            padding: 9px 14px;
+        }
+        #view-readme .vscode-markdown-content th {
+            background-color: var(--bg-surface) !important;
+            font-weight: 600;
+        }
+        #view-readme .vscode-markdown-content tr:nth-child(2n) {
+            background-color: rgba(125, 125, 125, 0.04);
+        }
+                /* -------------------------------------------------------------
+           HEADER LOGO & AUTHOR AVATAR: Perfect Center Alignment
+           ------------------------------------------------------------- */
+        #view-readme .vscode-markdown-content div[align="center"] {
+            text-align: center !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            margin: 0 auto 20px auto !important;
+            width: 100% !important;
+        }
+
+        #view-readme .vscode-markdown-content div[align="center"] table,
+        #view-readme .vscode-markdown-content table[border="0"],
+        #view-readme .vscode-markdown-content table[style*="border: none"] {
+            width: auto !important;
+            max-width: fit-content !important;
+            margin: 0 auto 16px auto !important;
+            border: none !important;
+            background: transparent !important;
+            border-collapse: separate !important;
+            box-shadow: none !important;
+        }
+
+        #view-readme .vscode-markdown-content div[align="center"] table tr,
+        #view-readme .vscode-markdown-content table[border="0"] tr {
+            border: none !important;
+            background: transparent !important;
+        }
+
+        #view-readme .vscode-markdown-content div[align="center"] table td,
+        #view-readme .vscode-markdown-content table[border="0"] td {
+            border: none !important;
+            background: transparent !important;
+            padding: 8px 18px !important;
+            text-align: center !important;
+            vertical-align: top !important;
+        }
+
+        #view-readme .vscode-markdown-content div[align="center"] table img {
+            display: block !important;
+            margin: 0 auto 6px auto !important;
+            max-width: 135px !important;
+            height: auto !important;
+        }
+
+        #view-readme .vscode-markdown-content div[align="center"] table sub,
+        #view-readme .vscode-markdown-content table sub,
+        #view-readme .vscode-markdown-content sub {
+            display: block !important;
+            line-height: 1.6 !important;
+            height: auto !important;
+            min-height: 22px !important;
+            font-size: 13px !important;
+            margin-top: 8px !important;
+            vertical-align: baseline !important;
+            color: var(--text-muted) !important;
+            overflow: visible !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+
+        /* -------------------------------------------------------------
+           CONTENT JUSTIFY ALIGNMENT (100% English Standard)
+           ------------------------------------------------------------- */
+        #view-readme .vscode-markdown-content p:not([align="center"]):not(.readme-badges-cluster) {
+            text-align: justify !important;
+            text-justify: inter-word !important;
+            hyphens: auto;
+        }
+
+        #view-readme .vscode-markdown-content li {
+            text-align: justify;
+        }
+
+        #view-readme .vscode-markdown-content div[align="center"] p,
+        #view-readme .vscode-markdown-content .readme-badges-cluster {
+            text-align: center !important;
+        }
+
+        /* README Badges & Images: Overrides Tailwind Preflight display:block to prevent vertical stacking */
+        #view-readme .vscode-markdown-content img {
+            border-radius: 4px;
+            max-width: 100%;
+            height: auto;
+            display: inline-block !important;
+            vertical-align: middle !important;
+        }
+        #view-readme .vscode-markdown-content a > img {
+            display: inline-block !important;
+            vertical-align: middle !important;
+            margin: 3px 2px !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        #view-readme .vscode-markdown-content a:hover > img {
+            transform: translateY(-1.5px);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+        }
+        /* Flex ribbon container for consecutive badge links */
+        #view-readme .vscode-markdown-content .readme-badges-cluster,
+        #view-readme .vscode-markdown-content p:has(> a > img) {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            justify-content: center !important;
+            align-items: center !important;
+            gap: 6px 8px !important;
+            margin: 10px auto !important;
+            text-align: center !important;
+            line-height: normal !important;
+        }
+        #view-readme .vscode-markdown-content .readme-badges-cluster a,
+        #view-readme .vscode-markdown-content p:has(> a > img) a {
+            display: inline-flex !important;
+            align-items: center !important;
+            text-decoration: none !important;
+            margin: 0 !important;
+        }
+        #view-readme .vscode-markdown-content .readme-badges-cluster img,
+        #view-readme .vscode-markdown-content p:has(> a > img) img {
+            display: inline-block !important;
+            margin: 0 !important;
+            vertical-align: middle !important;
+        }
+        #view-readme .vscode-markdown-content a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        #view-readme .vscode-markdown-content a:hover {
+            text-decoration: underline;
+        }
+        #view-readme .vscode-markdown-content blockquote {
+            border-left: 4px solid var(--accent);
+            padding: 6px 16px;
+            color: var(--text-muted);
+            background: rgba(59, 130, 246, 0.04);
+            border-radius: 0 6px 6px 0;
+            margin: 16px 0;
+        }
+
+        /* -------------------------------------------------------------
+           FULLSCREEN MERMAID DIAGRAMS & VECTOR SVG CANVAS
+           ------------------------------------------------------------- */
+        .readme-mermaid-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 28px 20px 20px 20px;
+            margin: 24px 0;
+            overflow: hidden;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .readme-mermaid-container:hover {
+            border-color: var(--accent);
+            box-shadow: 0 6px 24px rgba(59, 130, 246, 0.12);
+        }
+        .readme-mermaid-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: default;
+            padding: 6px 0;
+            -webkit-overflow-scrolling: touch;
+        }
+        /* -------------------------------------------------------------
+           HIGH-QUALITY CRISP RENDERING FOR IMAGES & DIAGRAMS
+           (Zoom & Click-to-view disabled for all images)
+           ------------------------------------------------------------- */
+        #view-readme .vscode-markdown-content img {
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            border-radius: 6px;
+            max-width: 100%;
+            height: auto;
+            object-fit: scale-down;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            cursor: default !important; /* Strictly disable zoom cursor on images */
+            user-select: none;
+        }
+
+        #view-readme .vscode-markdown-content p > img:not([src*="shield"]):not([src*="logo"]):not([src*="avatar"]) {
+            display: block !important;
+            margin: 22px auto !important;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            border-radius: 10px !important;
+            cursor: default !important;
+        }
+
+        #view-readme .vscode-markdown-content div[align="center"] table img,
+        #view-readme .vscode-markdown-content div[align="center"] img {
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        .readme-mermaid-container svg {
+            min-width: 700px;
+            max-width: 100%;
+            height: auto;
+            text-rendering: geometricPrecision;
+            shape-rendering: geometricPrecision;
+            filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.04));
+        }
+        
+
+        /* -------------------------------------------------------------
+           HARDWARE GPU ACCELERATED VIEWPORTS & COMPOSITING LAYERS
+           ------------------------------------------------------------- */
+        #readme-content-scroll,
+        #iso-content-scroll,
+        #view-latex,
+        #view-image,
+        #input-file-list,
+        #output-file-list {
+            transform: translateZ(0);
+            will-change: scroll-position;
+            contain: paint layout;
+            backface-visibility: hidden;
+        }
+
+    </style>
+</head>
+<body class="h-screen w-screen flex flex-col p-2 space-y-2 text-sm selection:bg-blue-600 selection:text-white overflow-hidden">
+    
+
+    <!-- Top Header Bar -->
+    <header class="flex-none h-12 flex items-center px-3 w-full overflow-x-auto scrollbar-hide glass-panel rounded-xl relative">
+        
+        <!-- 1. App Title (Align end point with sidebar offset) -->
+        <div id="header-title-container" class="header-title-container pr-2 flex items-center shrink-0 h-full">
+            <img id="header-app-logo" src="assets/logo.png" alt="App Logo" class="h-full aspect-square object-contain rounded-none shrink-0 select-none mr-2.5" style="height: 100%; max-height: 100%; border: none; outline: none; box-shadow: none; border-radius: 0 !important;">
+            <h1 class="header-title truncate">
+                LATEX TO OMML CONVERTER
+            </h1>
+        </div>
+
+        <!-- 2. Action Button Cluster (Starts precisely at start of preview container) -->
+        <div id="header-actions-cluster" class="flex items-center space-x-2 shrink-0">
+            <!-- Button 1: FILE -->
+            <button id="tab-file" class="nav-tab glass-button active h-9 flex items-center justify-center px-4 rounded-lg shrink-0 font-medium text-xs whitespace-nowrap" onclick="switchTab('file')">
+                <i class="fa-solid fa-file-word mr-2 text-sm text-blue-500"></i>
+                FILE
+            </button>
+            
+            <!-- Button 2: LATEX -->
+            <button id="tab-latex" class="nav-tab glass-button h-9 flex items-center justify-center px-4 rounded-lg shrink-0 font-medium text-xs whitespace-nowrap" onclick="switchTab('latex')">
+                <i class="fa-solid fa-code mr-2 text-sm"></i>
+                LATEX
+            </button>
+
+            <!-- Button 3: IMAGE -->
+            <button id="tab-image" class="nav-tab glass-button h-9 flex items-center justify-center px-4 rounded-lg shrink-0 font-medium text-xs whitespace-nowrap" onclick="switchTab('image')">
+                <i class="fa-regular fa-image mr-2 text-sm"></i>
+                IMAGE
+            </button>
+
+            <!-- Button 4: ISO 80000 STANDARD -->
+            <button id="tab-iso" class="nav-tab glass-button h-9 flex items-center justify-center px-4 rounded-lg shrink-0 font-medium text-xs whitespace-nowrap" onclick="switchTab('iso')" title="ISO 80000 Digital Technical Standards (Formatting of characters, quantities, and mathematical formulas)">
+                <img src="assets/iso.svg" alt="ISO" class="w-6 h-6 object-contain mr-2.5 shrink-0">
+                ISO 80000
+            </button>
+
+            <!-- Button 5: ABOUT -->
+            <button id="tab-readme" class="nav-tab glass-button h-9 flex items-center justify-center px-4 rounded-lg shrink-0 font-medium text-xs whitespace-nowrap" onclick="switchTab('readme')" title="About & Technical Documentation (README.md)">
+                <i class="fa-solid fa-circle-info mr-2 text-sm"></i>
+                ABOUT
+            </button>
+        </div>
+
+
+
+        <!-- 3. Right Control Cluster: Dark/Light Mode Toggle + RELOAD -->
+        <div class="ml-auto flex items-center space-x-3 shrink-0">
+            <!-- Dark/Light Mode Toggle Switch -->
+            <div class="flex items-center">
+                <button id="btn-theme-toggle" onclick="toggleTheme()" 
+                    class="theme-toggle-switch relative rounded-full transition-all duration-300 focus:outline-none cursor-pointer select-none border shrink-0"
+                    style="width: 52px; height: 28px; background: var(--input-bg); border-color: var(--border-subtle); padding: 0;"
+                    title="Toggle Dark / Light Mode"
+                    role="switch"
+                    aria-checked="false">
+                    
+                    <!-- Sliding Lever / Thumb Knob (Keep single icon inside switch to prevent overlap) -->
+                    <span id="theme-switch-thumb"
+                        class="pointer-events-none absolute inline-flex items-center justify-center rounded-full transition-all duration-300 ease-out shadow-sm"
+                        style="top: 2px; left: 2px; width: 22px; height: 22px; background: #ffffff; transform: translateX(0px);">
+                        <i id="theme-toggle-icon" class="fa-solid fa-moon text-[11px] text-blue-600 transition-all duration-300"></i>
+                    </span>
+                    <span id="theme-toggle-label" class="sr-only">DARK</span>
+                </button>
+            </div>
+
+            <!-- Right Action Button: RELOAD -->
+            <button onclick="if(backend) backend.reload(); else window.location.reload();" class="glass-button h-9 flex items-center justify-center px-3.5 rounded-lg shrink-0 font-medium hover:text-red-400 hover:border-red-400/40 text-xs whitespace-nowrap transition-colors" title="Reload Application">
+                <i class="fa-solid fa-rotate-right mr-1.5 text-xs"></i>
+                RELOAD
+            </button>
+        </div>
+
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="w-full flex-1 flex space-x-2 overflow-hidden relative">
+        
+        <!-- Left Sidebar (Controls) -->
+        <aside id="sidebar" class="flex-1 max-w-[33%] min-w-[280px] flex flex-col space-y-2 relative transition-all duration-200">
+            
+            <!-- Top Controls Panel -->
+            <div class="glass-panel flex-1 rounded-xl p-3.5 flex flex-col space-y-3">
+                <button id="btn-select-files" onclick="if(backend) backend.select_files()" class="w-full py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white font-medium text-xs transition-colors flex justify-center items-center space-x-2 shadow-sm">
+                    <i class="fa-solid fa-file-word mr-1.5"></i> <span>Select Word Files (.docx)</span>
+                </button>
+                
+                <button id="btn-start-batch" onclick="startBatchConversion()" class="hidden w-full py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white font-medium text-xs transition-colors justify-center items-center space-x-2 shadow-sm">
+                    <i class="fa-solid fa-play mr-1.5"></i> <span>Start Batch Conversion</span>
+                </button>
+                
+                <button id="btn-open-folder" onclick="if(backend) backend.open_folder()" class="hidden w-full py-2.5 rounded-lg glass-button active:scale-[0.98] font-medium text-xs transition-colors justify-center items-center space-x-2 shadow-sm">
+                    <i class="fa-solid fa-folder-open mr-1.5"></i> <span>Open Output Folder</span>
+                </button>
+                
+                <!-- File lists -->
+                <div class="flex-1 flex flex-col space-y-2 overflow-hidden mt-1">
+                    <div class="text-[11px] font-semibold uppercase tracking-wider" style="color: var(--text-muted);">Input Files:</div>
+                    <div id="input-file-list" class="flex-1 overflow-y-auto custom-scrollbar rounded-lg p-1 min-h-[60px] border" style="background: var(--input-bg); border-color: var(--border-subtle);"></div>
+                    <div class="text-[11px] font-semibold uppercase tracking-wider mt-2" style="color: var(--text-muted);">Output Files:</div>
+                    <div id="output-file-list" class="flex-1 overflow-y-auto custom-scrollbar rounded-lg p-1 min-h-[60px] border" style="background: var(--input-bg); border-color: var(--border-subtle);"></div>
+                </div>
+            </div>
+
+            <!-- Prominent Notice Banner (Replaces old Status Bar) -->
+            <div id="file-notice-container" class="glass-panel rounded-xl p-3 flex items-center justify-center min-h-[58px]">
+                <div id="file-notice-badge" class="notice-badge-idle w-full py-2.5 px-3 rounded-lg flex items-center justify-center text-center text-[11px] font-bold tracking-wide uppercase transition-all duration-300">
+                    <i id="file-notice-icon" class="fa-solid fa-folder-open mr-2 text-sm shrink-0"></i>
+                    <span id="file-notice-text" class="leading-snug select-none">NO FILES LOADED. PLEASE ADD A FILE TO BEGIN.</span>
+                </div>
+            </div>
+
+        </aside>
+
+        <!-- Right Content Area (Main View / Preview Frame) -->
+        <section id="main-section" class="glass-panel flex-1 w-full rounded-xl flex flex-col relative overflow-hidden">
+            
+            <!-- Default View (Only shown on FILE tab when no document preview) -->
+            <div id="view-default" class="tab-view-container tab-view-active flex flex-col items-center justify-center space-y-4 relative z-10 pointer-events-none" style="color: var(--text-muted); opacity: 1; transform: scale(1) translateY(0);">
+                <i id="default-shield-icon" class="fa-solid fa-shield-halved text-7xl transition-all duration-500 ease-out transform" style="opacity: 0.5; transform: scale(1);"></i>
+                <p id="default-secure-text" class="text-xs tracking-wider font-medium uppercase transition-all duration-500 ease-out" style="opacity: 0.8; transform: translateY(0);">
+                    Your data is guaranteed absolutely secure
+                </p>
+            </div>
+            
+            <!-- PDF View (Only shown on FILE tab when previewing document) -->
+            <div id="view-pdf" class="tab-view-container tab-view-hidden hidden rounded-xl overflow-hidden flex flex-col items-center justify-center relative" style="background: var(--input-bg);">
+                <iframe id="pdf-viewer-frame" class="w-full h-full border-none rounded-xl" src="about:blank"></iframe>
+            </div>
+
+            <!-- Central Preview Loading Overlay (Minimalist Large Indicator, No Blur) -->
+            <div id="preview-loader-overlay" class="loader-hidden hidden pointer-events-none opacity-0">
+                <div class="flex flex-col items-center justify-center select-none text-center px-6" id="preview-loader-content">
+                    <!-- Minimalist Large Spinner (72px diameter, 2.5px ultra-thin stroke) -->
+                    <div class="minimal-spinner-container">
+                        <div class="minimal-spinner-track"></div>
+                        <div class="minimal-spinner-blade"></div>
+                    </div>
+                    
+                    <!-- Dynamic Status Text: "Processing..." / "Rendering preview..." -->
+                    <div id="preview-loader-text" class="text-base font-semibold tracking-tight transition-opacity duration-150" style="color: var(--text-primary);">
+                        Processing...
+                    </div>
+                    
+                    <div id="preview-loader-subtext" class="text-xs font-normal mt-1.5 tracking-normal" style="color: var(--text-muted);">
+                        Please wait a moment
+                    </div>
+                </div>
+            </div>
+
+            <!-- LATEX View (50/50 Split Interactive LaTeX Studio) -->
+            <div id="view-latex" class="tab-view-container tab-view-hidden hidden flex p-3 space-x-3 overflow-hidden">
+                
+                <!-- Left 50%: LaTeX Source Input -->
+                <div class="flex-1 flex flex-col space-y-2.5 h-full overflow-hidden">
+                    <div class="flex justify-between items-center px-1">
+                        <h3 class="font-semibold text-xs uppercase tracking-wider flex items-center" style="color: var(--text-primary);">
+                            <i class="fa-solid fa-code text-blue-500 mr-2"></i> LaTeX Source Code
+                        </h3>
+                        <div class="flex space-x-1.5">
+                            <button onclick="clearLatexInput()" class="glass-button px-2.5 py-1 rounded-lg hover:text-red-400 transition-colors text-[11px] font-medium flex items-center" title="Clear text">
+                                <i class="fa-solid fa-trash-can mr-1"></i> Clear
+                            </button>
+                            <button onclick="executeLatexConversion()" id="btn-convert-latex" class="py-1 px-3.5 rounded-lg bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-[11px] font-semibold uppercase tracking-wider transition-colors flex items-center shadow-sm">
+                                <i class="fa-solid fa-bolt mr-1.5"></i> Convert
+                            </button>
+                        </div>
+                    </div>
+
+
+                    <!-- Textarea Editor -->
+                    <div class="flex-1 rounded-xl border overflow-hidden relative flex flex-col" style="background: var(--input-bg); border-color: var(--border-subtle);">
+                        <textarea id="latex-input-text" oninput="onLatexInputChange()" class="w-full h-full bg-transparent p-3 font-mono text-xs focus:outline-none resize-none custom-scrollbar leading-relaxed" style="color: var(--text-primary);" placeholder="Enter LaTeX formula here (e.g. x = \frac{-b \pm \sqrt{b^2-4ac}}{2a})..."></textarea>
+                    </div>
+
+                    <!-- Footer Info -->
+                    <div class="flex justify-between items-center text-[10px] px-1 shrink-0" style="color: var(--text-muted);">
+                        <span id="latex-char-count">0 characters</span>
+                        <label class="flex items-center space-x-1.5 cursor-pointer hover:opacity-100 opacity-80">
+                            <input type="checkbox" id="auto-convert-toggle" onchange="toggleAutoConvert()" checked class="rounded border-slate-400 text-blue-600 focus:ring-0 w-3 h-3">
+                            <span>Live Convert</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Vertical Separator -->
+                <div class="w-px my-2" style="background: var(--border-subtle);"></div>
+
+                <!-- Right 50%: Preview & OMML XML Result -->
+                <div class="flex-1 flex flex-col space-y-2.5 h-full overflow-hidden">
+                    <div class="flex justify-between items-center px-1">
+                        <div class="flex space-x-1 p-0.5 rounded-lg border" style="background: var(--bg-elevated); border-color: var(--border-subtle);">
+                            <button onclick="setLatexResultTab('visual')" id="tab-res-visual" class="px-3 py-1 rounded-md bg-blue-600 text-white text-[11px] font-semibold uppercase tracking-wider shadow-xs" style="color: #ffffff !important;">VISUAL RENDER</button>
+                        </div>
+                        <div class="flex space-x-1.5">
+                            <button onclick="copyOmmlCode()" id="btn-copy-omml" class="px-3 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-[11px] font-semibold uppercase tracking-wider transition-colors flex items-center shadow-xs" style="color: #ffffff !important; background-color: #059669;" title="Copy OMML XML to clipboard">
+                                <i class="fa-solid fa-copy mr-1.5 text-white"></i> COPY OMML
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Display Area -->
+                    <div class="flex-1 rounded-xl border overflow-hidden relative flex flex-col p-3" style="background: var(--input-bg); border-color: var(--border-subtle);">
+                        <!-- Visual Render Mode -->
+                        <div id="latex-visual-container" class="w-full h-full flex flex-col items-center justify-center overflow-auto custom-scrollbar">
+                            <div id="latex-visual-render" class="text-lg font-normal p-4 text-center flex flex-col items-center justify-center overflow-auto custom-scrollbar" style="color: var(--text-primary); font-weight: normal;">
+                                <span class="text-xs uppercase tracking-widest" style="color: var(--text-muted);">Live rendered equation preview will appear here</span>
+                            </div>
+                        </div>
+
+                        <!-- OMML Code Mode -->
+                        <div id="latex-omml-container" class="hidden w-full h-full flex-col overflow-hidden">
+                            <textarea id="latex-omml-code" readonly class="w-full h-full bg-transparent p-2 font-mono text-[11px] focus:outline-none resize-none custom-scrollbar leading-snug" style="color: var(--text-primary);" placeholder="OMML XML code will be generated here..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Toast / Notification bar -->
+                    <div id="latex-status-toast" class="h-6 flex items-center justify-between text-[11px] px-2 shrink-0" style="color: var(--text-muted);">
+                        <span id="latex-toast-text" class="truncate font-mono">Ready</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- IMAGE View (Interactive Formula Image Studio) -->
+            <div id="view-image" class="tab-view-container tab-view-hidden hidden flex p-3 space-x-3 overflow-hidden">
+                
+                <!-- Left 50%: Image Input -->
+                <div class="flex-1 flex flex-col space-y-2.5 h-full overflow-hidden">
+                    <div class="flex justify-between items-center px-1">
+                        <h3 class="font-semibold text-xs uppercase tracking-wider flex items-center" style="color: var(--text-primary);">
+                            <i class="fa-regular fa-image text-blue-500 mr-2"></i> Formula Image Input
+                        </h3>
+                        <div class="flex space-x-1.5">
+                            <button onclick="clearImageStudio()" class="glass-button px-2.5 py-1 rounded-lg hover:text-red-400 transition-colors text-[11px] font-medium flex items-center" title="Clear image">
+                                <i class="fa-solid fa-trash-can mr-1"></i> Clear
+                            </button>
+                            <button onclick="triggerImageOCR()" id="btn-ocr-image" class="py-1 px-3.5 rounded-lg bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-[11px] font-semibold uppercase tracking-wider transition-colors flex items-center shadow-sm" title="Scan and Convert Formula to OMML">
+                                <i class="fa-solid fa-bolt mr-1.5"></i> SCAN
+                            </button>
+                        </div>
+                    </div>
+                    <input type="file" id="image-file-input" accept="image/*" class="hidden" onchange="handleImageFileSelect(event)">
+
+                    <!-- Main Area: Dropzone or Image Preview -->
+                    <div class="flex-1 rounded-xl border overflow-hidden relative flex flex-col p-3" style="background: var(--input-bg); border-color: var(--border-subtle);">
+                        
+                        <!-- Dropzone (When no image is loaded) -->
+                        <div id="image-dropzone" onclick="triggerImageFileInput()" class="w-full h-full border-2 border-dashed rounded-lg flex flex-col items-center justify-center p-6 text-center cursor-pointer transition-colors" style="border-color: var(--border-subtle);">
+                            <i class="fa-solid fa-cloud-arrow-up text-4xl mb-3 opacity-40" style="color: var(--text-muted);"></i>
+                            <p class="font-semibold text-xs uppercase tracking-wider mb-1" style="color: var(--text-primary);">Drag & Drop formula image here</p>
+                            <p class="text-[11px] mb-3" style="color: var(--text-muted);">or Paste from clipboard (Ctrl+V)</p>
+                            
+                            <!-- Green button to choose image files -->
+                            <button type="button" onclick="event.stopPropagation(); triggerImageFileInput();" class="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-xs font-semibold uppercase tracking-wider transition-colors flex items-center shadow-sm cursor-pointer" style="background-color: #059669; color: #ffffff !important;">
+                                <i class="fa-solid fa-folder-open mr-1.5"></i> PNG, JPG, BMP, WEBP
+                            </button>
+                            
+                            <p class="text-[10px] italic mt-2.5" style="color: var(--text-muted);">
+                                * Recommended: 1 formula per image for optimal recognition
+                            </p>
+                        </div>
+
+                        <!-- Image Loaded View (No original/enhanced tabs, no dimensions) -->
+                        <div id="image-loaded-view" class="hidden w-full h-full flex flex-col overflow-hidden">
+                            <div class="flex-1 rounded-lg border overflow-auto p-2 flex items-center justify-center" style="background: var(--bg-surface); border-color: var(--border-subtle);">
+                                <img id="image-preview-original" class="max-w-full max-h-full object-contain rounded shadow-sm" alt="Formula Image">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Footer Info with Auto-convert Checkbox -->
+                    <div class="flex justify-between items-center text-[10px] px-1 shrink-0" style="color: var(--text-muted);">
+                        <label class="flex items-center space-x-1.5 cursor-pointer hover:opacity-100 opacity-90 select-none">
+                            <input type="checkbox" id="auto-convert-image-toggle" checked class="rounded border-slate-400 text-blue-600 focus:ring-0 w-3.5 h-3.5">
+                            <span style="color: var(--text-primary); font-size: 11px;">Live Convert</span>
+                        </label>
+                        <span class="opacity-70 font-mono">Ctrl+V to paste</span>
+                    </div>
+                </div>
+
+                <!-- Vertical Separator -->
+                <div class="w-px my-2" style="background: var(--border-subtle);"></div>
+
+                <!-- Right 50%: Formula LaTeX & OMML Output -->
+                <div class="flex-1 flex flex-col space-y-2.5 h-full overflow-hidden">
+                    <div class="flex justify-between items-center px-1">
+                        <!-- Two separate blocks: VISUAL RENDER and LATEX CODE -->
+                        <div class="flex space-x-2">
+                            <button onclick="setImageResultTab('visual')" id="tab-img-res-visual" class="px-3 py-1 rounded-lg bg-blue-600 text-white text-[11px] font-semibold uppercase tracking-wider shadow-xs transition-colors" style="color: #ffffff !important;">VISUAL RENDER</button>
+                            <button onclick="setImageResultTab('latex')" id="tab-img-res-latex" class="glass-button px-3 py-1 rounded-lg text-[11px] font-semibold uppercase tracking-wider transition-colors" style="color: var(--text-muted);">LATEX CODE</button>
+                        </div>
+                        <div class="flex space-x-1.5">
+                            <button onclick="copyImageOmmlCode()" id="btn-copy-img-omml" class="px-3 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-[11px] font-semibold uppercase tracking-wider transition-colors flex items-center shadow-xs" style="color: #ffffff !important; background-color: #059669;" title="Copy OMML XML to clipboard">
+                                <i class="fa-solid fa-copy mr-1.5 text-white"></i> COPY OMML
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Display Area with Loading Spinner -->
+                    <div class="flex-1 rounded-xl border overflow-hidden relative flex flex-col" style="background: var(--input-bg); border-color: var(--border-subtle);">
+                        <!-- Right Column Loading Spinner Overlay (Active during entire OCR processing) -->
+                        <div id="img-loading-spinner" class="hidden" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 50; display: none; flex-direction: column; align-items: center; justify-content: center; background: var(--input-bg); border-radius: inherit; pointer-events: all;">
+                            <div class="flex flex-col items-center justify-center text-center select-none p-6">
+                                <div class="animate-spin" style="width: 42px; height: 42px; border: 3.5px solid var(--border-subtle); border-top-color: var(--accent); border-radius: 9999px;"></div>
+                                <div class="text-xs font-semibold tracking-wider uppercase mt-4" style="color: var(--text-primary); letter-spacing: 0.08em;">PROCESSING & RECOGNIZING FORMULA...</div>
+                                <div class="text-[11px] mt-1.5 font-mono" style="color: var(--text-muted); opacity: 0.75;">Extracting mathematical structure</div>
+                            </div>
+                        </div>
+
+                        <!-- Visual Render Mode -->
+                        <div id="img-visual-container" class="w-full h-full flex flex-col items-center justify-center p-3 overflow-auto custom-scrollbar">
+                            <div id="img-visual-render" class="text-lg font-normal p-4 text-center flex flex-col items-center justify-center overflow-auto custom-scrollbar" style="color: var(--text-primary); font-weight: normal;">
+                                <span class="text-xs uppercase tracking-widest" style="color: var(--text-muted);">Rendered equation will appear here</span>
+                            </div>
+                        </div>
+
+                        <!-- LaTeX Input/Edit Mode -->
+                        <div id="img-latex-container" class="hidden w-full h-full flex-col overflow-hidden p-2">
+                            <textarea id="img-latex-code" oninput="onImageLatexChange()" class="w-full h-full bg-transparent p-2 font-mono text-xs focus:outline-none resize-none custom-scrollbar leading-relaxed" style="color: var(--text-primary);" placeholder="LaTeX expression (edit here to live update OMML)..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Toast / Notification bar -->
+                    <div id="img-status-toast" class="h-6 flex items-center justify-between text-[11px] px-2 shrink-0" style="color: var(--text-muted);">
+                        <span id="img-toast-text" class="truncate font-mono">Ready to process formula image</span>
+                        <span id="img-render-time" class="font-mono text-emerald-500 font-semibold"></span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 5. View: ISO 80000 Technical Documentation View -->
+            <div id="view-iso" class="tab-view-container tab-view-hidden hidden flex h-full w-full overflow-hidden rounded-xl border" style="background: var(--bg-surface); border-color: var(--border-subtle);">
+                
+<!-- Full-Width Technical Document Canvas -->
+
+                <!-- Right Main Content Area (Times New Roman, 12pt, 1.3 line height, comfortable letter spacing, no bullet points) -->
+                <main id="iso-content-scroll" class="flex-1 h-full overflow-y-auto custom-scrollbar relative" style="background: var(--input-bg); font-family: 'Times New Roman', Times, serif; font-size: 12pt; line-height: 1.3; letter-spacing: 0.025em; text-align: justify; color: var(--text-primary); -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain;">
+                    <!-- Reading Container with Optimal Ergonomic Width -->
+                    <div class="max-w-5xl mx-auto py-8 px-6 md:px-12 space-y-8">
+                    
+                    <!-- Section 1: Scope & Standard Architecture -->
+                    <section id="iso-overview" class="p-8 rounded-xl border glass-panel space-y-5">
+                        <div class="flex flex-row items-center justify-between pb-4 border-b gap-5" style="border-color: var(--border-subtle);">
+                            <div class="flex items-center space-x-4 flex-1 min-w-0">
+                                <img src="assets/iso.svg" alt="ISO Logo" class="w-16 h-16 object-contain shrink-0">
+                                <div class="flex-1 min-w-0 pr-2">
+                                    <h1 class="text-xl font-bold tracking-normal uppercase leading-tight" style="color: var(--text-primary); text-align: left;">INTERNATIONAL STANDARD ISO/IEC 80000</h1>
+                                    <div class="text-sm text-muted leading-snug mt-1" style="text-align: left;">Quantities and units — Comprehensive Specification for Natural Sciences and Technology</div>
+                                </div>
+                            </div>
+                            <!-- Stacked Portal Buttons (Stacked vertically to preserve maximal width for title) -->
+                            <div class="flex flex-col space-y-1.5 shrink-0 self-center">
+                                <button onclick="openExternalUrl('https://www.iso.org/obp/ui/#iso:std:iso:80000:-1:ed-2:v1:en')" class="glass-button px-3.5 py-1.5 text-xs font-semibold rounded-lg text-primary flex items-center justify-center transition-all hover:border-blue-500/40 w-44 shadow-2xs" style="font-family: system-ui, sans-serif;" title="Open official ISO 80000-1 online browsing platform">
+                                    <i class="fa-solid fa-external-link mr-1.5 text-xs text-blue-500"></i>
+                                    ISO 80000-1 Portal
+                                </button>
+                                <button onclick="openExternalUrl('https://www.iso.org/obp/ui/#iso:std:iso:80000:-2:ed-2:v2:en')" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center shadow-xs transition-all active:scale-95 w-44" style="color: #ffffff !important; font-family: system-ui, sans-serif;" title="Open official ISO 80000-2 online browsing platform">
+                                    <i class="fa-solid fa-arrow-up-right-from-square mr-1.5 text-xs"></i>
+                                    ISO 80000-2 Portal
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <p>
+                            The international standard ISO 80000, jointly produced by the International Organization for Standardization and the International Electrotechnical Commission, provides universal specifications for quantities, units, symbols, and mathematical styling in scientific publications. Its primary purpose is to eliminate ambiguity across disciplines, ensure semantic clarity, and guarantee precise interchange of scientific data across digital platforms.
+                        </p>
+                        <p>
+                            Part 1 covers general principles, defining the mathematical nature of physical quantities, the architecture of coherent systems of units, and foundational typographical rules. Part 2 standardizes mathematical signs, logic, operators, intervals, functions, coordinates, vectors, and matrices.
+                        </p>
+                    </section>
+
+                    <!-- Section 2: Clause 4: Variables, Functions and Operators -->
+                    <section id="iso-clause4" class="p-8 rounded-xl border glass-panel space-y-5">
+                        <div class="pb-3 border-b" style="border-color: var(--border-subtle);">
+                            <h2 class="text-base font-bold uppercase tracking-wide" style="color: var(--text-primary);">Clause 4: Variables, Functions and Operators</h2>
+                            <div class="text-xs text-muted">Normative verbatim text excerpted from ISO 80000-2:2019, Clause 4</div>
+                        </div>
+                        
+                        <div class="p-6 rounded-lg border-l-4 border-blue-500 bg-item-hover/40 space-y-4">
+                            <p class="text-base">
+                                It is customary to use different sorts of letters for different sorts of entities, for example <span class="italic font-bold">x</span> and <span class="italic font-bold">y</span> for numbers or elements of some given set, <span class="italic font-bold">f</span> and <span class="italic font-bold">g</span> for functions, and so forth. This custom makes mathematical formulas far more readable and assists fundamentally in setting up an unambiguous context.
+                            </p>
+                            <p>
+                                Variables such as <span class="italic font-semibold">x</span> and <span class="italic font-semibold">y</span>, as well as running numbers such as the index <span class="italic font-semibold">i</span> in the summation of <span class="italic">x<sub>i</sub></span>, are printed in sloping or italic type.
+                            </p>
+                            <p>
+                                Parameters such as <span class="italic font-semibold">a</span> and <span class="italic font-semibold">b</span>, which may be considered as constant in a particular context, are likewise printed in sloping or italic type.
+                            </p>
+                            <p>
+                                The same italic convention applies to functions in general, such as <span class="italic font-semibold">f</span> and <span class="italic font-semibold">g</span>.
+                            </p>
+                            <p>
+                                An explicitly defined function that does not depend on the shifting context of the text is printed in upright or Roman type, such as sin, cos, tan, exp, ln, lg, and the gamma function Gamma.
+                            </p>
+                            <p>
+                                Mathematical constants whose numerical values never alter are printed in upright or Roman type, such as the base of natural logarithms e equal to approximately 2.718281828, the circle constant pi equal to approximately 3.141592653, and the imaginary unit i satisfying i squared equals minus one.
+                            </p>
+                            <p>
+                                Well-defined mathematical operators are also printed in upright or Roman type, including the divergence operator div, the variation operator delta in delta x, and the differential operator d in df divided by dx.
+                            </p>
+                            <p>
+                                Numbers expressed in the form of digits are always printed in upright or Roman type, for instance 351204, 1.32, and 7/8.
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- Section 3: ISO 80000-1: Quantities & Values -->
+                    <section id="iso-quantities" class="p-8 rounded-xl border glass-panel space-y-5">
+                        <div class="pb-3 border-b" style="border-color: var(--border-subtle);">
+                            <h2 class="text-base font-bold uppercase tracking-wide" style="color: var(--text-primary);">Physical Quantities, Numerical Values and Representations</h2>
+                            <div class="text-xs text-muted">Foundational definitions governed by ISO 80000-1, Clause 3 and Clause 7</div>
+                        </div>
+                        
+                        <p>
+                            A physical quantity is defined as a property of a phenomenon, body, or substance that can be expressed quantitatively as a number together with an appropriate reference. The value of a quantity <span class="italic font-semibold">Q</span> is formally expressed as the mathematical product of its pure numerical value {<span class="italic">Q</span>} and its measurement unit [<span class="italic">Q</span>], written as <span class="italic font-semibold">Q</span> = {<span class="italic">Q</span>} · [<span class="italic">Q</span>]. For instance, a mass <span class="italic font-semibold">m</span> of twenty-five kilograms is expressed as the product of the numerical scalar twenty-five and the unit kilogram.
+                        </p>
+                        <p>
+                            Symbols representing physical quantities are strictly restricted to single letters from the Latin or Greek alphabet, printed without exception in sloping or italic type. When subscripts or superscripts are appended, the italic typeface of the principal letter remains mandatory regardless of whether the surrounding prose is set in Roman, bold, or italic fonts.
+                        </p>
+                        <p>
+                            Products of quantity symbols are indicated either through adjacent placement, with a thin intervening space, with a centered half-high dot, or with a cross multiplication sign. Division between quantities is represented by a solidus fraction slash, by a horizontal bar, or through negative integer exponents. When a solidus is employed, parentheses must be inserted whenever consecutive operations would introduce ambiguity.
+                        </p>
+                    </section>
+
+                    <!-- Section 4: Rules for Unit Symbols -->
+                    <section id="iso-units" class="p-8 rounded-xl border glass-panel space-y-5">
+                        <div class="pb-3 border-b" style="border-color: var(--border-subtle);">
+                            <h2 class="text-base font-bold uppercase tracking-wide" style="color: var(--text-primary);">Printing Rules and Typographic Requirements for Units</h2>
+                            <div class="text-xs text-muted">Normative conventions for International System of Units symbols (ISO 80000-1, Clause 7)</div>
+                        </div>
+                        
+                        <p>
+                            Unit symbols must always be printed in upright or Roman type. Under no circumstance may an italic font be applied to a unit of measurement, ensuring immediate visual distinction between a quantity symbol such as <span class="italic font-semibold">m</span> representing mass and a unit symbol m representing the meter.
+                        </p>
+                        <p>
+                            Lower-case letters are used for unit symbols generally, exemplified by m for meter, s for second, and kg for kilogram. However, whenever the official name of a unit is derived from the proper name of an individual, the initial character of its symbol is capitalized. Prominent instances include N for newton, J for joule, W for watt, Pa for pascal, V for volt, A for ampere, and Hz for hertz. When the complete name of such a unit is written out in full in running text, it begins with an ordinary lower-case letter, as in five newtons or ten joules.
+                        </p>
+                        <p>
+                            A non-breaking space or small thin space is strictly required between the numerical scalar and the accompanying unit symbol, preserving the integrity of expressions such as 25 kg, 100 m, and 20 °C. The scalar and unit must never be joined without spacing. Unit symbols remain invariant under grammatical pluralization; they never take an appended letter s, meaning fifty kilograms is written as 50 kg rather than 50 kgs. Unit symbols are never concluded with a period unless positioned at the natural conclusion of a sentence.
+                        </p>
+                    </section>
+
+                    <!-- Section 5: Numbers, Grouping and Decimal Signs -->
+                    <section id="iso-numbers" class="p-8 rounded-xl border glass-panel space-y-5">
+                        <div class="pb-3 border-b" style="border-color: var(--border-subtle);">
+                            <h2 class="text-base font-bold uppercase tracking-wide" style="color: var(--text-primary);">Numbers, Digit Grouping and Decimal Markers</h2>
+                            <div class="text-xs text-muted">Standardized representation of numerical values (ISO 80000-1, Clause 7.3)</div>
+                        </div>
+                        
+                        <p>
+                            Numbers expressed as numerical digits are printed in upright or Roman type. To facilitate effortless scanning of long numerical sequences, numbers containing four or more digits on either side of the decimal marker may be grouped in sets of three, counting leftward and rightward from the decimal point.
+                        </p>
+                        <p>
+                            The separation between these triads must be effected solely by a small thin space. The employment of commas, periods, or apostrophes as thousands separators is explicitly prohibited by the standard because commas and periods serve as decimal markers in various international jurisdictions. The standard example of a grouped sequence is 12 345 678.901 23.
+                        </p>
+                        <p>
+                            The decimal marker may be rendered either as a comma on the baseline or as a raised or baseline dot. Within an individual document, absolute consistency must be preserved, and the chosen marker must never be confused with digit group separation.
+                        </p>
+                    </section>
+
+                    <!-- Section 6: Subscripts and Typographic Roles -->
+                    <section id="iso-subscripts" class="p-8 rounded-xl border glass-panel space-y-5">
+                        <div class="pb-3 border-b" style="border-color: var(--border-subtle);">
+                            <h2 class="text-base font-bold uppercase tracking-wide" style="color: var(--text-primary);">Typographic Roles of Subscripts and Superscripts</h2>
+                            <div class="text-xs text-muted">Semantic classification of indices (ISO 80000-2, Clause 4)</div>
+                        </div>
+                        
+                        <p>
+                            The typographical presentation of subscripts and superscripts in scientific formulas conveys critical semantic significance. The standard establishes an unequivocal dichotomy between indices that represent mathematical variables and indices that represent descriptive words or constants.
+                        </p>
+                        <p>
+                            A subscript is set in sloping or italic type if and only if it represents a physical quantity, an algebraic variable, or a running index. Common examples include the constant-pressure heat capacity <span class="italic font-semibold">C<sub>p</sub></span> where the subscript <span class="italic font-semibold">p</span> denotes the variable quantity pressure, the array element <span class="italic font-semibold">x<sub>i</sub></span> where <span class="italic font-semibold">i</span> represents an integer running index, and the molar volume <span class="italic font-semibold">V<sub>m</sub></span> where <span class="italic font-semibold">m</span> designates the molar quantity variable.
+                        </p>
+                        <p>
+                            Conversely, a subscript is set in upright or Roman type whenever it represents a descriptive word, a standard textual abbreviation, a chemical compound identifier, or an invariant number. Standard instances include the kinetic energy <span class="font-semibold"><span class="italic">E</span><sub>k</sub></span> where k abbreviates kinetic, the standard acceleration of gravity <span class="font-semibold"><span class="italic">g</span><sub>n</sub></span> where n stands for normal, the maximum threshold <span class="font-semibold"><span class="italic">x</span><sub>max</sub></span> where max abbreviates maximum, and half-life duration <span class="font-semibold"><span class="italic">T</span><sub>1/2</sub></span> where one half is a fixed numerical fraction.
+                        </p>
+                    </section>
+
+                    <!-- Section 7: Calculus and Differential Signs -->
+                    <section id="iso-calculus" class="p-8 rounded-xl border glass-panel space-y-5">
+                        <div class="pb-3 border-b" style="border-color: var(--border-subtle);">
+                            <h2 class="text-base font-bold uppercase tracking-wide" style="color: var(--text-primary);">Calculus, Differentials and Integral Notations</h2>
+                            <div class="text-xs text-muted">Mathematical operators and measures of integration (ISO 80000-2, Clause 11)</div>
+                        </div>
+                        
+                        <p>
+                            In the field of mathematical analysis, operators designate operational transformations and must be typographically separated from algebraic variable names. The differential operator d utilized in total derivatives, differential forms, and measures of integration is printed in upright or Roman type.
+                        </p>
+                        <p>
+                            Setting the differential operator in upright type eliminates the ambiguity between the differential product <span class="italic font-semibold">d</span> multiplied by <span class="italic font-semibold">x</span> and the infinitesimal increment d<span class="italic font-semibold">x</span>. In integration, the differential element is separated from the preceding integrand by a small thin space, producing the standard formulation of the integral of <span class="italic font-semibold">f</span>(<span class="italic font-semibold">x</span>) d<span class="italic font-semibold">x</span>.
+                        </p>
+                        <p>
+                            The partial derivative operator round d is printed in upright type as specified in the mathematical symbol tables of ISO 80000-2, reflecting its fixed operational identity across all coordinate branches.
+                        </p>
+                    </section>
+
+                    <!-- Section 8: Scalars, Vectors and Tensors -->
+                    <section id="iso-vectors" class="p-8 rounded-xl border glass-panel space-y-5">
+                        <div class="pb-3 border-b" style="border-color: var(--border-subtle);">
+                            <h2 class="text-base font-bold uppercase tracking-wide" style="color: var(--text-primary);">Scalars, Vectors, Matrices and Tensors</h2>
+                            <div class="text-xs text-muted">Multidimensional entities and tensor notation (ISO 80000-2, Clause 15)</div>
+                        </div>
+                        
+                        <p>
+                            Scalar quantities are designated by individual letters printed in sloping or italic lightface type, exemplified by <span class="italic font-semibold">a, b, x, y</span>, and the temperature <span class="italic font-semibold">T</span>.
+                        </p>
+                        <p>
+                            Vector quantities are printed in boldface sloping or italic type, or alternatively in lightface italic surmounted by an arrow accent. The bold italic designation is preferred in modern mathematical and physical typography, illustrated by the velocity vector <span class="italic font-bold">v</span>, the displacement vector <span class="italic font-bold">r</span>, and the force vector <span class="italic font-bold">F</span>.
+                        </p>
+                        <p>
+                            Matrices, second-order tensors, and linear transformations are designated by uppercase boldface letters set in upright or Roman type, such as matrix A, identity matrix I, and stress tensor T. Alternatively, sans-serif bold sloping letters may be adopted provided that the chosen convention is maintained consistently throughout the work.
+                        </p>
+                    </section>
+
+                    <!-- Section 9: Sets and Numerical Intervals -->
+                    <section id="iso-sets-logic" class="p-8 rounded-xl border glass-panel space-y-5">
+                        <div class="pb-3 border-b" style="border-color: var(--border-subtle);">
+                            <h2 class="text-base font-bold uppercase tracking-wide" style="color: var(--text-primary);">Standard Number Sets and Intervals</h2>
+                            <div class="text-xs text-muted">Set theory notations and domain boundaries (ISO 80000-2, Clause 6)</div>
+                        </div>
+                        
+                        <p>
+                            Standard sets of numbers are printed in blackboard bold or bold Roman typeface. The letter N designates the set of natural numbers, the letter Z denotes the set of integers, the letter Q represents the set of rational numbers, the letter R symbolizes the field of real numbers, and the letter C designates the field of complex numbers.
+                        </p>
+                        <p>
+                            Numerical intervals along the real line are demarcated by square brackets and round parentheses. A closed interval containing both endpoints <span class="italic font-semibold">a</span> and <span class="italic font-semibold">b</span> is designated by square brackets as [<span class="italic font-semibold">a</span>, <span class="italic font-semibold">b</span>]. An open interval excluding both endpoints is denoted either by round parentheses as (<span class="italic font-semibold">a</span>, <span class="italic font-semibold">b</span>) or by inverted square brackets as ]<span class="italic font-semibold">a</span>, <span class="italic font-semibold">b</span>[. Half-open intervals are correspondingly indicated by combining the appropriate bracket styles, for instance [<span class="italic font-semibold">a</span>, <span class="italic font-semibold">b</span>) or [<span class="italic font-semibold">a</span>, <span class="italic font-semibold">b</span>[ for an interval including the left boundary while excluding the right.
+                        </p>
+                    </section>
+
+                    <!-- Section 10: Standard Notation Reference -->
+                    <section id="iso-comparative-table" class="p-8 rounded-xl border glass-panel space-y-5">
+                        <div class="pb-3 border-b" style="border-color: var(--border-subtle);">
+                            <h2 class="text-base font-bold uppercase tracking-wide" style="color: var(--text-primary);">Standard Notation Comparative Reference</h2>
+                            <div class="text-xs text-muted">Systematic comparison between ISO 80000 specifications and deprecated conventions</div>
+                        </div>
+                        
+                        <p>
+                            The following overview synthesizes the normative typographical requirements of ISO 80000 alongside common legacy habits that must be avoided in modern technical typesetting:
+                        </p>
+                        <p>
+                            In exponential expressions, Euler number e must be set in upright Roman type rather than sloping italic, because e represents a universal constant rather than an arbitrary base variable.
+                        </p>
+                        <p>
+                            The imaginary unit i or j must be set in upright Roman type to avoid confusion with running integer indices.
+                        </p>
+                        <p>
+                            The differential operator d in derivatives and integrals must be set in upright Roman type, avoiding the appearance of an algebraic variable product.
+                        </p>
+                        <p>
+                            Measurement units must be printed in upright Roman type and separated from numerical values by a mandatory thin space, eliminating joined representations like 25kg.
+                        </p>
+                        <p>
+                            Vector symbols must be rendered in boldface italic rather than plain lightface italic, clearly distinguishing vector entities from scalar magnitudes.
+                        </p>
+                    </section>
+
+                    <!-- Section 11: Original ISO Document Portals -->
+                    <section id="iso-official-links" class="p-8 rounded-xl border glass-panel space-y-5">
+                        <div class="pb-3 border-b" style="border-color: var(--border-subtle);">
+                            <h2 class="text-base font-bold uppercase tracking-wide" style="color: var(--text-primary);">Official Standards Catalog and Primary Document Registries</h2>
+                            <div class="text-xs text-muted">Authorized portals of the International Organization for Standardization and the IEC</div>
+                        </div>
+
+                        <p>
+                            Primary standard documents, comprehensive clause tables, and verified terminology records are maintained in the official registry databases of the International Organization for Standardization and the International Electrotechnical Commission. The primary accession portals can be visited through the direct resources detailed below:
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                            <div class="p-5 rounded-xl border border-subtle bg-surface flex flex-col justify-between space-y-4 shadow-xs">
+                                <div>
+                                    <div class="font-bold text-base text-primary mb-1">ISO 80000-2:2019 Mathematics</div>
+                                    <div class="text-xs text-muted mb-2">Quantities and units — Part 2: Mathematics (Second Edition)</div>
+                                    <p class="text-xs leading-relaxed text-muted">
+                                        Normative signs, symbols, exponential operators, logarithmic scales, coordinates, and typography of mathematical variables.
+                                    </p>
+                                </div>
+                                <div class="pt-3 border-t border-subtle/60 flex items-center space-x-2">
+                                    <button onclick="openExternalUrl('https://www.iso.org/obp/ui/#iso:std:iso:80000:-2:ed-2:v2:en')" class="flex-1 py-2 px-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs text-center flex items-center justify-center space-x-1.5 shadow-xs transition-all active:scale-98" style="color: #ffffff !important; font-family: system-ui, sans-serif;">
+                                        <i class="fa-solid fa-book-open text-xs"></i>
+                                        <span>ISO Online Browsing (OBP)</span>
+                                    </button>
+                                    <button onclick="openExternalUrl('https://www.iso.org/standard/64973.html')" class="glass-button py-2 px-3 rounded-lg text-primary font-semibold text-xs text-center flex items-center justify-center space-x-1 hover:border-blue-500/30 transition-colors" style="font-family: system-ui, sans-serif;" title="View standard detail at ISO Store">
+                                        <i class="fa-solid fa-arrow-up-right-from-square text-xs text-blue-400"></i>
+                                        <span>ISO Store</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="p-5 rounded-xl border border-subtle bg-surface flex flex-col justify-between space-y-4 shadow-xs">
+                                <div>
+                                    <div class="font-bold text-base text-primary mb-1">ISO 80000-1:2022 General</div>
+                                    <div class="text-xs text-muted mb-2">Quantities and units — Part 1: General (Second Edition)</div>
+                                    <p class="text-xs leading-relaxed text-muted">
+                                        Fundamental physical quantities, printing rules for units, capitalization rules, digit grouping, and intervals.
+                                    </p>
+                                </div>
+                                <div class="pt-3 border-t border-subtle/60 flex items-center space-x-2">
+                                    <button onclick="openExternalUrl('https://www.iso.org/obp/ui/#iso:std:iso:80000:-1:ed-2:v1:en')" class="flex-1 py-2 px-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs text-center flex items-center justify-center space-x-1.5 shadow-xs transition-all active:scale-98" style="color: #ffffff !important; font-family: system-ui, sans-serif;">
+                                        <i class="fa-solid fa-book-open text-xs"></i>
+                                        <span>ISO Online Browsing (OBP)</span>
+                                    </button>
+                                    <button onclick="openExternalUrl('https://www.iso.org/standard/76921.html')" class="glass-button py-2 px-3 rounded-lg text-primary font-semibold text-xs text-center flex items-center justify-center space-x-1 hover:border-blue-500/30 transition-colors" style="font-family: system-ui, sans-serif;" title="View standard detail at ISO Store">
+                                        <i class="fa-solid fa-arrow-up-right-from-square text-xs text-blue-400"></i>
+                                        <span>ISO Store</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-5 rounded-xl border border-subtle bg-surface/50 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                            <div class="flex items-center space-x-4">
+                                <i class="fa-solid fa-globe text-3xl text-blue-500 shrink-0"></i>
+                                <div>
+                                    <div class="font-bold text-sm text-primary">International Electrotechnical Commission (IEC) Webstore</div>
+                                    <div class="text-xs text-muted">Official joint repository for international electrotechnical and SI quantities.</div>
+                                </div>
+                            </div>
+                            <button onclick="openExternalUrl('https://webstore.iec.ch/publication/78028')" class="glass-button py-2 px-4 rounded-lg text-primary font-semibold text-xs whitespace-nowrap hover:border-blue-500/40 transition-colors flex items-center shrink-0 self-start md:self-auto" style="font-family: system-ui, sans-serif;">
+                                <i class="fa-solid fa-arrow-up-right-from-square mr-1.5 text-xs text-blue-500"></i>
+                                Visit IEC Repository
+                            </button>
+                        </div>
+                    </section>
+
+                </div>
+
+
+                </main>
+            </div>
+
+            <!-- 6. View: README Markdown Specification View (Pure Full-Height Canvas, zero toolbar buttons) -->
+            <div id="view-readme" class="tab-view-container tab-view-hidden hidden flex h-full w-full overflow-hidden rounded-xl border" style="background: var(--bg-surface); border-color: var(--border-subtle);">
+                <!-- Main Content Scroll Canvas with VS Code Standard Markdown Theme & Fluid Smooth Scroll -->
+                <main id="readme-content-scroll" class="flex-1 h-full overflow-y-auto custom-scrollbar relative vscode-body" style="background: var(--input-bg); -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain;">
+                    <div class="max-w-5xl mx-auto py-10 px-6 md:px-14">
+                        <div id="readme-markdown-body" class="vscode-markdown-content markdown-body" style="background: transparent;">
+                            <div class="flex items-center justify-center p-16 space-x-3 text-muted">
+                                <i class="fa-solid fa-circle-notch fa-spin text-lg text-blue-500"></i>
+                                <span>Loading documentation...</span>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- QWebChannel for PyQt5 integration -->
+    <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
+    <script>
+        window.appStartTime = Date.now();
+        var backend = null;
+        var currentOmmlCode = "";
+        var currentMathMLCode = "";
+        var autoConvertTimer = null;
+
+        var currentAppTheme = 'dark';
+
+        var isWebChannelInitialized = false;
+
+        function initWebChannel() {
+            if (isWebChannelInitialized || window.backend) return;
+            if (typeof qt !== 'undefined' && qt.webChannelTransport && typeof QWebChannel !== 'undefined') {
+                isWebChannelInitialized = true;
+                new QWebChannel(qt.webChannelTransport, function (channel) {
+                    if (channel && typeof channel.handleResponse === 'function') {
+                        const origHandleResponse = channel.handleResponse;
+                        channel.handleResponse = function(message) {
+                            if (message && message.id !== undefined && (!channel.execCallbacks || typeof channel.execCallbacks[message.id] !== 'function')) {
+                                if (!channel.execCallbacks) channel.execCallbacks = {};
+                                channel.execCallbacks[message.id] = function() {};
+                            }
+                            return origHandleResponse.apply(this, arguments);
+                        };
+                    }
+                    backend = channel.objects.backend;
+                    window.backend = backend;
+                    if (backend && typeof backend.get_theme === 'function') {
+                        backend.get_theme(function(savedTheme) {
+                            if (savedTheme) applyTheme(savedTheme);
+                        });
+                    }
+                    if (typeof syncEdgePdfViewerRect === 'function') {
+                        syncEdgePdfViewerRect();
+                    }
+                    if (document.readyState !== 'loading' && typeof window.quastStartEagerPreload === 'function') {
+                        window.quastStartEagerPreload();
+                    }
+                });
+            } else {
+                setTimeout(initWebChannel, 30);
+            }
+        }
+        initWebChannel();
+
+        // --- Theme System Initialization ---
+        function initTheme() {
+            if (typeof qt !== 'undefined' && qt.webChannelTransport) {
+                // When running inside PyQt, theme is managed via QSettings in Python backend
+                // Avoids synchronous LevelDB file lock timeouts on file:///
+                return;
+            }
+            try {
+                const savedTheme = localStorage.getItem('app-theme') || 'dark';
+                applyTheme(savedTheme);
+            } catch (e) {
+                applyTheme('dark');
+            }
+        }
+
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme') || currentAppTheme || 'dark';
+            const nextTheme = current === 'dark' ? 'light' : 'dark';
+            applyTheme(nextTheme);
+        }
+
+        function applyTheme(theme) {
+            if (!theme) theme = 'dark';
+            currentAppTheme = theme;
+            document.documentElement.setAttribute('data-theme', theme);
+            document.body.setAttribute('data-theme', theme);
+
+            if (typeof qt === 'undefined') {
+                try {
+                    localStorage.setItem('app-theme', theme);
+                } catch (e) {}
+            }
+
+            const thumb = document.getElementById('theme-switch-thumb');
+            const icon = document.getElementById('theme-toggle-icon');
+            const label = document.getElementById('theme-toggle-label');
+            const btn = document.getElementById('btn-theme-toggle');
+
+            if (theme === 'dark') {
+                if (btn) {
+                    btn.setAttribute('aria-checked', 'false');
+                    btn.style.background = 'rgba(15, 23, 42, 0.75)';
+                    btn.style.borderColor = 'var(--border-subtle)';
+                    btn.style.boxShadow = 'inset 0 1px 3px rgba(0,0,0,0.5)';
+                    btn.title = 'Dark Mode (Click to switch to Light)';
+                }
+                if (thumb) {
+                    thumb.style.transform = 'translateX(0px)';
+                    thumb.style.background = '#ffffff';
+                    thumb.style.boxShadow = '0 1px 4px rgba(0,0,0,0.4)';
+                }
+                if (icon) {
+                    icon.className = 'fa-solid fa-moon text-[11px] text-blue-600';
+                }
+                if (label) label.innerText = 'DARK';
+                const hljsLink = document.getElementById('hljs-theme');
+                if (hljsLink) hljsLink.href = 'assets/github-dark.min.css';
+            } else {
+                if (btn) {
+                    btn.setAttribute('aria-checked', 'true');
+                    btn.style.background = '#cbd5e1';
+                    btn.style.borderColor = 'rgba(0, 0, 0, 0.15)';
+                    btn.style.boxShadow = 'inset 0 1px 3px rgba(0,0,0,0.12)';
+                    btn.title = 'Light Mode (Click to switch to Dark)';
+                }
+                if (thumb) {
+                    thumb.style.transform = 'translateX(24px)';
+                    thumb.style.background = '#ffffff';
+                    thumb.style.boxShadow = '0 1px 4px rgba(0,0,0,0.2)';
+                }
+                if (icon) {
+                    icon.className = 'fa-solid fa-sun text-[11px] text-amber-500';
+                }
+                if (label) label.innerText = 'LIGHT';
+                const hljsLink = document.getElementById('hljs-theme');
+                if (hljsLink) hljsLink.href = 'assets/github.min.css';
+            }
+
+            const headerLogo = document.getElementById('header-app-logo');
+            if (headerLogo) {
+                headerLogo.style.filter = (theme === 'dark') ? 'invert(1)' : 'none';
+            }
+
+            if (backend && typeof backend.set_theme === 'function') {
+                backend.set_theme(theme);
+            }
+            if (readmeIsLoaded && typeof reRenderMermaidDiagrams === 'function') {
+                reRenderMermaidDiagrams();
+            }
+        }
+
+                // --- Default View Animations (Shield + Slogan Fadeout) ---
+        let fadeOutTimer = null;
+
+        function fadeOutDefaultView(callback) {
+            const viewDefault = document.getElementById('view-default');
+            if (!viewDefault) {
+                if (typeof callback === 'function') callback();
+                return;
+            }
+            if (viewDefault.classList.contains('hidden') || viewDefault.dataset.fading === 'true') {
+                if (typeof callback === 'function') callback();
+                return;
+            }
+            
+            viewDefault.dataset.fading = 'true';
+            clearTimeout(fadeOutTimer);
+            
+            const icon = document.getElementById('default-shield-icon') || viewDefault.querySelector('i');
+            const text = document.getElementById('default-secure-text') || viewDefault.querySelector('p');
+            
+            viewDefault.style.transition = 'opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), filter 0.45s ease-out';
+            viewDefault.style.opacity = '0';
+            viewDefault.style.transform = 'scale(0.92) translateY(-8px)';
+            viewDefault.style.pointerEvents = 'none';
+            
+            if (icon) {
+                icon.style.transition = 'transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease-out';
+                icon.style.transform = 'scale(0.8) rotate(-8deg)';
+                icon.style.opacity = '0';
+            }
+            if (text) {
+                text.style.transition = 'transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease-out';
+                text.style.transform = 'translateY(-4px)';
+                text.style.opacity = '0';
+            }
+
+            fadeOutTimer = setTimeout(() => {
+                viewDefault.classList.add('hidden');
+                viewDefault.classList.remove('flex');
+                viewDefault.dataset.fading = 'false';
+                if (typeof callback === 'function') callback();
+            }, 460);
+        }
+
+        function fadeInDefaultView() {
+            const viewDefault = document.getElementById('view-default');
+            if (!viewDefault) return;
+            
+            clearTimeout(fadeOutTimer);
+            viewDefault.dataset.fading = 'false';
+            viewDefault.classList.remove('hidden');
+            viewDefault.classList.add('flex');
+            viewDefault.style.pointerEvents = 'auto';
+            
+            const icon = document.getElementById('default-shield-icon') || viewDefault.querySelector('i');
+            const text = document.getElementById('default-secure-text') || viewDefault.querySelector('p');
+            
+            if (icon) {
+                icon.style.opacity = '0.5';
+                icon.style.transform = 'scale(1)';
+            }
+            if (text) {
+                text.style.opacity = '0.8';
+                text.style.transform = 'translateY(0)';
+            }
+
+            viewDefault.style.transition = 'opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)';
+            viewDefault.style.opacity = '1';
+            viewDefault.style.transform = 'scale(1) translateY(0)';
+        }
+
+        // --- Header Button Cluster Alignment ---
+        // Align start position of the 4 header buttons with the start position of preview pane
+        function alignHeaderCluster() {
+            const mainSection = document.getElementById('main-section');
+            const header = document.querySelector('header');
+            const titleBox = document.getElementById('header-title-container');
+            const sidebar = document.getElementById('sidebar');
+            if (!mainSection || !header || !titleBox) return;
+
+            const headerRect = header.getBoundingClientRect();
+            const headerStyle = window.getComputedStyle(header);
+            const paddingLeft = parseFloat(headerStyle.paddingLeft) || 0;
+
+            if (sidebar && !sidebar.classList.contains('hidden') && !sidebar.classList.contains('sidebar-collapsed') && sidebar.offsetWidth > 0) {
+                const mainRect = mainSection.getBoundingClientRect();
+                const targetWidth = Math.round(mainRect.left - headerRect.left - paddingLeft);
+                if (targetWidth > 0) {
+                    titleBox.style.width = targetWidth + 'px';
+                    titleBox.style.minWidth = targetWidth + 'px';
+                    titleBox.style.maxWidth = targetWidth + 'px';
+                    titleBox.dataset.lockedWidth = targetWidth;
+                }
+            } else {
+                // Maintain aligned position of action button cluster across all tabs
+                const locked = titleBox.dataset.lockedWidth || Math.round((headerRect.width * 0.33) + 8);
+                titleBox.style.width = locked + 'px';
+                titleBox.style.minWidth = locked + 'px';
+                titleBox.style.maxWidth = locked + 'px';
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            initTheme();
+            alignHeaderCluster();
+
+            window.addEventListener('resize', () => {
+                alignHeaderCluster();
+                syncEdgePdfViewerRect();
+            });
+            const mainSection = document.getElementById('main-section');
+            if (mainSection && window.ResizeObserver) {
+                const ro = new ResizeObserver(() => {
+                    alignHeaderCluster();
+                    syncEdgePdfViewerRect();
+                });
+                ro.observe(mainSection);
+            }
+            const viewPdfEl = document.getElementById('view-pdf');
+            if (viewPdfEl && window.ResizeObserver) {
+                const pdfRo = new ResizeObserver(() => syncEdgePdfViewerRect());
+                pdfRo.observe(viewPdfEl);
+            }
+
+            // Init Image Dropzone listeners
+            initImageDropzone();
+
+            // Background idle pre-warming for README documentation (zero-jank first tab switch)
+            if (typeof scheduleReadmePrewarm === 'function') {
+                scheduleReadmePrewarm();
+            }
+        });
+
+        const PROGRESS_MILESTONES = [
+            { min: 0, text: "Initializing process..." },
+            { min: 18, text: "Extracting formulas..." },
+            { min: 35, text: "Analyzing LaTeX structure..." },
+            { min: 52, text: "Compiling OMML math..." },
+            { min: 70, text: "Packaging Word document..." },
+            { min: 85, text: "Finalizing file structure..." },
+            { min: 100, text: "Processing complete" }
+        ];
+
+        function getMilestoneText(pct) {
+            for (let i = PROGRESS_MILESTONES.length - 1; i >= 0; i--) {
+                if (pct >= PROGRESS_MILESTONES[i].min) {
+                    return PROGRESS_MILESTONES[i].text;
+                }
+            }
+            return "Processing...";
+        }
+
+        function setFileNotice(state) {
+            const badge = document.getElementById('file-notice-badge');
+            const icon = document.getElementById('file-notice-icon');
+            const text = document.getElementById('file-notice-text');
+            if (!badge || !text) return;
+
+            if (state === 'idle' || state === 'no_files') {
+                badge.className = 'notice-badge-idle w-full py-2.5 px-3 rounded-lg flex items-center justify-center text-center text-[11px] font-bold tracking-wide uppercase transition-all duration-300';
+                if (icon) icon.className = 'fa-solid fa-folder-open mr-2 text-sm shrink-0';
+                text.innerText = 'NO FILES LOADED. PLEASE ADD A FILE TO BEGIN.';
+            } else if (state === 'ready' || state === 'loaded') {
+                badge.className = 'notice-badge-ready w-full py-2.5 px-3 rounded-lg flex items-center justify-center text-center text-[11px] font-bold tracking-wide uppercase transition-all duration-300';
+                if (icon) icon.className = 'fa-solid fa-circle-play mr-2 text-sm shrink-0';
+                text.innerText = 'FILES LOADED. READY TO PROCESS.';
+            } else if (state === 'processing') {
+                badge.className = 'notice-badge-processing w-full py-2.5 px-3 rounded-lg flex items-center justify-center text-center text-[11px] font-bold tracking-wide uppercase transition-all duration-300';
+                if (icon) icon.className = 'fa-solid fa-gear fa-spin mr-2 text-sm shrink-0';
+                text.innerText = 'PROCESSING FILES. PLEASE WAIT...';
+            } else if (state === 'rendering_full' || state === 'preview_3p') {
+                badge.className = 'notice-badge-rendering w-full py-2.5 px-3 rounded-lg flex items-center justify-center text-center text-[11px] font-bold tracking-wide uppercase transition-all duration-300';
+                if (icon) icon.className = 'fa-solid fa-spinner fa-spin mr-2 text-sm shrink-0';
+                text.innerHTML = 'PREVIEWING FIRST 3 PAGES<br>WHILE RENDERING FULL FILE.';
+            } else if (state === 'error') {
+                badge.className = 'notice-badge-error w-full py-2.5 px-3 rounded-lg flex items-center justify-center text-center text-[11px] font-bold tracking-wide uppercase transition-all duration-300';
+                if (icon) icon.className = 'fa-solid fa-triangle-exclamation mr-2 text-sm shrink-0';
+                text.innerText = 'PROCESSING FAILED. PLEASE TRY AGAIN.';
+            } else {
+                badge.className = 'notice-badge-done w-full py-2.5 px-3 rounded-lg flex items-center justify-center text-center text-[11px] font-bold tracking-wide uppercase transition-all duration-300';
+                if (icon) icon.className = 'fa-solid fa-circle-check mr-2 text-sm shrink-0';
+                text.innerText = 'DONE';
+            }
+        }
+
+        function updateProgress(value) {
+            const fill = document.getElementById('progress-fill');
+            const text = document.getElementById('progress-text');
+            if (fill) fill.style.width = value + '%';
+            if (value > 0 && value < 100) {
+                const milestoneMsg = getMilestoneText(value);
+                if (text) text.innerText = value + '% • ' + milestoneMsg;
+            } else if (value >= 100) {
+                const finishMsg = getMilestoneText(100);
+                if (text) text.innerText = '100% • ' + finishMsg;
+            } else {
+                if (text) text.innerText = '0%';
+            }
+        }
+
+        function updateStatus(text, statusType) {
+            // Status bar on File tab has been completely replaced by setFileNotice
+        }
+
+        function setFileList(listId, files, allowRemove=true, isProcessing=false, activeIndex=-1) {
+            const container = document.getElementById(listId);
+            if (!container) return;
+            container.innerHTML = '';
+            files.forEach(function(file, index) {
+                const div = document.createElement('div');
+                const isActive = (index === activeIndex);
+                
+                div.className = 'file-list-item text-xs py-2 px-2.5 rounded-lg cursor-pointer transition-all flex items-center justify-between group overflow-hidden mb-1 select-none border border-transparent';
+                
+                if (isActive) {
+                    div.style.backgroundColor = 'var(--item-active)';
+                    div.style.borderColor = 'var(--item-active-border)';
+                    div.style.color = 'var(--accent)';
+                    div.style.fontWeight = '600';
+                } else {
+                    div.style.backgroundColor = 'transparent';
+                    div.style.borderColor = 'transparent';
+                    div.style.color = 'var(--text-primary)';
+                    div.style.fontWeight = 'normal';
+                    div.onmouseenter = function() { this.style.backgroundColor = 'var(--item-hover)'; };
+                    div.onmouseleave = function() { this.style.backgroundColor = 'transparent'; };
+                }
+                
+                let innerHtml = '<div class="flex items-center truncate flex-1 min-w-0 mr-2">' +
+                    '<i class="fa-solid fa-file-word text-[13px] shrink-0 mr-2.5 ' + (isActive ? 'text-blue-500 dark:text-blue-400' : 'text-blue-500/70 dark:text-blue-400/60') + '"></i>' +
+                    '<span class="truncate text-xs ' + (isActive ? 'font-semibold text-blue-600 dark:text-blue-400' : 'font-normal') + '" title="' + file + '">' + file + '</span>' +
+                '</div>';
+                
+                if (listId === 'input-file-list' && allowRemove) {
+                    innerHtml += '<i class="fa-solid fa-xmark text-xs opacity-40 hover:opacity-100 hover:text-red-500 transition-all px-1.5 py-0.5 rounded shrink-0 cursor-pointer" title="Remove file" onclick="event.stopPropagation(); if(backend) backend.remove_file(' + index + ');"></i>';
+                }
+                div.innerHTML = innerHtml;
+                
+                div.onclick = function() {
+                    window.getSelection().removeAllRanges();
+                    if (backend) backend.preview_file(index, listId === 'output-file-list', function() {});
+                };
+                container.appendChild(div);
+            });
+            
+            if (listId === 'input-file-list') {
+                const startBtn = document.getElementById('btn-start-batch');
+                const outBtn = document.getElementById('btn-open-folder');
+                if (files.length > 0) {
+                    if (startBtn) { startBtn.classList.remove('hidden'); startBtn.classList.add('flex'); }
+                    if (outBtn) { outBtn.classList.add('hidden'); outBtn.classList.remove('flex'); }
+                    fadeOutDefaultView();
+                } else {
+                    if (startBtn) { startBtn.classList.add('hidden'); startBtn.classList.remove('flex'); }
+                }
+            } else if (listId === 'output-file-list') {
+                const startBtn = document.getElementById('btn-start-batch');
+                const outBtn = document.getElementById('btn-open-folder');
+                if (files.length > 0) {
+                    if (startBtn) { startBtn.classList.add('hidden'); startBtn.classList.remove('flex'); }
+                    if (outBtn) { outBtn.classList.remove('hidden'); outBtn.classList.add('flex'); }
+                }
+            }
+        }
+    </script>
+
+    <!-- Application UI Logic -->
+    <script>
+        // Disable Chromium Zooming
+        document.addEventListener('wheel', function(e) { if (e.ctrlKey) { e.preventDefault(); } }, { passive: false });
+        document.addEventListener('keydown', function(e) { if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '=')) { e.preventDefault(); } });
+
+        // --- UI Logic: Tab Switching ---
+        let activeTabId = 'file';
+        let tabTransitionTimer = null;
+
+        function switchTab(tabId) {
+            if (activeTabId === tabId) return;
+            const prevTabId = activeTabId;
+            activeTabId = tabId;
+
+            // 1. Update navigation tabs active state
+            document.querySelectorAll('.nav-tab').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            const activeBtn = document.getElementById(`tab-${tabId}`);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+            }
+
+            // References
+            const sidebar = document.getElementById('sidebar');
+            const mainEl = document.querySelector('main');
+            const viewDefault = document.getElementById('view-default');
+            const viewPdf = document.getElementById('view-pdf');
+            const viewLatex = document.getElementById('view-latex');
+            const viewImage = document.getElementById('view-image');
+            const viewIso = document.getElementById('view-iso');
+            const viewReadme = document.getElementById('view-readme');
+
+            // 2. Identify outgoing and incoming views
+            let outgoingView = null;
+            if (prevTabId === 'file') {
+                outgoingView = currentActivePdfUrl ? viewPdf : viewDefault;
+            } else if (prevTabId === 'latex') {
+                outgoingView = viewLatex;
+            } else if (prevTabId === 'image') {
+                outgoingView = viewImage;
+            } else if (prevTabId === 'iso') {
+                outgoingView = viewIso;
+            } else if (prevTabId === 'readme') {
+                outgoingView = viewReadme;
+            }
+
+            let incomingView = null;
+            if (tabId === 'file') {
+                incomingView = currentActivePdfUrl ? viewPdf : viewDefault;
+            } else if (tabId === 'latex') {
+                incomingView = viewLatex;
+            } else if (tabId === 'image') {
+                incomingView = viewImage;
+            } else if (tabId === 'iso') {
+                incomingView = viewIso;
+            } else if (tabId === 'readme') {
+                incomingView = viewReadme;
+            }
+
+            // 3. Clear any ongoing transition timer to prevent race conditions on rapid clicks
+            if (tabTransitionTimer) {
+                clearTimeout(tabTransitionTimer);
+                tabTransitionTimer = null;
+            }
+
+            // 4. Smooth Sidebar collapse/expand with multi-frame display flush
+            if (sidebar) {
+                if (tabId === 'file') {
+                    sidebar.hidden = false;
+                    sidebar.classList.remove('hidden');
+                    sidebar.classList.add('flex');
+                    sidebar.style.pointerEvents = 'auto';
+                    if (mainEl) mainEl.classList.remove('no-sidebar-gap');
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            sidebar.classList.remove('sidebar-collapsed');
+                        });
+                    });
+                } else {
+                    sidebar.classList.add('sidebar-collapsed');
+                    sidebar.style.pointerEvents = 'none';
+                    if (mainEl) mainEl.classList.add('no-sidebar-gap');
+                }
+            }
+
+            // 5. Hide Edge PDF preview HWND when leaving FILE tab
+            if (backend && typeof backend.set_word_visible === 'function') {
+                const showPdfHwnd = (tabId === 'file' && !!currentActivePdfUrl);
+                backend.set_word_visible('pdf-preview', showPdfHwnd, function() {});
+            }
+            if (tabId !== 'file') {
+                showPreviewLoader(false);
+            }
+
+            // 6. View Cross-fade with subtle slide-up
+            if (outgoingView && outgoingView !== incomingView) {
+                outgoingView.classList.remove('tab-view-active', 'tab-view-entering');
+                outgoingView.classList.add('tab-view-exiting');
+            }
+
+            // Cleanly hide any other view that is neither incoming nor outgoing
+            [viewDefault, viewPdf, viewLatex, viewImage, viewIso, viewReadme].forEach(v => {
+                if (v && v !== incomingView && v !== outgoingView) {
+                    v.classList.remove('tab-view-active', 'tab-view-entering', 'tab-view-exiting');
+                    v.classList.add('tab-view-hidden', 'hidden');
+                    v.classList.remove('flex');
+                }
+            });
+
+            if (incomingView) {
+                incomingView.classList.remove('tab-view-hidden', 'tab-view-exiting', 'tab-view-active', 'hidden');
+                incomingView.classList.add('tab-view-entering', 'flex');
+
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        incomingView.classList.remove('tab-view-entering');
+                        incomingView.classList.add('tab-view-active');
+                    });
+                });
+            }
+
+            // After animation duration (250ms), finalize outgoing view cleanly
+            tabTransitionTimer = setTimeout(() => {
+                if (outgoingView && outgoingView !== incomingView) {
+                    outgoingView.classList.remove('tab-view-exiting', 'flex');
+                    outgoingView.classList.add('tab-view-hidden', 'hidden');
+                }
+                if (sidebar && tabId !== 'file') {
+                    sidebar.hidden = true;
+                    sidebar.classList.add('hidden');
+                    sidebar.classList.remove('flex');
+                }
+                if (tabId === 'file' && currentActivePdfUrl) {
+                    syncEdgePdfViewerRect();
+                }
+            }, 260);
+
+            // 7. Tab-specific callbacks
+            if (tabId === 'latex') {
+                if (typeof updateStatus === 'function') {
+                    updateStatus('LaTeX Studio Ready', 'ready');
+                }
+            } else if (tabId === 'image') {
+                if (typeof updateStatus === 'function') {
+                    updateStatus('Image OCR Studio Ready', 'ready');
+                }
+            } else if (tabId === 'iso') {
+                if (typeof updateStatus === 'function') {
+                    updateStatus('ISO 80000 Technical Documentation Ready', 'ready');
+                }
+            } else if (tabId === 'readme') {
+                if (typeof updateStatus === 'function') {
+                    updateStatus('README.md Documentation Ready', 'ready');
+                }
+                if (typeof ensureReadmeLoaded === 'function') {
+                    ensureReadmeLoaded();
+                }
+            } else if (tabId === 'file') {
+                if (!currentActivePdfUrl) {
+                    const icon = document.getElementById('default-shield-icon');
+                    const text = document.getElementById('default-secure-text');
+                    if (icon) { icon.style.opacity = '0.5'; icon.style.transform = 'scale(1)'; }
+                    if (text) { text.style.opacity = '0.8'; text.style.transform = 'translateY(0)'; }
+                } else {
+                    requestAnimationFrame(() => syncEdgePdfViewerRect());
+                }
+            }
+
+            requestAnimationFrame(() => alignHeaderCluster());
+        }
+
+        // --- Prominent Central Preview Loading System ---
+        let previewLoaderTimer = null;
+        let pdfLoadFallbackTimer = null;
+
+        let previewSafetyTimer = null;
+        function showPreviewLoader(show, text = "Processing...", subtext = "") {
+            const overlay = document.getElementById('preview-loader-overlay');
+            const textEl = document.getElementById('preview-loader-text');
+            const subtextEl = document.getElementById('preview-loader-subtext');
+            if (!overlay) return;
+
+            clearTimeout(previewLoaderTimer);
+            clearTimeout(previewSafetyTimer);
+
+            if (show) {
+                currentActivePdfUrl = '';
+                // Safety guard: if preview takes longer than 60s (e.g. Word COM timeout on very large docs), dismiss loader
+                previewSafetyTimer = setTimeout(() => {
+                    showPreviewLoader(false);
+                    if (typeof updateStatus === 'function') updateStatus('Ready', 'ready');
+                }, 60000);
+
+                // Requirement 2: Completely hide preview mode when no data is displayed instead of dimming interface
+                const pdfView = document.getElementById('view-pdf');
+                if (pdfView) {
+                    pdfView.classList.remove('tab-view-active', 'flex');
+                    pdfView.classList.add('hidden', 'tab-view-hidden');
+                    pdfView.style.display = 'none';
+                }
+                const defaultView = document.getElementById('view-default');
+                if (defaultView) {
+                    defaultView.classList.remove('tab-view-active', 'flex');
+                    defaultView.classList.add('hidden');
+                    defaultView.style.display = 'none';
+                }
+                if (backend && typeof backend.set_word_visible === 'function') {
+                    backend.set_word_visible('pdf-preview', false, function() {});
+                }
+
+                if (textEl) textEl.textContent = text;
+                if (subtextEl) {
+                    if (subtext) {
+                        subtextEl.textContent = subtext;
+                    } else if (text.toLowerCase().includes("rendering")) {
+                        subtextEl.textContent = "Generating layout-faithful preview...";
+                    } else {
+                        subtextEl.textContent = "Please wait a moment...";
+                    }
+                }
+                overlay.classList.remove('loader-hidden', 'hidden', 'pointer-events-none', 'opacity-0');
+                overlay.classList.add('loader-active', 'opacity-100');
+            } else {
+                overlay.classList.remove('opacity-100');
+                overlay.classList.add('opacity-0');
+                overlay.classList.add('pointer-events-none');
+                previewLoaderTimer = setTimeout(() => {
+                    if (overlay.classList.contains('opacity-0')) {
+                        overlay.classList.remove('loader-active');
+                        overlay.classList.add('loader-hidden');
+                    }
+                }, 180);
+            }
+        }
+
+        function updatePreviewLoaderStatus(text, subtext = "") {
+            const overlay = document.getElementById('preview-loader-overlay');
+            if (overlay && (overlay.classList.contains('hidden') || overlay.classList.contains('loader-hidden') || overlay.classList.contains('opacity-0'))) {
+                showPreviewLoader(true, text, subtext);
+                return;
+            }
+            const textEl = document.getElementById('preview-loader-text');
+            const subtextEl = document.getElementById('preview-loader-subtext');
+            if (textEl) {
+                textEl.textContent = text;
+            }
+            if (subtextEl) {
+                if (subtext) {
+                    subtextEl.textContent = subtext;
+                } else if (text.toLowerCase().includes("rendering")) {
+                    subtextEl.textContent = "Generating layout-faithful preview...";
+                } else {
+                    subtextEl.textContent = "Please wait a moment...";
+                }
+            }
+        }
+
+        // Backward compatibility mappings
+        function showInlineLoader(show, text = "Processing...", isProgress = false) {
+            showPreviewLoader(show, text);
+        }
+        window.quastShowLoader = showPreviewLoader;
+        // Global Loading Overlay with Minimalist Transitions
+        function showLoadingOverlay(show, text="Processing...") {
+            let overlay = document.getElementById('global-loading-overlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.id = 'global-loading-overlay';
+                overlay.className = 'fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity duration-150 opacity-0 pointer-events-none';
+                overlay.innerHTML = `
+                    <div class="flex flex-col items-center justify-center p-6 rounded-2xl shadow-xl space-y-3" style="background: var(--bg-surface); border: 1px solid var(--border-subtle);">
+                        <div class="w-8 h-8 border-2 rounded-full animate-spin" style="border-color: var(--border-subtle); border-top-color: var(--accent);"></div>
+                        <div id="global-loading-text" class="text-xs font-medium tracking-wider uppercase" style="color: var(--text-primary);">${text}</div>
+                    </div>
+                `;
+                document.body.appendChild(overlay);
+            }
+            
+            if (show) {
+                const txt = document.getElementById('global-loading-text');
+                if (txt) txt.innerText = text;
+                overlay.classList.remove('opacity-0', 'pointer-events-none');
+                overlay.classList.add('opacity-100');
+            } else {
+                overlay.classList.remove('opacity-100');
+                overlay.classList.add('opacity-0', 'pointer-events-none');
+            }
+        }
+
+        function startBatchConversion() {
+            const btn = document.getElementById('btn-start-batch');
+            if (btn) {
+                btn.style.opacity = '0.5';
+                btn.style.pointerEvents = 'none';
+            }
+            if (backend) backend.start_conversion();
+        }
+
+        function convertLatex() {
+            if (backend) {
+                backend.convert_latex_from_word();
+            }
+        }
+
+        function resetStartButton() {
+            const btn = document.getElementById('btn-start-batch');
+            if (btn) {
+                btn.style.opacity = '';
+                btn.style.pointerEvents = '';
+            }
+        }
+
+        let currentActivePdfUrl = '';
+
+        window.quastShowLoader = function(show, title, desc) {
+            showInlineLoader(show, title || desc || "Processing...");
+        };
+
+        function syncEdgePdfViewerRect() {
+            const pdfView = document.getElementById('view-pdf');
+            if (!pdfView) return;
+            const fileTab = document.getElementById('tab-file');
+            const isFileTab = fileTab && fileTab.classList.contains('active');
+            const isVisible = isFileTab && !pdfView.classList.contains('hidden') && !pdfView.classList.contains('tab-view-hidden') && pdfView.offsetWidth > 0 && pdfView.offsetHeight > 0;
+            
+            if (backend) {
+                if (typeof backend.update_word_rect === 'function') {
+                    const rect = pdfView.getBoundingClientRect();
+                    backend.update_word_rect('pdf-preview', rect.left, rect.top, rect.width, rect.height, function() {});
+                }
+                if (typeof backend.set_word_visible === 'function') {
+                    backend.set_word_visible('pdf-preview', isVisible, function() {});
+                }
+            }
+        }
+
+        function showPdfPreview(pdfUrl, isNative = false) {
+            const fileTab = document.getElementById('tab-file');
+            if (!fileTab || !fileTab.classList.contains('active')) return;
+
+            currentActivePdfUrl = pdfUrl || '';
+
+            fadeOutDefaultView();
+            
+            const pdfView = document.getElementById('view-pdf');
+            if (pdfView) { 
+                pdfView.classList.remove('hidden', 'tab-view-hidden', 'tab-view-exiting'); 
+                pdfView.classList.add('flex', 'tab-view-active');
+                pdfView.style.display = 'flex';
+                pdfView.style.opacity = '1';
+                pdfView.style.pointerEvents = 'auto';
+
+                if (!isNative) {
+                    const frame = document.getElementById('pdf-viewer-frame');
+                    if (frame && pdfUrl) {
+                        const cleanUrl = pdfUrl.split('#')[0];
+                        const targetUrl = cleanUrl + '#toolbar=0&navpanes=0&scrollbar=0&view=FitH';
+                        const onPdfRendered = function() {
+                            clearTimeout(pdfLoadFallbackTimer);
+                            requestAnimationFrame(() => {
+                                showPreviewLoader(false);
+                                if (typeof updateStatus === 'function') updateStatus('Ready', 'ready');
+                                syncEdgePdfViewerRect();
+                            });
+                        };
+                        if (frame.src !== targetUrl) {
+                            clearTimeout(pdfLoadFallbackTimer);
+                            frame.onload = onPdfRendered;
+                            pdfLoadFallbackTimer = setTimeout(onPdfRendered, 120);
+                            frame.src = targetUrl;
+                        } else {
+                            onPdfRendered();
+                        }
+                    }
+                } else {
+                    // Native Edge WebView2 handles rendering: eliminate redundant Chromium iframe loading
+                    clearTimeout(pdfLoadFallbackTimer);
+                    showPreviewLoader(false);
+                    if (typeof updateStatus === 'function') updateStatus('Ready', 'ready');
+                }
+
+                requestAnimationFrame(() => {
+                    syncEdgePdfViewerRect();
+                });
+            }
+        }
+
+        function showPdfPreviewBase64(b64) {
+            if (b64) showPdfPreview(b64);
+        }
+
+        function hidePdfPreview() {
+            currentActivePdfUrl = '';
+            clearTimeout(pdfLoadFallbackTimer);
+            showPreviewLoader(false);
+            const pdfView = document.getElementById('view-pdf');
+            if (pdfView) { 
+                pdfView.classList.remove('tab-view-active', 'flex'); 
+                pdfView.classList.add('hidden', 'tab-view-hidden'); 
+                pdfView.style.display = 'none';
+                const frame = document.getElementById('pdf-viewer-frame');
+                if (frame) frame.src = 'about:blank';
+            }
+            if (backend && typeof backend.set_word_visible === 'function') {
+                backend.set_word_visible('pdf-preview', false, function() {});
+            }
+            
+            // Only show viewDefault if on file tab
+            const fileTab = document.getElementById('tab-file');
+            if (fileTab && fileTab.classList.contains('active')) {
+                const defaultView = document.getElementById('view-default');
+                if (defaultView) {
+                    defaultView.style.display = 'flex';
+                }
+                fadeInDefaultView();
+            }
+        }
+
+        // --- Dedicated LaTeX Studio Logic (Direct AST Engine) ---
+        const latexPresets = {
+            quadratic: "x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}",
+            cases: "\\begin{cases} 2x + y = 5 \\\\ x - 3y = -1 \\end{cases}",
+            aligned: "\\begin{aligned} (x+y)^2 &= x^2 + 2xy + y^2 \\\\ &\\ge 4xy \\end{aligned}",
+            matrix: "\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}",
+            integral: "\\int_{a}^{b} f(x) \\, dx = F(b) - F(a)",
+            limit: "\\lim_{x \\to 0} \\frac{\\sin x}{x} = 1",
+            summation: "\\sum_{k=0}^{n} (-1)^k \\binom{n}{k} = 0"
+        };
+
+        function insertLatexPreset(key) {
+            const input = document.getElementById('latex-input-text');
+            if (input && latexPresets[key]) {
+                input.value = latexPresets[key];
+                onLatexInputChange();
+                executeLatexConversion();
+            }
+        }
+
+        function clearLatexInput() {
+            const input = document.getElementById('latex-input-text');
+            if (input) {
+                input.value = '';
+                onLatexInputChange();
+                document.getElementById('latex-visual-render').innerHTML = '<span class="text-xs uppercase tracking-widest" style="color: var(--text-muted);">Live rendered equation preview will appear here</span>';
+                document.getElementById('latex-omml-code').value = '';
+                currentOmmlCode = '';
+                currentMathMLCode = '';
+            }
+        }
+
+        function onLatexInputChange() {
+            const input = document.getElementById('latex-input-text');
+            const countEl = document.getElementById('latex-char-count');
+            if (input && countEl) {
+                countEl.innerText = `${input.value.length} characters`;
+            }
+
+            const autoToggle = document.getElementById('auto-convert-toggle');
+            if (autoToggle && autoToggle.checked) {
+                clearTimeout(autoConvertTimer);
+                autoConvertTimer = setTimeout(executeLatexConversion, 250);
+            }
+        }
+
+        function renderEquationVisual(rawLatex, mathmlFallback, targetElement, isBlock = false) {
+            if (!targetElement) return;
+            let clean = (rawLatex || '').trim();
+            if (!clean) {
+                targetElement.innerHTML = '<span class="text-xs uppercase tracking-widest" style="color: var(--text-muted);">Please enter LaTeX source code</span>';
+                return;
+            }
+
+            // Strip outer wrappers
+            if (clean.startsWith('$$') && clean.endsWith('$$')) {
+                clean = clean.slice(2, -2).trim();
+            } else if (clean.startsWith('$') && clean.endsWith('$')) {
+                clean = clean.slice(1, -1).trim();
+            } else if (clean.startsWith('\\[') && clean.endsWith('\\]')) {
+                clean = clean.slice(2, -2).trim();
+            } else if (clean.startsWith('\\(') && clean.endsWith('\\)')) {
+                clean = clean.slice(2, -2).trim();
+            }
+
+            // High-fidelity KaTeX render (with scalable fences for cases, pmatrix, etc.)
+            if (typeof katex !== 'undefined') {
+                try {
+                    katex.render(clean, targetElement, {
+                        displayMode: isBlock,
+                        throwOnError: false,
+                        strict: false
+                    });
+                    return;
+                } catch (err) {
+                    console.warn('KaTeX visual fallback to MathML:', err);
+                }
+            }
+
+            // Fallback to MathML
+            if (mathmlFallback) {
+                targetElement.innerHTML = mathmlFallback;
+            }
+        }
+
+        function executeLatexConversion() {
+            const input = document.getElementById('latex-input-text');
+            if (!input) return;
+            const latex = input.value.trim();
+
+            const toast = document.getElementById('latex-toast-text');
+
+            if (!latex) {
+                document.getElementById('latex-visual-render').innerHTML = '<span class="text-xs uppercase tracking-widest" style="color: var(--text-muted);">Please enter LaTeX source code</span>';
+                document.getElementById('latex-omml-code').value = '';
+                if (toast) toast.innerText = 'Ready';
+                return;
+            }
+
+            if (toast) toast.innerText = 'Converting...';
+
+            if (backend && typeof backend.compile_latex_studio_json === 'function') {
+                backend.compile_latex_studio_json(latex, function(jsonRes) {
+                    try {
+                        const data = JSON.parse(jsonRes);
+                        if (data.success) {
+                            currentOmmlCode = data.omml;
+                            currentMathMLCode = data.mathml;
+
+                            // Update OMML code view
+                            document.getElementById('latex-omml-code').value = data.omml;
+
+                            // Render visual preview (KaTeX with fallback)
+                            const renderContainer = document.getElementById('latex-visual-render');
+                            renderEquationVisual(data.latex || latex, data.mathml, renderContainer, !!data.is_block);
+
+                            if (toast) toast.innerText = 'Success';
+                        } else {
+                            if (toast) toast.innerText = `Error: ${data.error}`;
+                            document.getElementById('latex-visual-render').innerHTML = `<div class="text-red-500 text-xs font-mono p-2">Failed to compile LaTeX: ${data.error}</div>`;
+                        }
+                    } catch (err) {
+                        if (toast) toast.innerText = `Error: ${err.message}`;
+                    }
+                });
+            } else {
+                if (toast) toast.innerText = 'Backend unavailable';
+            }
+        }
+
+        function setLatexResultTab(mode) {
+            const btnVisual = document.getElementById('tab-res-visual');
+            const btnOmml = document.getElementById('tab-res-omml');
+            const visualCont = document.getElementById('latex-visual-container');
+            const ommlCont = document.getElementById('latex-omml-container');
+
+            if (mode === 'visual' || !btnOmml) {
+                if (btnVisual) {
+                    btnVisual.className = 'px-3 py-1 rounded-md bg-blue-600 text-white text-[11px] font-semibold uppercase tracking-wider shadow-xs';
+                    btnVisual.style.color = '#ffffff';
+                }
+                if (btnOmml) {
+                    btnOmml.className = 'px-3 py-1 rounded-md bg-transparent text-[11px] font-semibold uppercase tracking-wider transition-colors';
+                    btnOmml.style.color = 'var(--text-muted)';
+                }
+                if (visualCont) {
+                    visualCont.classList.remove('hidden');
+                    visualCont.classList.add('flex');
+                }
+                if (ommlCont) {
+                    ommlCont.classList.add('hidden');
+                    ommlCont.classList.remove('flex');
+                }
+            } else {
+                if (btnOmml) {
+                    btnOmml.className = 'px-3 py-1 rounded-md bg-blue-600 text-white text-[11px] font-semibold uppercase tracking-wider shadow-xs';
+                    btnOmml.style.color = '#ffffff';
+                }
+                if (btnVisual) {
+                    btnVisual.className = 'px-3 py-1 rounded-md bg-transparent text-[11px] font-semibold uppercase tracking-wider transition-colors';
+                    btnVisual.style.color = 'var(--text-muted)';
+                }
+                if (ommlCont) {
+                    ommlCont.classList.remove('hidden');
+                    ommlCont.classList.add('flex');
+                }
+                if (visualCont) {
+                    visualCont.classList.add('hidden');
+                    visualCont.classList.remove('flex');
+                }
+            }
+        }
+
+        function copyOmmlCode() {
+            const toast = document.getElementById('latex-toast-text');
+            if (!currentOmmlCode) {
+                if (toast) toast.innerText = 'No OMML to copy';
+                return;
+            }
+            if (backend && typeof backend.copy_omml_to_clipboard === 'function') {
+                backend.copy_omml_to_clipboard(currentOmmlCode, currentMathMLCode, function(ok) {
+                    if (toast) {
+                        toast.innerText = ok ? 'Copied!' : 'Copy failed';
+                    }
+                });
+            } else {
+                navigator.clipboard.writeText(currentOmmlCode).then(() => {
+                    if (toast) toast.innerText = 'Copied!';
+                }).catch(() => {
+                    const ta = document.createElement('textarea');
+                    ta.value = currentOmmlCode;
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    if (toast) toast.innerText = 'Copied!';
+                });
+            }
+        }
+
+        function exportLatexDocx() {
+            const input = document.getElementById('latex-input-text');
+            if (!input || !input.value.trim()) return;
+
+            if (backend && typeof backend.export_latex_studio_docx === 'function') {
+                document.getElementById('latex-toast-text').innerText = 'Saving .docx file...';
+                backend.export_latex_studio_docx(input.value.trim(), function(resJson) {
+                    try {
+                        const res = JSON.parse(resJson);
+                        if (res.success) {
+                            document.getElementById('latex-toast-text').innerText = `Saved: ${res.filename}`;
+                        } else {
+                            document.getElementById('latex-toast-text').innerText = `Error: ${res.error}`;
+                        }
+                    } catch (e) {
+                        document.getElementById('latex-toast-text').innerText = `Save failed: ${e.message}`;
+                    }
+                });
+            }
+        }
+
+        // --- Image Studio Logic ---
+        let currentImageBase64 = null;
+        let currentImageMimeType = "image/png";
+        let currentImageOmmlCode = "";
+        let currentImageMathMLCode = "";
+        let imageLatexDebounceTimer = null;
+
+        function triggerImageFileInput() {
+            const input = document.getElementById('image-file-input');
+            if (input) input.click();
+        }
+
+        function handleImageFileSelect(event) {
+            const file = event.target.files?.[0];
+            if (file) loadAndProcessImageFile(file);
+        }
+
+        function clearImageStudio() {
+            currentImageBase64 = null;
+            currentImageOmmlCode = "";
+            currentImageMathMLCode = "";
+            const fileInput = document.getElementById('image-file-input');
+            if (fileInput) fileInput.value = '';
+            
+            document.getElementById('image-dropzone').classList.remove('hidden');
+            document.getElementById('image-loaded-view').classList.add('hidden');
+            document.getElementById('image-preview-original').src = '';
+            document.getElementById('img-latex-code').value = '';
+            document.getElementById('img-visual-render').innerHTML = '<span class="text-xs uppercase tracking-widest" style="color: var(--text-muted);">Rendered equation will appear here</span>';
+            document.getElementById('img-toast-text').innerText = 'Ready to process formula image';
+            document.getElementById('img-render-time').innerText = '';
+            
+            const spinner = document.getElementById('img-loading-spinner');
+            if (spinner) {
+                spinner.style.display = 'none';
+                spinner.classList.add('hidden');
+                spinner.classList.remove('flex');
+            }
+            setImageResultTab('visual');
+        }
+
+        function loadAndProcessImageFile(file) {
+            if (!file || !file.type.startsWith('image/')) return;
+            currentImageMimeType = file.type;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const dataUrl = e.target.result;
+                currentImageBase64 = dataUrl.split(',')[1];
+                
+                const origImg = document.getElementById('image-preview-original');
+                if (origImg) origImg.src = dataUrl;
+                
+                document.getElementById('image-dropzone').classList.add('hidden');
+                document.getElementById('image-loaded-view').classList.remove('hidden');
+                
+                // Check if auto-convert checkbox is enabled
+                const autoConvertToggle = document.getElementById('auto-convert-image-toggle');
+                if (autoConvertToggle && autoConvertToggle.checked) {
+                    triggerImageOCR();
+                } else {
+                    const toast = document.getElementById('img-toast-text');
+                    if (toast) toast.innerText = 'Image loaded. Press SCAN to convert.';
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function triggerImageOCR() {
+            if (!currentImageBase64) {
+                document.getElementById('img-toast-text').innerText = 'Please select or paste an image first.';
+                return;
+            }
+
+            const toast = document.getElementById('img-toast-text');
+            const renderTime = document.getElementById('img-render-time');
+            const btnOcr = document.getElementById('btn-ocr-image');
+            const spinner = document.getElementById('img-loading-spinner');
+
+            if (toast) toast.innerText = 'Recognizing formula (Math OCR)...';
+            if (renderTime) renderTime.innerText = '';
+            if (btnOcr) {
+                btnOcr.style.opacity = '0.6';
+                btnOcr.style.pointerEvents = 'none';
+            }
+            if (spinner) {
+                spinner.style.display = 'flex';
+                spinner.classList.remove('hidden');
+                spinner.classList.add('flex');
+            }
+
+            if (backend && typeof backend.start_image_ocr === 'function') {
+                backend.start_image_ocr(currentImageBase64);
+            } else if (backend && typeof backend.recognize_image_ocr_json === 'function') {
+                backend.recognize_image_ocr_json(currentImageBase64, function(resJson) {
+                    window.onImageOcrFinished(resJson);
+                });
+            } else {
+                if (toast) toast.innerText = 'Backend OCR engine unavailable.';
+                if (btnOcr) {
+                    btnOcr.style.opacity = '';
+                    btnOcr.style.pointerEvents = '';
+                }
+                if (spinner) {
+                    spinner.style.display = 'none';
+                    spinner.classList.add('hidden');
+                    spinner.classList.remove('flex');
+                }
+            }
+        }
+
+        // Global callback invoked by PyQt backend worker when Math OCR completes
+        window.onImageOcrFinished = function(resultJson) {
+            const btnOcr = document.getElementById('btn-ocr-image');
+            if (btnOcr) {
+                btnOcr.style.opacity = '';
+                btnOcr.style.pointerEvents = '';
+            }
+
+            const spinner = document.getElementById('img-loading-spinner');
+            if (spinner) {
+                spinner.style.display = 'none';
+                spinner.classList.add('hidden');
+                spinner.classList.remove('flex');
+            }
+
+            const toast = document.getElementById('img-toast-text');
+            const renderTime = document.getElementById('img-render-time');
+
+            try {
+                const data = typeof resultJson === 'string' ? JSON.parse(resultJson) : resultJson;
+                if (data.success) {
+                    currentImageOmmlCode = data.omml || '';
+                    currentImageMathMLCode = data.mathml || '';
+                    document.getElementById('img-latex-code').value = data.latex || '';
+
+                    // High-fidelity KaTeX Visual Preview
+                    const visualContainer = document.getElementById('img-visual-render');
+                    renderEquationVisual(data.latex, data.mathml, visualContainer, !!data.is_block);
+
+                    // Update image preview with enhanced crop if available
+                    if (data.enhanced_png_b64) {
+                        const origImg = document.getElementById('image-preview-original');
+                        if (origImg) origImg.src = 'data:image/png;base64,' + data.enhanced_png_b64;
+                    }
+
+                    if (toast) toast.innerText = `OCR Completed (${data.engine || 'PP-FormulaNet'})`;
+                    if (renderTime) renderTime.innerText = `${data.time_total_ms || 0} ms`;
+
+                    setImageResultTab('visual');
+                } else {
+                    if (toast) toast.innerText = `Notice: ${data.error || 'Could not recognize formula'}`;
+                    document.getElementById('img-visual-render').innerHTML = `<div class="text-amber-500 text-xs font-mono p-3">Notice: ${data.error || 'Could not recognize formula'}. You can enter LaTeX manually in LaTeX Code tab.</div>`;
+                }
+            } catch (err) {
+                if (toast) toast.innerText = `Error: ${err.message}`;
+            }
+        };
+
+        function onImageLatexChange() {
+            const input = document.getElementById('img-latex-code');
+            if (!input) return;
+            const latex = input.value.trim();
+            if (!latex) return;
+
+            clearTimeout(imageLatexDebounceTimer);
+            imageLatexDebounceTimer = setTimeout(() => {
+                if (backend && typeof backend.convert_image_latex_to_omml_json === 'function') {
+                    backend.convert_image_latex_to_omml_json(latex, function(jsonRes) {
+                        try {
+                            const data = JSON.parse(jsonRes);
+                            if (data.success) {
+                                currentImageOmmlCode = data.omml;
+                                currentImageMathMLCode = data.mathml;
+                                renderEquationVisual(data.latex || latex, data.mathml, document.getElementById('img-visual-render'), !!data.is_block);
+                                document.getElementById('img-toast-text').innerText = 'Updated from LaTeX Code';
+                            }
+                        } catch(e) {}
+                    });
+                }
+            }, 200);
+        }
+
+        function setImageResultTab(mode) {
+            const btnVis = document.getElementById('tab-img-res-visual');
+            const btnLat = document.getElementById('tab-img-res-latex');
+            const contVis = document.getElementById('img-visual-container');
+            const contLat = document.getElementById('img-latex-container');
+
+            if (mode === 'visual') {
+                if (btnVis) {
+                    btnVis.className = 'px-3 py-1 rounded-lg bg-blue-600 text-white text-[11px] font-semibold uppercase tracking-wider shadow-xs transition-colors';
+                    btnVis.style.color = '#ffffff';
+                }
+                if (btnLat) {
+                    btnLat.className = 'glass-button px-3 py-1 rounded-lg text-[11px] font-semibold uppercase tracking-wider transition-colors';
+                    btnLat.style.color = 'var(--text-muted)';
+                }
+                if (contVis) {
+                    contVis.classList.remove('hidden');
+                    contVis.classList.add('flex');
+                }
+                if (contLat) {
+                    contLat.classList.add('hidden');
+                    contLat.classList.remove('flex');
+                }
+            } else {
+                if (btnLat) {
+                    btnLat.className = 'px-3 py-1 rounded-lg bg-blue-600 text-white text-[11px] font-semibold uppercase tracking-wider shadow-xs transition-colors';
+                    btnLat.style.color = '#ffffff';
+                }
+                if (btnVis) {
+                    btnVis.className = 'glass-button px-3 py-1 rounded-lg text-[11px] font-semibold uppercase tracking-wider transition-colors';
+                    btnVis.style.color = 'var(--text-muted)';
+                }
+                if (contLat) {
+                    contLat.classList.remove('hidden');
+                    contLat.classList.add('flex');
+                }
+                if (contVis) {
+                    contVis.classList.add('hidden');
+                    contVis.classList.remove('flex');
+                }
+            }
+        }
+
+        function copyImageOmmlCode() {
+            if (!currentImageOmmlCode) {
+                alert('No OMML XML code available to copy.');
+                return;
+            }
+            if (backend && typeof backend.copy_omml_to_clipboard === 'function') {
+                backend.copy_omml_to_clipboard(currentImageOmmlCode, currentImageMathMLCode, function(ok) {
+                    if (ok) {
+                        document.getElementById('img-toast-text').innerText = 'Copied to clipboard! Ready to paste into Word!';
+                    } else {
+                        document.getElementById('img-toast-text').innerText = 'Failed to copy to clipboard.';
+                    }
+                });
+            } else {
+                navigator.clipboard.writeText(currentImageOmmlCode).then(() => {
+                    document.getElementById('img-toast-text').innerText = 'Copied to clipboard! Ready to paste into Word!';
+                });
+            }
+        }
+
+        function initImageDropzone() {
+            const dropzone = document.getElementById('image-dropzone');
+            if (dropzone) {
+                dropzone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    dropzone.style.borderColor = 'var(--accent)';
+                });
+                dropzone.addEventListener('dragleave', (e) => {
+                    e.preventDefault();
+                    dropzone.style.borderColor = 'var(--border-subtle)';
+                });
+                dropzone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    dropzone.style.borderColor = 'var(--border-subtle)';
+                    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                        loadAndProcessImageFile(e.dataTransfer.files[0]);
+                    }
+                });
+            }
+
+            // Global paste listener for Image tab
+            document.addEventListener('paste', function(e) {
+                const viewImage = document.getElementById('view-image');
+                if (viewImage && !viewImage.classList.contains('hidden')) {
+                    const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
+                    if (activeTag === 'textarea' || activeTag === 'input') return;
+                    
+                    const items = (e.clipboardData || e.originalEvent.clipboardData)?.items;
+                    if (items) {
+                        for (let i = 0; i < items.length; i++) {
+                            if (items[i].kind === 'file' && items[i].type.startsWith('image/')) {
+                                e.preventDefault();
+                                const blob = items[i].getAsFile();
+                                loadAndProcessImageFile(blob);
+                                break;
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- Open External URL safely in user browser ---
+        function openExternalUrl(url) {
+            if (backend && typeof backend.open_url === 'function') {
+                backend.open_url(url);
+            } else {
+                window.open(url, '_blank');
+            }
+        }
+
+        // --- Enhanced Fluid Momentum Scroll Engine for ISO 80000 ---
+        let isoScrollTarget = 0;
+        let isoScrollCurrent = 0;
+        let isIsoScrolling = false;
+
+        
+        // =========================================================================
+        // =========================================================================
+        // VS CODE STANDARD MARKDOWN-IT PREVIEW & FLUID SMOOTH SCROLL ENGINE
+        // =========================================================================
+        let readmeIsLoaded = false;
+        let cachedRawMarkdown = "";
+        let mdParser = null;
+
+        // Initialize VS Code Standard Markdown-It parser with full Mermaid & Slug support
+        function initMarkdownParser() {
+            if (mdParser) return mdParser;
+
+            if (typeof markdownit !== 'undefined') {
+                mdParser = markdownit({
+                    html: true,
+                    linkify: true,
+                    typographer: false,
+                    highlight: function(str, lang) {
+                        if (lang === 'mermaid') {
+                            return '<pre><code class="language-mermaid">' + markdownit().utils.escapeHtml(str) + '</code></pre>';
+                        }
+                        if (typeof hljs !== 'undefined') {
+                            if (lang && hljs.getLanguage(lang)) {
+                                try {
+                                    return '<pre class="hljs"><code class="language-' + lang + '">' +
+                                           hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
+                                           '</code></pre>';
+                                } catch (__) {}
+                            }
+                            try {
+                                return '<pre class="hljs"><code class="' + (lang ? 'language-' + lang : '') + '">' + hljs.highlightAuto(str).value + '</code></pre>';
+                            } catch (__) {}
+                        }
+                        return '<pre class="hljs"><code class="' + (lang ? 'language-' + lang : '') + '">' + (typeof markdownit !== 'undefined' ? markdownit().utils.escapeHtml(str) : str) + '</code></pre>';
+                    }
+                });
+
+                // Slug generator for headings so table-of-contents anchor links work seamlessly
+                const defaultHeadingOpen = mdParser.renderer.rules.heading_open || function(tokens, idx, options, env, self) {
+                    return self.renderToken(tokens, idx, options);
+                };
+                mdParser.renderer.rules.heading_open = function(tokens, idx, options, env, self) {
+                    const nextToken = tokens[idx + 1];
+                    if (nextToken && nextToken.type === 'inline') {
+                        const rawTitle = nextToken.content;
+                        const slug = rawTitle.toLowerCase()
+                            .replace(/[^\w\s-]/g, '')
+                            .trim()
+                            .replace(/\s+/g, '-');
+                        tokens[idx].attrSet('id', slug);
+                    }
+                    return defaultHeadingOpen(tokens, idx, options, env, self);
+                };
+            }
+            return mdParser;
+        }
+
+        // Configure Mermaid Vector Graphics
+        if (typeof mermaid !== 'undefined') {
+            try {
+                mermaid.initialize({
+                    startOnLoad: false,
+                    theme: (document.documentElement.getAttribute('data-theme') === 'light') ? 'default' : 'dark',
+                    securityLevel: 'loose',
+                    flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' }
+                });
+            } catch (e) {
+                console.warn('[Mermaid init error]', e);
+            }
+        }
+
+        async function reRenderMermaidDiagrams() {
+            if (typeof mermaid === 'undefined') return;
+            const bodyEl = document.getElementById('readme-markdown-body');
+            if (!bodyEl) return;
+            const mermaidElements = bodyEl.querySelectorAll('.mermaid');
+            if (mermaidElements.length === 0) return;
+
+            const currentTheme = (document.documentElement.getAttribute('data-theme') === 'light') ? 'default' : 'dark';
+            try {
+                mermaid.initialize({
+                    startOnLoad: false,
+                    theme: currentTheme,
+                    securityLevel: 'loose'
+                });
+                for (let i = 0; i < mermaidElements.length; i++) {
+                    const el = mermaidElements[i];
+                    const source = el.getAttribute('data-source');
+                    if (!source) continue;
+                    try {
+                        const id = 'mermaid-svg-' + Date.now() + '-' + i;
+                        const { svg } = await mermaid.render(id, source);
+                        el.innerHTML = svg;
+                    } catch (err) {
+                        console.warn('[Mermaid re-render error]', i, err);
+                    }
+                }
+            } catch (e) {
+                console.warn('[Mermaid init error on theme toggle]', e);
+            }
+        }
+
+        // =============================================================
+        // EAGER ALL-LOADING STARTUP PIPELINE (ZERO-LATENCY ARCHITECTURE)
+        // =============================================================
+        let isEagerPreloadStarted = false;
+        let isEagerPreloadDone = false;
+
+        function prewarmKaTeXEngine() {
+            if (typeof katex === 'undefined') return;
+            try {
+                const offscreen = document.createElement('div');
+                offscreen.style.cssText = 'position:fixed;top:-9999px;left:-9999px;visibility:hidden;pointer-events:none;';
+                document.body.appendChild(offscreen);
+
+                // Pre-render representative math equations to compile V8 parser and load WOFF2 fonts into GPU
+                const testFormulas = [
+                    "\\int_{a}^{b} f(x) dx = F(b) - F(a)",
+                    "\\mathbf{A} \\cdot \\vec{x} = \\lambda \\vec{x}",
+                    "\\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}"
+                ];
+                testFormulas.forEach(f => {
+                    const span = document.createElement('span');
+                    katex.render(f, span, { displayMode: true, throwOnError: false });
+                    offscreen.appendChild(span);
+                });
+
+                requestAnimationFrame(() => {
+                    if (offscreen.parentNode) offscreen.parentNode.removeChild(offscreen);
+                });
+            } catch (e) {
+                console.warn('[KaTeX Prewarm Error]', e);
+            }
+        }
+
+        window.quastStartEagerPreload = function() {
+            if (isEagerPreloadStarted) return;
+            isEagerPreloadStarted = true;
+
+            function reportProgress(pct, msg) {
+                if (window.backend && typeof window.backend.report_preload_progress === 'function') {
+                    window.backend.report_preload_progress(pct, msg);
+                }
+            }
+
+            function signalReady() {
+                if (isEagerPreloadDone) return;
+                isEagerPreloadDone = true;
+                window.isEagerPreloadDone = true;
+                window.readmeIsLoaded = true;
+                reportProgress(100, "All modules ready");
+                if (window.backend && typeof window.backend.signal_frontend_ready === 'function') {
+                    window.backend.signal_frontend_ready();
+                }
+            }
+
+            try {
+                // Phase 1: Pre-initialize DOM smooth scroll & layout layers (55%)
+                reportProgress(55, "Initializing hardware scrolling & DOM cache...");
+                if (typeof initIsoSmoothScroll === 'function') initIsoSmoothScroll();
+                if (typeof initReadmeSmoothScroll === 'function') initReadmeSmoothScroll();
+
+                // Phase 2: Pre-warm KaTeX math engine & font caches (70%) on next frame
+                setTimeout(() => {
+                    reportProgress(70, "Pre-warming LaTeX math engine & KaTeX...");
+                    prewarmKaTeXEngine();
+
+                    // Phase 3: Eager Pre-rendering Documentation & Mermaid diagrams (85%)
+                    setTimeout(() => {
+                        reportProgress(85, "Pre-rendering documentation & vector diagrams...");
+                        ensureReadmeLoaded(() => {
+                            // Phase 4: Synchronizing UI layers & cache (95%)
+                            reportProgress(95, "Synchronizing UI layers & cache...");
+                            setTimeout(signalReady, 150);
+                        });
+                    }, 80);
+                }, 80);
+
+                // Safety timeout fallback inside JS (6.5s)
+                setTimeout(() => {
+                    if (!isEagerPreloadDone) {
+                        console.warn('[Frontend Preload] Fallback safety trigger');
+                        signalReady();
+                    }
+                }, 6500);
+
+            } catch (err) {
+                console.warn('[quastStartEagerPreload error]', err);
+                signalReady();
+            }
+        };
+
+        function scheduleReadmePrewarm() {
+            if (window.quastStartEagerPreload) {
+                window.quastStartEagerPreload();
+            }
+        }
+
+        function ensureReadmeLoaded(onDone) {
+            if (readmeIsLoaded) {
+                if (typeof onDone === 'function') onDone();
+                return;
+            }
+            loadReadmeContent(false, onDone);
+        }
+
+        function loadReadmeContent(isBackground = false, onDone = null) {
+            if (backend && typeof backend.get_readme_markdown === 'function') {
+                backend.get_readme_markdown(function(liveMd) {
+                    if (liveMd && liveMd.trim().length > 0) {
+                        cachedRawMarkdown = liveMd;
+                        processAndRenderReadme(liveMd, isBackground, onDone);
+                    } else {
+                        fallbackToBundledReadme(isBackground, onDone);
+                    }
+                });
+            } else {
+                fallbackToBundledReadme(isBackground, onDone);
+            }
+        }
+
+        function fallbackToBundledReadme(isBackground = false, onDone = null) {
+            if (window.README_MARKDOWN_RAW) {
+                cachedRawMarkdown = window.README_MARKDOWN_RAW;
+            }
+            if (cachedRawMarkdown) {
+                processAndRenderReadme(cachedRawMarkdown, isBackground, onDone);
+            } else {
+                readmeIsLoaded = true;
+                isReadmePrewarming = false;
+                if (typeof onDone === 'function') onDone();
+            }
+        }
+
+        function processAndRenderReadme(rawText, isBackground = false, onDone = null) {
+            cachedRawMarkdown = rawText;
+            let renderedText = rawText;
+
+            // 1. Local image asset replacements
+            const imgReplacements = {
+                'resources/icons/logo.jpg': 'assets/logo.png',
+                'resources/icons/author_avatar.jpg': '../icons/author_avatar.jpg',
+                'screenshots/Figure_Docx_1.png': '../../screenshots/Figure_Docx_1.png',
+                'screenshots/Figure_Docx_2.png': '../../screenshots/Figure_Docx_2.png',
+                'screenshots/Figure_LaTeX.png': '../../screenshots/Figure_LaTeX.png',
+                'screenshots/Figure_IMAGE.png': '../../screenshots/Figure_IMAGE.png',
+                'screenshots/Figure_ISO.png': '../../screenshots/Figure_ISO.png'
+            };
+            for (const [key, val] of Object.entries(imgReplacements)) {
+                renderedText = renderedText.split(key).join(val);
+            }
+
+            // 2. 100% Offline Local Shields SVG replacements (Zero network latency & perfect offline privacy)
+            const shieldsMap = {
+                "https://img.shields.io/badge/GitHub-LaTeX--To--OMML--Converter-181717?style=for-the-badge&logo=github&logoColor=white": "assets/shields/shield_1.svg",
+                "https://img.shields.io/badge/GitHub-QUAST__LaTeX__To__OMML__Converter-181717?style=for-the-badge&logo=github&logoColor=white": "assets/shields/shield_1.svg",
+                "https://img.shields.io/badge/Version-v3.11.26-2563eb?style=for-the-badge": "assets/shields/shield_2.svg",
+                "https://img.shields.io/badge/License-MIT-10b981?style=for-the-badge": "assets/shields/shield_3.svg",
+                "https://img.shields.io/badge/Security-100%25_Offline_Local_Processing-059669?style=for-the-badge&logo=shield&logoColor=white": "assets/shields/shield_4.svg",
+                "https://img.shields.io/badge/Privacy-Zero_Network_Transmission-10b981?style=for-the-badge&logo=lock&logoColor=white": "assets/shields/shield_5.svg",
+                "https://img.shields.io/badge/Origin-Vietnam_%F0%9F%87%BB%F0%9F%87%B3-da251d?style=for-the-badge": "assets/shields/shield_6.svg",
+                "https://img.shields.io/badge/Telegram-@OOPS52VN001-26A5E4?style=for-the-badge&logo=telegram&logoColor=white": "assets/shields/shield_7.svg",
+                "https://img.shields.io/badge/Platform-Windows_11_%7C_10-0078D6?style=flat-square&logo=windows11&logoColor=white": "assets/shields/shield_8.svg",
+                "https://img.shields.io/badge/Target-Microsoft_Word_OMML-2B579A?style=flat-square&logo=microsoftword&logoColor=white": "assets/shields/shield_9.svg",
+                "https://img.shields.io/badge/Python-3.8%2B-3776AB?style=flat-square&logo=python&logoColor=white": "assets/shields/shield_10.svg",
+                "https://img.shields.io/badge/Rust-2021_Edition-000000?style=flat-square&logo=rust&logoColor=white": "assets/shields/shield_11.svg",
+                "https://img.shields.io/badge/FFI_Bridge-PyO3_%7C_Maturin-DEA584?style=flat-square&logo=rust&logoColor=black": "assets/shields/shield_12.svg",
+                "https://img.shields.io/badge/Live_Preview-KaTeX_Engine-329898?style=flat-square&logo=latex&logoColor=white": "assets/shields/shield_13.svg",
+                "https://img.shields.io/badge/Syntax-LaTeX_2%CE%B5-008080?style=flat-square&logo=latex&logoColor=white": "assets/shields/shield_14.svg",
+                "https://img.shields.io/badge/Output-Office_Math_Markup_Language_(OMML)-D83B01?style=flat-square&logo=microsoftoffice&logoColor=white": "assets/shields/shield_15.svg",
+                "https://img.shields.io/badge/Standard-ISO_80000--2_Compliant-B91C1C?style=flat-square&logo=iso&logoColor=white": "assets/shields/shield_16.svg",
+                "https://img.shields.io/badge/Methodology-100%25_Vibe_Coding_via_Google_Antigravity-4285F4?style=flat-square&logo=google&logoColor=white": "assets/shields/shield_17.svg",
+                "https://img.shields.io/badge/AI_Engines-Gemini_3.1_Pro_%7C_3.8_Flash_%7C_4_Argon-8E75B2?style=flat-square&logo=googlegemini&logoColor=white": "assets/shields/shield_18.svg",
+                "https://img.shields.io/badge/Direct_Contact-Telegram_@OOPS52VN001-26A5E4?style=for-the-badge&logo=telegram&logoColor=white": "assets/shields/shield_19.svg"
+            };
+            for (const [sUrl, sLocal] of Object.entries(shieldsMap)) {
+                renderedText = renderedText.split(sUrl).join(sLocal);
+            }
+
+            renderMarkdownHtml(renderedText, onDone);
+        }
+
+        function renderMarkdownHtml(mdText, onComplete = null) {
+            const bodyEl = document.getElementById('readme-markdown-body');
+            if (!bodyEl) return;
+
+            try {
+                // 1. Render Markdown using VS Code Standard Markdown-It parser (or fallback to marked)
+                const parser = initMarkdownParser();
+                let html = "";
+                if (parser) {
+                    html = parser.render(mdText);
+                } else if (typeof marked !== 'undefined') {
+                    html = marked.parse(mdText);
+                } else {
+                    html = '<pre>' + mdText + '</pre>';
+                }
+
+                // Add async decoding and lazy loading to prevent synchronous image decode stalls
+                html = html.replace(/<img\s+/gi, '<img loading="lazy" decoding="async" ');
+
+                bodyEl.innerHTML = html;
+
+                // 2. Intercept and convert Mermaid blocks into clean vector containers
+                const codeBlocks = bodyEl.querySelectorAll('pre code.language-mermaid, pre code.lang-mermaid');
+                codeBlocks.forEach((codeEl, idx) => {
+                    const preEl = codeEl.closest('pre');
+                    const mermaidSource = codeEl.textContent.trim();
+                    const container = document.createElement('div');
+                    container.className = 'readme-mermaid-container';
+
+                    // SVG Wrapper
+                    const svgWrapper = document.createElement('div');
+                    svgWrapper.className = 'readme-mermaid-wrapper';
+                    const mermaidDiv = document.createElement('div');
+                    mermaidDiv.className = 'mermaid';
+                    mermaidDiv.id = 'mermaid-diagram-' + idx;
+                    mermaidDiv.setAttribute('data-source', mermaidSource);
+                    mermaidDiv.textContent = mermaidSource;
+                    svgWrapper.appendChild(mermaidDiv);
+                    container.appendChild(svgWrapper);
+
+                    if (preEl && preEl.parentNode) {
+                        preEl.parentNode.replaceChild(container, preEl);
+                    }
+                });
+
+                // Cluster badge links into horizontal flex ribbons
+                bodyEl.querySelectorAll('p').forEach(p => {
+                    const badgeImgs = p.querySelectorAll('a > img');
+                    if (badgeImgs.length >= 2) {
+                        p.classList.add('readme-badges-cluster');
+                    }
+                });
+
+                // Run Mermaid rendering sequentially (if any exist)
+                if (typeof mermaid !== 'undefined') {
+                    try {
+                        const currentTheme = (document.documentElement.getAttribute('data-theme') === 'light') ? 'default' : 'dark';
+                        mermaid.initialize({
+                            startOnLoad: false,
+                            theme: currentTheme,
+                            securityLevel: 'loose'
+                        });
+                        const mermaidElements = bodyEl.querySelectorAll('.mermaid');
+                        mermaidElements.forEach(async (el, mIdx) => {
+                            try {
+                                const id = 'mermaid-svg-' + Date.now() + '-' + mIdx;
+                                const graphCode = el.getAttribute('data-source') || el.textContent.trim();
+                                const { svg } = await mermaid.render(id, graphCode);
+                                el.innerHTML = svg;
+                            } catch (diagramErr) {
+                                console.warn('[Mermaid render element error]', mIdx, diagramErr);
+                            }
+                        });
+                    } catch (mErr) {
+                        console.warn('[Mermaid render error]', mErr);
+                    }
+                }
+
+                // 3. Render KaTeX math equations in README incrementally (chunked across animation frames)
+                renderKaTeXInReadme(bodyEl, () => {
+                    readmeIsLoaded = true;
+                    isReadmePrewarming = false;
+                    if (typeof onComplete === 'function') onComplete();
+                });
+
+                // 4. Safely handle external links in README
+                bodyEl.querySelectorAll('a').forEach(a => {
+                    const href = a.getAttribute('href');
+                    if (href && (href.startsWith('http://') || href.startsWith('https://'))) {
+                        a.setAttribute('target', '_blank');
+                        a.setAttribute('rel', 'noopener noreferrer');
+                        a.onclick = function(e) {
+                            e.preventDefault();
+                            openExternalUrl(href);
+                        };
+                    } else if (href && href.startsWith('#')) {
+                        // Internal TOC anchor link
+                        a.onclick = function(e) {
+                            e.preventDefault();
+                            const targetHash = href.slice(1);
+                            scrollToReadmeHash(targetHash);
+                        };
+                    }
+                });
+            } catch (err) {
+                console.error('[renderMarkdownHtml error]', err);
+                bodyEl.innerHTML = `<div class="p-6 rounded-xl border border-red-500/30 bg-red-500/10 text-red-400">
+                    <h3 class="font-bold text-sm">Failed to render Markdown</h3>
+                    <p class="text-xs mt-1 font-mono">${err.message}</p>
+                </div>`;
+                readmeIsLoaded = true;
+                isReadmePrewarming = false;
+                if (typeof onComplete === 'function') onComplete();
+            }
+        }
+
+        function renderKaTeXInReadme(container, onComplete = null) {
+            if (typeof katex === 'undefined') {
+                if (typeof onComplete === 'function') onComplete();
+                return;
+            }
+
+            const walker = document.createTreeWalker(
+                container,
+                NodeFilter.SHOW_TEXT,
+                {
+                    acceptNode: function(node) {
+                        const parent = node.parentNode;
+                        if (parent && (parent.nodeName === 'CODE' || parent.nodeName === 'PRE' || parent.nodeName === 'SCRIPT' || parent.nodeName === 'STYLE')) {
+                            return NodeFilter.FILTER_REJECT;
+                        }
+                        if (node.nodeValue.indexOf('$') !== -1 || node.nodeValue.indexOf('\\(') !== -1 || node.nodeValue.indexOf('\\[') !== -1) {
+                            return NodeFilter.FILTER_ACCEPT;
+                        }
+                        return NodeFilter.FILTER_SKIP;
+                    }
+                }
+            );
+
+            const nodesToProcess = [];
+            while (walker.nextNode()) {
+                nodesToProcess.push(walker.currentNode);
+            }
+
+            if (nodesToProcess.length === 0) {
+                if (typeof onComplete === 'function') onComplete();
+                return;
+            }
+
+            let idx = 0;
+            const CHUNK_SIZE = 6; // Process 6 equations per frame to strictly keep frame time under 3ms
+
+            function processMathChunk() {
+                const end = Math.min(idx + CHUNK_SIZE, nodesToProcess.length);
+                for (; idx < end; idx++) {
+                    const node = nodesToProcess[idx];
+                    if (!node || !node.parentNode) continue;
+                    const text = node.nodeValue;
+                    const mathRegex = /(\$\$[\s\S]+?\$\$|\\\[[\s\S]+?\\\]|(?<!\\)\$(?!\$)[^$\n]+?(?<!\\)\$|\\\([\s\S]+?\\\))/g;
+                    if (!mathRegex.test(text)) continue;
+
+                    const frag = document.createDocumentFragment();
+                    let lastIndex = 0;
+                    mathRegex.lastIndex = 0;
+                    let match;
+
+                    while ((match = mathRegex.exec(text)) !== null) {
+                        if (match.index > lastIndex) {
+                            frag.appendChild(document.createTextNode(text.substring(lastIndex, match.index)));
+                        }
+                        const fullMatch = match[0];
+                        let isDisplay = false;
+                        let mathCode = "";
+
+                        if (fullMatch.startsWith('$$') && fullMatch.endsWith('$$')) {
+                            isDisplay = true;
+                            mathCode = fullMatch.slice(2, -2);
+                        } else if (fullMatch.startsWith('\\[') && fullMatch.endsWith('\\]')) {
+                            isDisplay = true;
+                            mathCode = fullMatch.slice(2, -2);
+                        } else if (fullMatch.startsWith('\\(') && fullMatch.endsWith('\\)')) {
+                            isDisplay = false;
+                            mathCode = fullMatch.slice(2, -2);
+                        } else if (fullMatch.startsWith('$') && fullMatch.endsWith('$')) {
+                            isDisplay = false;
+                            mathCode = fullMatch.slice(1, -1);
+                        }
+
+                        const span = document.createElement('span');
+                        span.className = isDisplay ? 'katex-display-inline my-2 block' : 'katex-inline inline-block align-middle';
+                        try {
+                            katex.render(mathCode, span, {
+                                displayMode: isDisplay,
+                                throwOnError: false
+                            });
+                            frag.appendChild(span);
+                        } catch (e) {
+                            frag.appendChild(document.createTextNode(fullMatch));
+                        }
+                        lastIndex = mathRegex.lastIndex;
+                    }
+
+                    if (lastIndex < text.length) {
+                        frag.appendChild(document.createTextNode(text.substring(lastIndex)));
+                    }
+
+                    if (node.parentNode) {
+                        node.parentNode.replaceChild(frag, node);
+                    }
+                }
+
+                if (idx < nodesToProcess.length) {
+                    requestAnimationFrame(processMathChunk);
+                } else if (typeof onComplete === 'function') {
+                    onComplete();
+                }
+            }
+
+            processMathChunk();
+        }
+
+
+        // =========================================================================
+        // FLUID KINETIC MOMENTUM SMOOTH SCROLL ENGINE FOR README & ISO VIEWS
+        // =========================================================================
+        let readmeScrollTarget = 0;
+        let readmeScrollCurrent = 0;
+        let isReadmeScrolling = false;
+
+        function updateReadmeScrollPhysics() {
+            if (!isReadmeScrolling) return;
+            const container = document.getElementById('readme-content-scroll');
+            if (!container) {
+                isReadmeScrolling = false;
+                return;
+            }
+
+            const diff = readmeScrollTarget - readmeScrollCurrent;
+            readmeScrollCurrent += diff * 0.15; // Smooth exponential damping
+            container.scrollTop = readmeScrollCurrent;
+
+            if (Math.abs(diff) > 0.5) {
+                requestAnimationFrame(updateReadmeScrollPhysics);
+            } else {
+                readmeScrollCurrent = readmeScrollTarget;
+                container.scrollTop = readmeScrollTarget;
+                isReadmeScrolling = false;
+            }
+        }
+
+        function scrollToReadmeHash(hash) {
+            if (!hash) return;
+            const container = document.getElementById('readme-content-scroll');
+            if (!container) return;
+
+            let target = document.getElementById(hash);
+            if (!target) {
+                const altId = hash.replace(/--/g, '-');
+                target = document.getElementById(altId);
+            }
+            if (!target) {
+                // Match heading elements by normalized slug
+                const headings = container.querySelectorAll('h1, h2, h3, h4, h5, h6');
+                for (const h of headings) {
+                    const hSlug = h.textContent.toLowerCase().replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '-');
+                    if (hSlug === hash || hSlug === hash.replace(/--/g, '-') || hSlug.includes(hash)) {
+                        target = h;
+                        break;
+                    }
+                }
+            }
+
+            if (target) {
+                const offset = target.offsetTop - 16;
+                readmeScrollCurrent = container.scrollTop;
+                readmeScrollTarget = Math.max(0, Math.min(container.scrollHeight - container.clientHeight, offset));
+                if (!isReadmeScrolling) {
+                    isReadmeScrolling = true;
+                    requestAnimationFrame(updateReadmeScrollPhysics);
+                }
+            }
+        }
+
+        function initReadmeSmoothScroll() {
+            const container = document.getElementById('readme-content-scroll');
+            if (!container) return;
+
+            readmeScrollCurrent = container.scrollTop;
+            readmeScrollTarget = container.scrollTop;
+
+            // Keep positions synchronized on manual scroll (native scrollbar drag or keyboard)
+            container.addEventListener('scroll', () => {
+                if (!isReadmeScrolling) {
+                    readmeScrollCurrent = container.scrollTop;
+                    readmeScrollTarget = container.scrollTop;
+                }
+            }, { passive: true });
+
+            // Cancel kinetic animation immediately when user clicks or grabs scrollbar
+            container.addEventListener('pointerdown', () => {
+                if (isReadmeScrolling) {
+                    isReadmeScrolling = false;
+                    readmeScrollCurrent = container.scrollTop;
+                    readmeScrollTarget = container.scrollTop;
+                }
+            }, { passive: true });
+
+            container.addEventListener('wheel', (e) => {
+                if (e.ctrlKey) return;
+
+                // Sync current position in case of prior manual movement
+                if (!isReadmeScrolling) {
+                    readmeScrollCurrent = container.scrollTop;
+                    readmeScrollTarget = container.scrollTop;
+                }
+
+                e.preventDefault();
+
+                const maxScroll = container.scrollHeight - container.clientHeight;
+                if (maxScroll <= 0) return;
+
+                // Normalize wheel delta across delta modes (pixels vs lines vs pages)
+                let deltaY = e.deltaY;
+                if (e.deltaMode === 1) deltaY *= 33;
+                else if (e.deltaMode === 2) deltaY *= container.clientHeight;
+
+                // Smooth responsive step
+                const step = deltaY * 1.25;
+                readmeScrollTarget = Math.max(0, Math.min(maxScroll, readmeScrollTarget + step));
+
+                if (!isReadmeScrolling) {
+                    isReadmeScrolling = true;
+                    requestAnimationFrame(updateReadmeScrollPhysics);
+                }
+            }, { passive: false });
+        }
+        
+        function initIsoSmoothScroll() {
+            const container = document.getElementById('iso-content-scroll');
+            if (!container) return;
+
+            isoScrollCurrent = container.scrollTop;
+            isoScrollTarget = container.scrollTop;
+
+            function updateScrollPhysics() {
+                if (!isIsoScrolling) return;
+                const diff = isoScrollTarget - isoScrollCurrent;
+                isoScrollCurrent += diff * 0.15; // Smooth exponential damping
+
+                container.scrollTop = isoScrollCurrent;
+
+                if (Math.abs(diff) > 0.5) {
+                    requestAnimationFrame(updateScrollPhysics);
+                } else {
+                    isoScrollCurrent = isoScrollTarget;
+                    container.scrollTop = isoScrollTarget;
+                    isIsoScrolling = false;
+                }
+            }
+
+            // Sync on manual scroll
+            container.addEventListener('scroll', () => {
+                if (!isIsoScrolling) {
+                    isoScrollCurrent = container.scrollTop;
+                    isoScrollTarget = container.scrollTop;
+                }
+            }, { passive: true });
+
+            // Stop kinetic animation immediately on pointer/mouse down
+            container.addEventListener('pointerdown', () => {
+                if (isIsoScrolling) {
+                    isIsoScrolling = false;
+                    isoScrollCurrent = container.scrollTop;
+                    isoScrollTarget = container.scrollTop;
+                }
+            }, { passive: true });
+
+            container.addEventListener('wheel', (e) => {
+                if (e.ctrlKey) return;
+
+                if (!isIsoScrolling) {
+                    isoScrollCurrent = container.scrollTop;
+                    isoScrollTarget = container.scrollTop;
+                }
+
+                e.preventDefault();
+
+                const maxScroll = container.scrollHeight - container.clientHeight;
+                if (maxScroll <= 0) return;
+
+                let deltaY = e.deltaY;
+                if (e.deltaMode === 1) deltaY *= 33;
+                else if (e.deltaMode === 2) deltaY *= container.clientHeight;
+
+                const step = deltaY * 1.25;
+                isoScrollTarget = Math.max(0, Math.min(maxScroll, isoScrollTarget + step));
+
+                if (!isIsoScrolling) {
+                    isIsoScrolling = true;
+                    requestAnimationFrame(updateScrollPhysics);
+                }
+            }, { passive: false });
+        }
+
+
+        // Initialize smooth scroll & fullscreen viewer when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            initIsoSmoothScroll();
+            initReadmeSmoothScroll();
+            if (typeof window.quastStartEagerPreload === 'function') {
+                window.quastStartEagerPreload();
+            }
+        });
+
+    </script>
+
+    </body>
+</html>

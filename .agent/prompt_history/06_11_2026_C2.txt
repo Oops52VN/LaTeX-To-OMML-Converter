@@ -1,0 +1,119 @@
+================================================================================
+CONVERSATION PROMPT RECORD
+================================================================================
+Timestamp (UTC+0): 2026-11-05 17:42:10 UTC+0
+AI Model: Gemini 3.8 Flash (High)
+Execution Duration: ~140 seconds
+Token Consumption: ~24,000 tokens
+
+--------------------------------------------------------------------------------
+TRANSFORMED & NORMALIZED TECHNICAL SPECIFICATION (ENGLISH) - TURN 1
+--------------------------------------------------------------------------------
+User Request:
+"Conduct a comprehensive technical audit of the current application UI rendering pipeline to verify whether all UI rendering, compositing, and rasterization tasks have been fully offloaded to the GPU for hardware-accelerated processing."
+
+Technical Context & Objectives:
+1. Chromium / PyQt5 WebEngine Hardware Acceleration Audit:
+   - Execute in-process diagnostics querying Chromium's internal GPU subsystem via `chrome://gpu` and WebGL context inspectors (`WEBGL_debug_renderer_info`).
+   - Validate hardware acceleration status across all key rendering domains: Canvas 2D, Compositing, Rasterization, WebGL/WebGL2, Multiple Raster Threads, and Video Decode.
+   - Verify GPU vendor and renderer binding (`Intel(R) Arc(TM) 130T GPU (8GB)`).
+2. Host Window & VSync Synchronization:
+   - Inspect Qt application flags (`AA_ShareOpenGLContexts`, `AA_EnableHighDpiScaling`, `AA_DontCreateNativeWidgetSiblings`).
+   - Audit VSync synchronization pacing via `QSurfaceFormat.setSwapInterval(1)`.
+3. Edge WebView2 PDF Preview Engine Analysis:
+   - Audit the secondary web engine (`EdgePdfPreviewHost` via Microsoft Edge WebView2) used for high-fidelity DOCX PDF preview.
+   - Verify presence or absence of GPU command-line flags (`WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS`).
+4. DOM / CSS Compositing Layer Evaluation:
+   - Audit `resources/UI/UI.html` for hardware compositing layers (`transform: translateZ(0)`, `will-change`, CSS containment, and hardware scrolling).
+5. Comprehensive Assessment & Optimization Strategy:
+   - Provide an authoritative breakdown of components that are currently hardware accelerated versus areas where GPU offloading can be further hardened or improved.
+
+================================================================================
+Timestamp (UTC+0): 2026-11-05 17:49:01 UTC+0
+AI Model: Gemini 3.8 Flash (High)
+Execution Duration: ~380 seconds
+Token Consumption: ~42,000 tokens
+
+--------------------------------------------------------------------------------
+TRANSFORMED & NORMALIZED TECHNICAL SPECIFICATION (ENGLISH) - TURN 2
+--------------------------------------------------------------------------------
+User Request:
+"Execute the implementation of all agreed GPU optimization items from Section B. Concurrently, convert the frontend rendering and data-fetching pipeline from lazy loading to an eager all-loading pre-caching architecture during the startup splash phase. The objective is to completely eliminate navigation latency (zero latency) across all tabs and screens throughout the user session."
+
+Detailed Technical Objectives:
+1. Comprehensive GPU Offloading Implementation (Section B Items):
+   - Enforce GPU command-line arguments on Microsoft Edge WebView2 via `WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS` (`--enable-gpu-rasterization --enable-zero-copy --enable-accelerated-2d-canvas --ignore-gpu-blocklist --enable-native-gpu-memory-buffers`).
+   - Relocate `QTWEBENGINE_CHROMIUM_FLAGS` definition to the absolute top of `app/app.py` before any PyQt5 or QtWebEngine module imports to avoid initialization race conditions.
+   - Inject Windows DXGI native hardware zero-copy buffer flag (`--enable-native-gpu-memory-buffers`).
+   - Promote primary scrolling containers (`#readme-content-scroll`, `#iso-content-scroll`, `#view-latex`, `#view-image`, `#input-file-list`, `#output-file-list`) to dedicated GPU compositing layers via CSS `transform: translateZ(0)`, `will-change: scroll-position`, and `contain: paint layout`.
+2. Startup Splash Screen with Visual Progress:
+   - Enhance `QtLoadingOverlay` with a custom-rendered `ModernProgressBar` featuring smooth animated value interpolation, rounded geometry, and a blue gradient fill (`#3b82f6` to `#60a5fa`).
+   - Add status label and percentage indicator reflecting real-time initialization stages.
+   - Implement an autonomous fallback timeout (9000ms) ensuring the application transitions to the main UI automatically without indefinite freezing.
+3. Eager All-Loading Startup Pipeline:
+   - Replace on-demand lazy rendering with eager pre-rendering (`quastStartEagerPreload`):
+     * Pre-warm the KaTeX math parser and load WOFF2 fonts into GPU memory via offscreen formula rendering.
+     * Eagerly fetch and render `README.md` markdown and compile all vector Mermaid SVG diagrams during the splash screen.
+     * Cache DOM view structures and initialize smooth scrolling handlers.
+     * Coordinate progress dispatch (20% -> 45% -> 70% -> 85% -> 95% -> 100%) and issue `signal_frontend_ready` to Python.
+4. Zero-Latency Navigation & Exception Handling:
+   - Strip deferred rendering timeouts in `switchTab('readme')` so tab switching is instantaneous (pure CSS cross-fade).
+   - Ensure memory safety, prevent VRAM bloat, and provide silent retry mechanisms if background fetching encounters temporary interruptions.
+================================================================================
+
+================================================================================
+Timestamp (UTC+0): 2026-11-05 18:15:30 UTC+0
+AI Model: Gemini 3.8 Flash (High)
+Execution Duration: ~280 seconds
+Token Consumption: ~32,000 tokens
+
+--------------------------------------------------------------------------------
+TRANSFORMED & NORMALIZED TECHNICAL SPECIFICATION (ENGLISH) - TURN 3
+--------------------------------------------------------------------------------
+User Request:
+"I prefer the classic startup loading screen featuring the rotating circular spinner and prominent, large-sized typography."
+
+Detailed Technical Objectives:
+1. Classic Startup Splash Screen Restoration & Aesthetic Refinement:
+   - Revert and elevate `QtLoadingOverlay` to the classic minimalist design favored by the user, replacing the progress bar widget with a prominent rotating circular spinner and bold, large-scale typography.
+   - Refactor `SpinnerWidget` with 46x46 bounding dimensions, anti-aliased sub-pixel rendering, 3.0px stroke width, a subdued background circle (`#2d3037`), and an active accent blue rotating arc (`#3b82f6`, 100-degree sweep at 16ms refresh rate).
+   - Enlarge and enhance title typography: `QLabel("LATEX TO OMML CONVERTER")` styled with `font-size: 17px; font-weight: 700; letter-spacing: 3.5px; color: #ffffff`.
+   - Style dynamic subtitle status readout: `QLabel("INITIALIZING...")` styled with `font-size: 12px; font-family: monospace; letter-spacing: 2px; font-weight: 500; color: #9ca3af`.
+   - Remove `ModernProgressBar` completely to restore the uncluttered, high-contrast visual identity.
+
+2. Background Eager Preloading & Zero-Latency Navigation Continuity:
+   - Ensure the restored classic splash overlay maintains full synchronization with the background eager all-loading pipeline (`window.quastStartEagerPreload`).
+   - Retain two-stage smooth dismissal: 280ms content (text + spinner) fade-out, followed by a 500ms background opacity fade-out synchronized with native Windows DWM title bar theme interpolation.
+   - Retain the autonomous 9000ms safety fallback timer preventing indefinite freezing.
+   - Validate end-to-end that all tabs (`readme`, `iso`, `latex`, `image`, `file`) switch instantly with zero rendering lag and pre-rendered DOM structures.
+================================================================================
+
+================================================================================
+Timestamp (UTC+0): 2026-11-05 18:30:42 UTC+0
+AI Model: Gemini 3.8 Flash (High)
+Execution Duration: ~150 seconds
+Token Consumption: ~18,000 tokens
+
+--------------------------------------------------------------------------------
+TRANSFORMED & NORMALIZED TECHNICAL SPECIFICATION (ENGLISH) - TURN 4
+--------------------------------------------------------------------------------
+User Request:
+"Change the text label of the current README navigation button to ABOUT and accompany it with an Information icon."
+
+Detailed Technical Objectives:
+1. Header Navigation Label Refactoring:
+   - Locate the documentation tab button (`#tab-readme`) in the top navigation cluster of `resources/UI/UI.html`.
+   - Update the text node from "README" to "ABOUT".
+   - Update the button's hover tooltip attribute to `title="About & Technical Documentation (README.md)"`.
+
+2. Information Icon Integration & Visual Symmetry:
+   - Insert an inline Font Awesome 6 Information icon (`<i class="fa-solid fa-circle-info mr-2 text-sm"></i>`) preceding the "ABOUT" label text.
+   - Maintain strict visual alignment with adjacent navigation tab buttons (`#tab-file`, `#tab-latex`, `#tab-image`, `#tab-iso`).
+   - Ensure the icon automatically inherits theme color states (white/primary when inactive, royal blue `var(--accent)` when active) via CSS `.nav-tab` cascade.
+
+3. Architecture & Routing Preservation:
+   - Preserve the underlying element identifier (`id="tab-readme"`) and invocation handler (`onclick="switchTab('readme')"`), ensuring zero breakage to eager preloading, DOM cache synchronization, or cross-tab routing logic.
+
+4. End-to-End Runtime Verification:
+   - Execute headless QtWebEngine automation to inspect the button DOM structure, verify text content ("ABOUT"), validate icon existence (`fa-solid fa-circle-info`), and test click navigation to `#view-readme`.
+================================================================================

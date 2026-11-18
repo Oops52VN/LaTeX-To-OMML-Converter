@@ -1,0 +1,98 @@
+================================================================================
+CONVERSATION PROMPT HISTORY — 01_11_2026_C14
+================================================================================
+Conversation ID       : ccc6b5fe-cb0c-46d3-bc3c-fdfe4a1f46d8
+Session Title         : End-to-End PDF Render Pipeline Optimization & File Lifecycle Notice Badge
+Initiation Timestamp  : 2026-11-01 23:50:52 UTC+0
+Session Sequence (No) : C14 (2026-11-01)
+Workspace             : E:\Documents\Q7 LaTeX To OMML Python
+Total Prompts         : 7
+Note                  : All user prompts below have been normalized, spell-checked,
+                        expanded into detailed technical specifications, and
+                        translated into 100% professional English per Rule 4 & Rule 6.
+================================================================================
+
+[PROMPT #01]
+Timestamp (UTC+0) : 2026-11-01 23:50:52 UTC+0
+AI Model          : Gemini 4 Argon (Low)
+Execution Time    : 240.0s
+Tokens Consumed   : 159,621 tokens
+Normalized Prompt :
+Act as a Systems Architect and Performance Optimization Engineer and formulate a comprehensive implementation plan (`/plan`) to re-architect and optimize the end-to-end DOCX -> Formula Conversion -> PDF Render & Preview pipeline to achieve a sub-5-second total SLA (`< 1.5s` Time-to-First-Page):
+1. Bottleneck Analysis: Detailed latency breakdown across ZIP/XML I/O, formula compilation, layout repackaging, Word COM PDF export, and client UI rendering.
+2. Algorithm & Data Processing Optimization: Single-pass $O(N)$ fence grouping, direct AST-to-OMML compilation in `ConversionWorker`, and single-pass raw byte copying in `rust_core`.
+3. Architecture & Pipeline: Compare PDF rendering engines, design a preemptive priority queue for `PersistentWordPdfEngine`, and define a multi-tier L1/L2/L3 caching strategy.
+4. Client-Side Preview UX: Eliminate double PDF loading (preventing `<iframe id="pdf-viewer-frame">` from loading simultaneously with native `EdgePdfPreviewHost`) and implement progressive first-pages delivery.
+5. Phased Roadmap & SLA Metrics.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #02]
+Timestamp (UTC+0) : 2026-11-01 23:55:39 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 430.0s
+Tokens Consumed   : 254,805 tokens
+Normalized Prompt :
+Approve and execute Phase 1 (Quick Wins) of the End-to-End PDF Render Pipeline Optimization plan: unify `latex_omml_engine` with $O(N)$ stack fence grouping into the `.docx` conversion pipeline, eliminate double PDF loading when `EdgePdfPreviewHost` is active, implement progressive first-page previewing in `PersistentWordPdfEngine`, and optimize `xml_stream.rs`.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #03]
+Timestamp (UTC+0) : 2026-11-02 00:06:27 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 102.0s
+Tokens Consumed   : 235,445 tokens
+Normalized Prompt :
+Update Stage 1 of the progressive PDF preview pipeline to pre-render the first 3 pages (`From=1, To=3`) instead of only 1 page before background-rendering the full document.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #04]
+Timestamp (UTC+0) : 2026-11-02 00:20:39 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 505.0s
+Tokens Consumed   : 92,983 tokens
+Normalized Prompt :
+Investigate why exporting the first 3 pages takes 13 seconds and exporting the full document takes 60 seconds during live testing on complex `.docx` files. Profile Word COM pagination overhead and optimize the `.docx` structure and Word COM export flags to eliminate the bottleneck.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #05]
+Timestamp (UTC+0) : 2026-11-02 00:58:59 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 432.0s
+Tokens Consumed   : 170,361 tokens
+Normalized Prompt :
+On the `FILE` tab, completely remove the bottom progress/status bar and its associated code. Replace it with a prominent uppercase English notice badge displaying `"PREVIEWING FIRST 3 PAGES WHILE RENDERING FULL FILE."` during Stage 1 previewing and transitioning to `"DONE"` once full document rendering completes.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #06]
+Timestamp (UTC+0) : 2026-11-02 01:47:08 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 151.0s
+Tokens Consumed   : 173,411 tokens
+Normalized Prompt :
+Expand the uppercase English notice badge on the `FILE` tab to cover all 5 operational lifecycle states:
+1. Before loading any files (`NO FILES LOADED. PLEASE ADD A FILE TO BEGIN.`)
+2. When files are loaded but processing has not started (`FILES LOADED. READY TO PROCESS.`)
+3. While files are actively being processed (`PROCESSING FILES. PLEASE WAIT...`)
+4. While previewing the first 3 pages and rendering the full file in the background (`PREVIEWING FIRST 3 PAGES WHILE RENDERING FULL FILE.`)
+5. When full processing and rendering are complete (`DONE`).
+
+--------------------------------------------------------------------------------
+
+[PROMPT #07]
+Timestamp (UTC+0) : 2026-11-02 02:34:51 UTC+0
+AI Model          : Gemini 3.8 Flash (Low)
+Execution Time    : 63.0s
+Tokens Consumed   : 158,376 tokens
+Normalized Prompt :
+Insert a line break (`<br>`) before `"WHILE RENDERING FULL FILE."` in the Stage 4 notice badge on the `FILE` tab so the two clauses stack cleanly across two lines.
+
+================================================================================
+SESSION TOTALS (01_11_2026_C14)
+Total Prompts Logged       : 7
+Total Execution Time       : 1923.0s
+Total Tokens Consumed      : 1,245,002 tokens
+================================================================================

@@ -1,0 +1,12 @@
+=== PROMPT HISTORY RECORD ===
+UTC+0 Timestamp   : 2026-11-17 13:55:26 UTC+0
+AI Model          : Gemini 4 Hydrogen (Medium)
+Execution Duration: ~45.0s (core + GUI E2E benchmark suite)
+Token Consumption : ~28,000 tokens (estimated)
+
+--- NORMALIZED & EXPANDED TECHNICAL PROMPT ---
+Execute a comprehensive end-to-end (E2E) functional verification and performance/efficiency evaluation of the QUAST LaTeX to OMML Converter application across all core subsystems:
+1. Direct LaTeX-to-AST-to-OMML compiler (`app/latex_omml_engine.py`): functional correctness across inline/block/matrix/accent/ISO 80000 constructs, Studio DOCX export, throughput, latency percentiles (p50/p95/p99), and memory allocation.
+2. Hybrid Rust + Python batch DOCX engine (`quast_core` + `app/app.py`): tokenizer, 10,000-formula stress test (`resources/files/10000_Formulas.docx`), 1,000-unique-formula benchmark, multi-file Rayon scaling, cold vs. warm `FormulaOmmlCache` speedup, Pure-Python fallback comparison, and output XML/OMML integrity.
+3. Offline Math Image OCR engine (`app/image_omml_engine.py` + `quast_core.preprocess_formula_image`): Rust vs. OpenCV preprocessing latency, light/dark-mode formula recognition via `PP-FormulaNet_plus-M`, LaTeX normalizer, and RAM footprint/release behavior.
+4. Full PyQt5 + QtWebEngine + QWebChannel GUI pipeline (`app/app.py` + `resources/UI/UI.html` + `app/edge_pdf_viewer.py`): GPU hardware flags, eager all-loading preload duration, splash overlay dismissal, tab-switching latency, Edge WebView2 availability, and Word COM PDF preview with `PreviewCacheManager`.

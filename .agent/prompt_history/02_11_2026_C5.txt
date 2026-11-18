@@ -1,0 +1,125 @@
+================================================================================
+CONVERSATION PROMPT HISTORY — 02_11_2026_C5
+================================================================================
+Conversation ID       : 8821fa07-fb99-455e-bde3-f72f5dcb4bc5
+Session Title         : Comprehensive Open-Source README.md Rewrite (v3.11.26)
+Initiation Timestamp  : 2026-11-02 14:56:56 UTC+0
+Session Sequence (No) : C5 (2026-11-02)
+Workspace             : E:\Documents\Q7 LaTeX To OMML Python
+Total Prompts         : 8
+Note                  : All user prompts below have been normalized, spell-checked,
+                        expanded into detailed technical specifications, and
+                        translated into 100% professional English per Rule 4 & Rule 6.
+================================================================================
+
+[PROMPT #01]
+Timestamp (UTC+0) : 2026-11-02 14:56:56 UTC+0
+AI Model          : Gemini 4 Argon (Low)
+Execution Time    : 248.0s
+Tokens Consumed   : 94,850 tokens
+Normalized Prompt :
+Act as a Senior Software Architect and Technical Lead. Strictly adhere to all governance rules in `.agent/rules/agent_workflow_rules.md` and analyze the actual source code of "Q7 LaTeX To OMML Python" (`app/`, `core/`, `resources/`) alongside all walkthroughs, implementation plans, and prompt histories in `.agent/` to author a comprehensive, enterprise-grade open-source `README.md` covering the following 13 sections without hallucination:
+1. Header & Technology Badges:
+   - Project logo (`resources/icons/logo.jpg` or `resources/UI/assets/logo.png`), author (`OOPS52 - QUAST`), and official title (`Q7 LaTeX To OMML Python`).
+   - Shields.io badges with official logos for Windows 11 (`logo=windows11`), Microsoft Word (`logo=microsoftword`), Python (`logo=python`), Rust (`logo=rust`), PyO3 (`logo=rust`), KaTeX (`logo=latex`), LaTeX (`logo=latex`), OMML, ISO Standard (`logo=iso`), Version `v3.11.26`, `ISO 80000-2 Compliant`, `License: MIT`, Origin `Vietnam` (with flag), `100% Vibe Coding via Google Antigravity`, AI Engines (`Gemini 3.1 Pro | 3.8 Flash | 4 Argon`), and Telegram `@OOPS52VN001`.
+2. Overview & Core Value Proposition:
+   - High-performance bridge converting LaTeX equations into native Microsoft Word Office Math Markup Language (OMML), eliminating font corruption, baseline misalignment, and non-standard operator rendering across single clipboard paste, formula image OCR, and Rust-accelerated batch `.docx` processing.
+3. User Interface & Feature Showcase:
+   - Structured presentation with `screenshots/` placeholders and detailed explanations for the Single Converter & KaTeX Live Preview (`LATEX` tab), Image-to-OMML Engine (`IMAGE` tab), Embedded Edge PDF Viewer (`edge_pdf_viewer.py`), High-Speed Batch DOCX Engine (`FILE` tab), and ISO 80000-2 Digital Standard & System Configuration view.
+4. ISO 80000-2 Mathematical Compliance Table:
+   - Detailed analysis of ISO 80000-2 rules in OMML output (italic variables, upright constants $\mathrm{e}, \mathrm{i}, \pi$, upright differentials $\mathrm{d}x, \mathrm{d}t$, upright standard functions $\sin, \cos, \ln, \lim, \max$, bold vectors/matrices, and 2D stretchy `<m:d>` delimiters) plus a LaTeX -> ISO processing -> Word OMML comparison table.
+5. Solution Comparison Matrix:
+   - Compare Q7 LaTeX To OMML against Microsoft Word's built-in equation editor (`Alt + =`), MathType, and Pandoc across processing speed (Rust core), ISO 80000-2 compliance, image/PDF support, direct clipboard workflow, licensing cost, and 100% offline operation.
+6. Technical Architecture & Deep Dive:
+   - Document the LaTeX -> MathML / AST -> OMML compilation pipeline (`latex_omml_engine.py` and `MML2OMML.XSL`), native Windows clipboard integration, Rust PyO3 accelerator (`quast_core`: `scanner.rs`, `normalizer.rs`, `binarize.rs`, `denoise.rs`, `crop.rs`, `batch_runner.rs`, `xml_stream.rs`, `preview_patch.rs`), and embedded Edge WebView2 (`WebView2Loader.dll`).
+7. System Architecture & Data Flow Diagrams (Mermaid):
+   - Layered hybrid architecture diagram, end-to-end multi-modal data flow diagram, and batch XML streaming sequence diagram.
+8. Project Directory Structure & File Roles:
+   - High-level directory tree (`app/`, `core/`, `resources/`, `.agent/`), functional table for key files (`app.py`, `latex_omml_engine.py`, `image_omml_engine.py`, `edge_pdf_viewer.py`, `lib.rs`, `batch_runner.rs`, `MML2OMML.XSL`, `10000_Formulas.docx`), and a mandatory reference directing readers to `tree.txt` for the complete file-by-file project tree.
+9. Performance Testing & 10,000-Formula Benchmark:
+   - Introduce `resources/files/10000_Formulas.docx` and detail the stress-test methodology and verified metrics (tokenization throughput, conversion accuracy, RAM footprint, and OpenXML integrity).
+10. Getting Started & Installation:
+    - Official release download placeholder (`[Sẽ cập nhật sau / Coming Soon]`), system requirements (Windows 10/11 64-bit, Edge WebView2 Runtime, Microsoft Word 2016+/365), automated environment setup via `install.bat`, Rust `quast_core` build instructions via Maturin/Cargo, and launching via `run.bat` or `python app/app.py`.
+11. Contributing Guidelines & Vibe Coding Framework:
+    - Contribution standards and recommendations on utilizing `.agent/` as a persistent context-memory and rule engine for Vibe Coding platforms (Google Antigravity, Cursor, Gemini CLI).
+12. Development History & Prompt Log Notes:
+    - Include a transparent admonition block stating that prompts from the earliest versions were lost, systematic archival of prompt history, walkthroughs, and implementation plans began in November (with partial records from August), and all `.agent/prompt_history/` files have been edited, normalized, and translated from Vietnamese into English for technical standardization (serving as a methodological reference rather than 100% verbatim original prompts).
+13. Author, Contact & License:
+    - Author `OOPS52 - QUAST`, Origin `Vietnam`, Telegram `@OOPS52VN001`, and MIT License.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #02]
+Timestamp (UTC+0) : 2026-11-02 15:06:29 UTC+0
+AI Model          : Gemini 3.8 Flash (Medium)
+Execution Time    : 160.0s
+Tokens Consumed   : 132,400 tokens
+Normalized Prompt :
+Resolve rendering defects in `README.md`: generate actual, high-resolution UI screenshot images for the missing preview files in `screenshots/` (`file_batch_mode_preview.png`, `latex_live_studio.png`, `image_ocr_engine.png`, `iso_80000_specification_view.png`), and eliminate text overlapping, tag collision, and layout distortion across all Mermaid SVG diagrams.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #03]
+Timestamp (UTC+0) : 2026-11-02 15:12:22 UTC+0
+AI Model          : Gemini 3.8 Flash (Medium)
+Execution Time    : 185.0s
+Tokens Consumed   : 145,200 tokens
+Normalized Prompt :
+Incorporate the author's Bugcat Capoo avatar (`resources/icons/author_avatar.jpg`) into the application header and author profile sections of `README.md`, and prominently emphasize the application's air-gapped security architecture—specifically detailing 100% local processing, zero internet access, zero telemetry, and the active blocking of all outgoing network requests via `OfflineInterceptor`.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #04]
+Timestamp (UTC+0) : 2026-11-02 15:18:45 UTC+0
+AI Model          : Gemini 3.8 Flash (Medium)
+Execution Time    : 142.0s
+Tokens Consumed   : 118,650 tokens
+Normalized Prompt :
+Diagnose and resolve fidelity defects in Figures 1, 3, and 4 in `README.md`: capture authentic, pixel-perfect screenshots directly from the native DOM and stylesheet definitions of `resources/UI/UI.html` via the PyQt5 runtime without artificial DOM overwrites, ensuring Figures 1 (Batch File Mode with authentic security center, file queue, and `DONE` badge), 3 (Formula Image OCR Studio with native dropzone/loaded view, recognized KaTeX render, and status telemetry), and 4 (ISO 80000 Technical Documentation Canvas with formal typography and standard clauses) 100% reflect the true application interface.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #05]
+Timestamp (UTC+0) : 2026-11-02 15:27:14 UTC+0
+AI Model          : Gemini 3.8 Flash (Medium)
+Execution Time    : 95.0s
+Tokens Consumed   : 88,400 tokens
+Normalized Prompt :
+Resolve UI presentation defects in `README.md` screenshots: integrate the authentic embedded Microsoft Edge WebView2 PDF Preview interface into Figure 1 (`screenshots/file_batch_mode_preview.png`) displaying a converted mathematical document page with navigation toolbar and equation theorems, and synchronize the background card color and light-theme surface styling of Figure 2 (`screenshots/latex_live_studio.png`) to achieve 100% chromatic harmony across all four figures.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #06]
+Timestamp (UTC+0) : 2026-11-02 17:51:45 UTC+0
+AI Model          : Gemini 3.8 Flash (Medium)
+Execution Time    : 125.0s
+Tokens Consumed   : 96,200 tokens
+Normalized Prompt :
+Capture Figure 1 (`screenshots/file_batch_mode_preview.png`) directly from the live, fully running application instance: launch `WebMainWindow` via PyQt5, initialize the real Microsoft Word COM persistent engine and Microsoft Edge WebView2 native child window, load `resources/files/10000_Formulas.docx`, let the engine generate and render the authentic PDF preview, and capture the exact composite of the live application window.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #07]
+Timestamp (UTC+0) : 2026-11-02 18:06:56 UTC+0
+AI Model          : Gemini 3.8 Flash (Low)
+Execution Time    : 35.0s
+Tokens Consumed   : 32,800 tokens
+Normalized Prompt :
+Replace Figure 1 (`screenshots/file_batch_mode_preview.png`) in `README.md` with the user-provided live application capture (`media_1793642807291_3725ac70.png`), cleanly cropped to the application window frame to eliminate external letterbox padding while preserving the authentic Word OMML converted preview, file queues (`10000_Math_Formulas.docx`, `OMML_10000_Math_Formulas.docx`), and green `DONE` lifecycle badge.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #08]
+Timestamp (UTC+0) : 2026-11-02 18:10:48 UTC+0
+AI Model          : Gemini 3.8 Flash (Low)
+Execution Time    : 25.0s
+Tokens Consumed   : 24,100 tokens
+Normalized Prompt :
+Update all repository hyperlinks and git clone instructions throughout `README.md` to reference the official GitHub repository `https://github.com/Oops52VN/QUAST_LaTeX_To_OMML_Converter`, including the header technology badges, release download targets, installation cloning steps, and author maintainer profile badges.
+
+================================================================================
+SESSION TOTALS (02_11_2026_C5)
+Total Prompts Logged       : 8
+Total Execution Time       : 1015.0s
+Total Tokens Consumed      : 732,600 tokens
+================================================================================

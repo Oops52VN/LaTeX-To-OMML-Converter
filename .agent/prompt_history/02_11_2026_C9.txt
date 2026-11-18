@@ -1,0 +1,32 @@
+================================================================================
+CONVERSATION PROMPT LOG: 02_11_2026_C9.txt
+================================================================================
+Timestamp (UTC+0)      : 2026-11-02 19:06:15 UTC+0
+AI Model               : Gemini 3.8 Flash (Low)
+Execution Duration     : ~55 seconds
+Token Consumption      : ~28,000 tokens (est. input + tool calls + output)
+--------------------------------------------------------------------------------
+
+[NORMALIZED TECHNICAL SPECIFICATION]
+The user reported a critical system error that broke the entire application user interface:
+"XẢY RA LỖI TOÀN BỘ GIAO DIỆN APP" (An error has occurred across the entire application interface).
+
+Root cause investigation and engineering diagnostics determined that:
+1. CSS Style Leakage & View Displacement:
+   - Microsoft's official `vscode-markdown.css` introduced un-scoped `html, body { padding: 0 26px; }` and `body { padding-top: 1em; }` styles, displacing the entire body by 26px horizontally and 1em vertically.
+   - The displaced layout pushed the header actions, reload button, status badge, and preview containers past the fixed 1100px window boundary, causing horizontal and vertical layout overflow, misalignments, and clipped controls.
+   - Global typography rules (`h1` through `h6`, `p`, `table`, `a`, focus rings) leaked into header titles and control panels.
+   - `github-markdown.min.css` included a compound selector `.markdown-body,[data-theme=dark]` which inappropriately targeted `<html data-theme="dark">`, overriding root document typography and variables.
+2. QWebChannel Message Dispatch Failure:
+   - `initWebChannel()` was invoked multiple times asynchronously across script parsing, `DOMContentLoaded`, and `load` events.
+   - Each instantiation of `new QWebChannel` overwrote `qt.webChannelTransport.onmessage`.
+   - Incoming asynchronous responses from Python arrived at newly initialized channel instances that lacked matching callback IDs, raising `Uncaught TypeError: channel.execCallbacks[message.id] is not a function` at `qrc:///qtwebchannel/qwebchannel.js:137`.
+   - This unhandled runtime exception halted WebChannel communications, breaking backend calls including theme synchronization, file selection, and document compilation.
+
+Required remediation:
+1. Strictly scope all selectors in `vscode-markdown.css` under `#view-readme .vscode-markdown-content` and `#view-readme .vscode-body`, completely eliminating global `html` and `body` rules.
+2. Fix selector scoping in `github-markdown.min.css` (`[data-theme=dark] .markdown-body`) to prevent root `<html>` hijacking.
+3. Enforce an atomic `isWebChannelInitialized` guard in `UI.html` and install a defensive fallback on `channel.handleResponse` to prevent orphan response ID exceptions.
+4. Establish rigid layout constraints on `html` and `body` (`margin: 0 !important; padding: 7px !important; width: 100vw !important; height: 100vh !important; box-sizing: border-box !important;`).
+5. Verify 0 console errors (Level-2), 100% unclipped header controls, error-free tab navigation, and clean VS Code standard Markdown preview rendering.
+================================================================================

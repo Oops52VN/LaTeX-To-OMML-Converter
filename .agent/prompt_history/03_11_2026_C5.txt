@@ -1,0 +1,40 @@
+================================================================================
+CONVERSATION PROMPT RECORD
+================================================================================
+Timestamp (UTC+0): 2026-11-03 14:11:50 UTC+0
+AI Model: Gemini 3.8 Flash
+Execution Duration: 55 seconds
+Token Consumption: ~18,500 tokens
+
+--------------------------------------------------------------------------------
+TRANSFORMED & NORMALIZED TECHNICAL SPECIFICATION (ENGLISH)
+--------------------------------------------------------------------------------
+Role & Objective:
+Act as a Principal Desktop Hybrid UI/UX Architect and Performance Engineering Specialist specializing in Python/PyQt/PySide/WebView2 desktop runtimes and high-performance Web frontends. The objective is to conduct an in-depth performance audit and design an end-to-end restructuring plan for the desktop application ("QUAST LaTeX to OMML Converter"), targeting three non-negotiable performance pillars:
+1. Instant Responsiveness (< 16ms interaction latency, zero Main Thread blocking).
+2. Ultra-Fast Load Times & Resource Streamlining (zero FOUC, zero Cumulative Layout Shift, optimized startup and script evaluation).
+3. Fluid 60/120 FPS Motion & Physics-Based Transitions (compositor-only GPU acceleration, spring physics, shared element transitions).
+
+Architectural Context & Tech Stack:
+- Host Runtime: Python 3.13/3.14 orchestrator integrated with a high-performance native Rust core via PyO3 (`quast_core`).
+- Presentation Layer: Hybrid Web View powered by Microsoft Edge WebView2 (`WebView2Loader.dll`) and Chromium, hosting `UI.html` with Tailwind CSS, KaTeX mathematical typesetting engine, Highlight.js, Markdown-It/Marked, and Mermaid.js vector diagramming.
+- Inter-Process Communication (IPC): Bidirectional bridge linking Python and JavaScript (QWebChannel / WebView2 PostMessage).
+- Core Application Views:
+  1. Live Studio / Formula Editor: Real-time LaTeX authoring, synchronized scroll, instant KaTeX visual rendering, and OMML/MathML clipboard synthesis.
+  2. File Batch Mode: High-throughput DOCX/PDF batch transformation engine with real-time progress indicators, status dispatching, and embedded Edge PDF preview.
+  3. Image OCR / Formula Extractor: Image drag-and-drop/clipboard paste, Rust/OpenCV image binarization/cropping/denoising, PaddleOCR formula extraction, and LaTeX/OMML normalization.
+  4. ISO 80000 Math Specification & Documentation Reader: Technical documentation and mathematical typography standards rendered in Markdown with vector diagrams.
+
+Identified Bottlenecks & Critical Defects:
+- High perceived IPC latency when serializing massive string payloads (LaTeX, OMML XML, MathML, high-resolution Base64 image buffers).
+- KaTeX, Markdown-It, and Mermaid.js execution locking the WebView2 Main UI Thread, causing frame drops and input jank during fast typing or large formula loads.
+- Stiff, jarring UI animations during tab switching, drawer collapsing, modal popups, and batch progress tracking due to layout-triggering properties (`width`, `height`, `margin`) and uncalibrated linear transitions.
+- Runtime stylesheet and script evaluation penalties on cold start (`tailwind.js` 407 KB, `mermaid.min.js` 3.33 MB), triggering Flash of Unstyled Content (FOUC) and severe Cumulative Layout Shift (CLS) during KaTeX and FontAwesome webfont loading.
+
+Deliverables & Scope:
+Provide an exhaustive, professional technical blueprint organized into four comprehensive sections:
+1. Technical Audit of Current State & Render Pipeline Bottlenecks (Drop frames, layout thrashing, cold-start bundle costs, font CLS).
+2. Strategy for Instant Responsiveness & Streaming UI (Web Workers for KaTeX/Markdown compilation, virtualized rendering for batch lists, adaptive throttling, chunked/binary IPC, and optimistic micro-feedback).
+3. Fluid Animation Engine Architecture (Spring dynamics, calibrated cubic-bezier curves, GPU compositor-only layer promotion, and FLIP shared-element transitions).
+4. Restructured UI Architecture & Production Implementation Code (Multi-tier architectural diagram, production Web Animations API spring engine, and worker-driven virtualized preview pipeline).
+================================================================================

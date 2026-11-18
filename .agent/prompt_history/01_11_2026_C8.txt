@@ -1,0 +1,73 @@
+================================================================================
+CONVERSATION PROMPT HISTORY — 01_11_2026_C8
+================================================================================
+Conversation ID       : 49f9954a-5d4b-4876-b27f-bb8ee8303d0a
+Session Title         : UI Refinements, Title Bar DWM Transitions & Fixed Window Geometry
+Initiation Timestamp  : 2026-11-01 16:55:34 UTC+0
+Session Sequence (No) : C8 (2026-11-01)
+Workspace             : E:\Documents\Q7 LaTeX To OMML Python
+Total Prompts         : 5
+Note                  : All user prompts below have been normalized, spell-checked,
+                        expanded into detailed technical specifications, and
+                        translated into 100% professional English per Rule 4 & Rule 6.
+================================================================================
+
+[PROMPT #01]
+Timestamp (UTC+0) : 2026-11-01 16:55:34 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 848.0s
+Tokens Consumed   : 222,717 tokens
+Normalized Prompt :
+Implement the following UI refinements:
+1. Add a smooth fade-out transition for the `"YOUR DATA IS GUARANTEED ABSOLUTELY SECURE"` notice and shield icon so they automatically hide when a user loads a file.
+2. Redesign the Dark Mode / Light Mode button into a sliding toggle switch aligned to the right edge of the header.
+3. Hide all toolbar action buttons inside the embedded PDF previewer for a clean, distraction-free viewing area.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #02]
+Timestamp (UTC+0) : 2026-11-01 17:11:19 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 119.0s
+Tokens Consumed   : 191,952 tokens
+Normalized Prompt :
+Fix the broken icon rendering inside the Dark Mode / Light Mode sliding toggle switch.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #03]
+Timestamp (UTC+0) : 2026-11-01 20:59:31 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 575.0s
+Tokens Consumed   : 278,711 tokens
+Normalized Prompt :
+Implement a synchronized Windows native Title Bar (`DWMWA_CAPTION_COLOR`) color transition during application startup:
+1. Initial Startup State: Match the native Windows title bar background color exactly with the dark splash/loading screen background.
+2. Transition Phase (when fading out the splash screen into Light Mode): Smoothly interpolate the Windows native title bar color from dark to light in lockstep with the splash screen fade-out animation so it matches the main interface background upon completion.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #04]
+Timestamp (UTC+0) : 2026-11-01 21:00:56 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 785.0s
+Tokens Consumed   : 70,156 tokens
+Normalized Prompt :
+Lock the main application window dimensions (`setFixedSize`) to disable manual window resizing and maximize/restore geometry changes.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #05]
+Timestamp (UTC+0) : 2026-11-01 21:24:14 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 1138.0s
+Tokens Consumed   : 231,745 tokens
+Normalized Prompt :
+Analyze the screen recording (`Screen Recording 2026-11-02 042218.mp4`) and resolve the slow startup and UI activation lag occurring immediately after the splash loading screen disappears.
+
+================================================================================
+SESSION TOTALS (01_11_2026_C8)
+Total Prompts Logged       : 5
+Total Execution Time       : 3465.0s
+Total Tokens Consumed      : 995,281 tokens
+================================================================================

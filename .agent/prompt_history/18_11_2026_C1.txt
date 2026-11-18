@@ -1,0 +1,28 @@
+=== PROMPT HISTORY RECORD ===
+UTC+0 Timestamp   : 2026-11-18 11:25:38 UTC+0
+AI Model          : Claude Opus 5.5 (Medium)
+Execution Duration: ~90.0s (image analysis, batch cropping, verification, and documentation logging)
+Token Consumption : ~30,000 tokens (estimated)
+
+--- NORMALIZED & EXPANDED TECHNICAL PROMPT ---
+Remove the black desktop background surrounding the application window in every screenshot located in the `screenshots/` directory by cropping each image tightly to the window bounds. Save each processed image into a `readme/` directory (create it if missing), preserving the original image content and format, and rename each output file by replacing all whitespace characters in the original filename with underscores (`_`), e.g. `Figure Docx 1.jpg` -> `readme/Figure_Docx_1.jpg`.
+
+
+=== PROMPT HISTORY RECORD (TURN 2) ===
+UTC+0 Timestamp   : 2026-11-18 11:28:47 UTC+0
+AI Model          : Claude Opus 5.5 (Medium)
+Execution Duration: ~75.0s (corner analysis, anti-aliased alpha masking, verification, and documentation updates)
+Token Consumption : ~25,000 tokens (estimated)
+
+--- NORMALIZED & EXPANDED TECHNICAL PROMPT ---
+The cropped screenshots (now relocated by the user into `screenshots/` as `Figure_*.jpg`) still expose black background pixels at all four rounded window corners. Eliminate these residual corner pixels so the figures render cleanly on any README background.
+
+
+=== PROMPT HISTORY RECORD (TURN 3) ===
+UTC+0 Timestamp   : 2026-11-18 11:30:44 UTC+0
+AI Model          : Claude Opus 5.5 (Medium)
+Execution Duration: ~70.0s (reference discovery, path rewrites across README and in-app README renderer, verification, logging)
+Token Consumption : ~30,000 tokens (estimated)
+
+--- NORMALIZED & EXPANDED TECHNICAL PROMPT ---
+Fix all broken screenshot image paths so they reference the new `screenshots/Figure_*.png` files: update `README.md` (figure `<img>` tags and the project directory tree), the in-app README image path mapping in `resources/UI/UI.html`, and the offline bundled README copy in `resources/UI/assets/readme_bundle.js`.

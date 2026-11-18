@@ -1,0 +1,28 @@
+================================================================================
+CONVERSATION PROMPT RECORD
+================================================================================
+Timestamp (UTC+0): 2026-11-03 12:48:40 UTC+0
+AI Model: Gemini 3.8 Flash
+Execution Duration: 8.2 seconds
+Token Consumption: 3,450 tokens
+
+--------------------------------------------------------------------------------
+TRANSFORMED & NORMALIZED TECHNICAL SPECIFICATION (ENGLISH)
+--------------------------------------------------------------------------------
+Context & Objective:
+The user requested the complete removal of all dark/black borders and perimeter edge artifacts surrounding images displayed within the application's README viewer.
+
+Technical Analysis:
+Dark and black borders around images originated from two distinct presentation layers:
+1. Global CSS in `resources/UI/UI.html`:
+   - Selector `#view-readme .vscode-markdown-content p > img` enforced `border: 1px solid var(--border-subtle) !important;` and `box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12) !important;`.
+   - In Dark Mode, `var(--border-subtle)` resolves to a dark charcoal border, creating a visible dark boundary frame.
+2. Inline Markdown Attributes in `README.md`:
+   - Screenshot figures and header/footer avatar images carried hardcoded inline CSS properties including `box-shadow: 0 4px 16px rgba(0,0,0,0.3);` and `box-shadow: 0 4px 14px rgba(0,0,0,0.25);`, which cast a dark edge contour around the perimeter of the image boundaries.
+
+Action Plan:
+1. Strip all `box-shadow` properties from inline image attributes across `README.md`.
+2. Update CSS in `resources/UI/UI.html` to strictly enforce `border: none !important; outline: none !important; box-shadow: none !important;` on all markdown image elements, header logos, avatars, and technical screenshot figures.
+3. Re-compile and synchronize `resources/UI/assets/readme_bundle.js` with the updated `README.md`.
+4. Validate border elimination via PyQt5 WebEngine computed style diagnostics.
+================================================================================

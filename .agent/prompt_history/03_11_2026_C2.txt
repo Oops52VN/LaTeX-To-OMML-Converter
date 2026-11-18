@@ -1,0 +1,27 @@
+================================================================================
+CONVERSATION PROMPT RECORD
+================================================================================
+Timestamp (UTC+0): 2026-11-03 12:45:00 UTC+0
+AI Model: Gemini 3.8 Flash
+Execution Duration: 14.8 seconds
+Token Consumption: 5,230 tokens
+
+--------------------------------------------------------------------------------
+TRANSFORMED & NORMALIZED TECHNICAL SPECIFICATION (ENGLISH)
+--------------------------------------------------------------------------------
+Context & Problem Scope:
+The user reported several UI layout, content structure, feature pruning, and compliance issues in the application's embedded README presentation module:
+
+1. User Interface & Layout:
+   - The header subtitle captions displaying the Application Name and Author Name (positioned directly beneath the application logo and author avatar) are currently obscured, clipped, and collapsed due to zero line-height formatting (`line-height: 0`). Resolve the styling to ensure these labels render with proper height, line spacing, and full visibility.
+
+2. Content Structure:
+   - Section 7 ("System Architecture & Data Flow Diagrams"): Purge all internal sub-sections (7.1, 7.2, 7.3) and all Mermaid SVG vector diagrams. Retain only the Section 7 primary title followed by an English reference note in parentheses directing users to the live repository: `*(See details in the README on GitHub: ...)*`.
+
+3. Feature Removal:
+   - Completely eradicate all UI components and source code associated with the image modal, lightbox viewer, zoom-in, zoom-out, pan, and fullscreen preview feature across the README presentation layer.
+
+4. Verification & Standards:
+   - Enforce 100% English across all documentation, code annotations, comments, and displayed text strings (eliminating any non-English placeholders).
+   - Verify that all technical screenshot images displayed in the README tab render in their authentic, native aspect ratio and original resolutions without artificial stretching or distortion.
+================================================================================

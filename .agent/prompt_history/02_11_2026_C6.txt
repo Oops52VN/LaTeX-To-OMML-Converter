@@ -1,0 +1,12 @@
+================================================================================
+CONVERSATION PROMPT LOG: 02_11_2026_C6.txt
+================================================================================
+Timestamp (UTC+0)      : 2026-11-02 18:15:07 UTC+0
+AI Model               : Gemini 3.8 Flash (Low)
+Execution Duration     : ~110 seconds
+Token Consumption      : ~38,500 tokens (est. input + tool calls + output)
+--------------------------------------------------------------------------------
+
+[NORMALIZED TECHNICAL SPECIFICATION]
+The user requested the architectural design and implementation of a dedicated "README" view integrated into the application interface, positioned alongside the preexisting ISO 80000 technical standard tab. The page must strictly comply with modern Markdown presentation standards (GitHub Flavored Markdown, syntax-highlighted code blocks, responsive data tables, client-side vector Mermaid diagrams, and KaTeX mathematical typography), while rendering the complete, verbatim content of the project's root README.md file in a 100% offline air-gapped environment without external network calls.
+================================================================================

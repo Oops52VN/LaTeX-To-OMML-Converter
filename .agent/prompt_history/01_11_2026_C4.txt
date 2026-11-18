@@ -1,0 +1,86 @@
+================================================================================
+CONVERSATION PROMPT HISTORY — 01_11_2026_C4
+================================================================================
+Conversation ID       : 280087ff-52d4-43a7-8b64-14e612c663b8
+Session Title         : Fix White Screen Preview Bug & Implement Preview Caching
+Initiation Timestamp  : 2026-11-01 11:09:02 UTC+0
+Session Sequence (No) : C4 (2026-11-01)
+Workspace             : E:\Documents\Q7 LaTeX To OMML Python
+Total Prompts         : 6
+Note                  : All user prompts below have been normalized, spell-checked,
+                        expanded into detailed technical specifications, and
+                        translated into 100% professional English per Rule 4 & Rule 6.
+================================================================================
+
+[PROMPT #01]
+Timestamp (UTC+0) : 2026-11-01 11:09:02 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 1269.0s
+Tokens Consumed   : 317,754 tokens
+Normalized Prompt :
+Investigate and resolve the critical defect in the document preview subsystem where the preview pane renders only an opaque white screen and causes severe UI stuttering and frame drops across the entire application.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #02]
+Timestamp (UTC+0) : 2026-11-01 11:52:44 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 694.0s
+Tokens Consumed   : 123,687 tokens
+Normalized Prompt :
+Fix the non-functional document preview pipeline that is causing memory leaks and crashing background `WINWORD.EXE` processes.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #03]
+Timestamp (UTC+0) : 2026-11-01 12:24:40 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 203.0s
+Tokens Consumed   : 109,430 tokens
+Normalized Prompt :
+Terminate the hung background task and perform a root-cause analysis to determine why the preview conversion task failed to complete.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #04]
+Timestamp (UTC+0) : 2026-11-01 13:13:24 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 548.0s
+Tokens Consumed   : 192,917 tokens
+Normalized Prompt :
+Resolve the layout and lifecycle defects in the DOCX-to-PDF preview pipeline:
+1. Content & Formatting Fidelity:
+   - Fix the background DOCX-to-PDF export process so that page size, margins, orientation, fonts, and layout match 100% of the source `.docx` document without overriding document page setup.
+2. UI Loading Overlay Lifecycle:
+   - Fix the loading spinner overlay on the preview pane so that it automatically hides via the `onLoad`/`onSuccess` lifecycle callback as soon as the PDF finishes rendering.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #05]
+Timestamp (UTC+0) : 2026-11-01 20:53:27 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 1263.0s
+Tokens Consumed   : 336,152 tokens
+Normalized Prompt :
+Eliminate UI thread freezing during PDF preview rendering and implement an instant-switch PDF preview caching system:
+1. Fix thread blocking during background preview generation.
+2. Design and implement a persistent PDF preview cache for both uploaded input `.docx` files and converted output `.docx` files.
+3. Optimize cache retrieval so clicking any file in the input or output list switches the preview instantaneously.
+4. Add a prominent centered loading spinner inside the preview pane displaying `"Processing"` during formula conversion and transitioning to `"Rendering preview"` during PDF export.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #06]
+Timestamp (UTC+0) : 2026-11-01 21:00:02 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 979.0s
+Tokens Consumed   : 244,353 tokens
+Normalized Prompt :
+Enlarge the security shield icon displayed in the center of the empty state of the document preview pane.
+
+================================================================================
+SESSION TOTALS (01_11_2026_C4)
+Total Prompts Logged       : 6
+Total Execution Time       : 4956.0s
+Total Tokens Consumed      : 1,324,293 tokens
+================================================================================

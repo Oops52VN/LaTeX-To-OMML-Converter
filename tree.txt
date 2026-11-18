@@ -1,0 +1,151 @@
+QUAST LaTeX to OMML Converter - Project Tree
+=============================================
+Importance: CORE = essential | IMPORTANT = needed for full features | SUPPORT = helper/docs/sample | CONFIG = build config
+Excluded (auto-generated / details): core/target/, __pycache__/, *.pyc, .pytest_cache/, .agent/* (files inside .agent)
+
+PATH                                      IMPORTANCE   PURPOSE
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+.
+├── README.md                             [SUPPORT]    Project overview, features, install and run instructions.
+├── LICENSE                               [SUPPORT]    MIT open-source license governing source code distribution.
+├── requirements.txt                      [IMPORTANT]  Python dependency list used by install.bat / pip.
+├── install.bat                           [IMPORTANT]  Installs Python deps; if cargo exists, builds the optional Rust wheel (quast_core) via maturin.
+├── run.bat                               [IMPORTANT]  Launches the app silently: start "" pythonw app\app.py.
+├── package.bat                           [IMPORTANT]  Compiles standalone single-file Windows setup installer into releases/.
+├── build_release.py                      [IMPORTANT]  Packaging script automating PyInstaller freezing and Inno Setup compilation.
+├── tree.txt                              [SUPPORT]    This file: annotated project structure.
+├── .gitignore                            [CONFIG]     Excludes caches, build output, venvs, .env, logs and OS/IDE files.
+├── .agent/                               [CONFIG]     AI orientation, workflow rules, prompt history, implementation plans, and walkthrough logs.
+├── tools/                                [CONFIG]     Build toolchain directory containing portable Inno Setup compiler.
+│   └── InnoSetup/                        [CONFIG]     Bundled Inno Setup 6 compiler (ISCC.exe) for compiling Windows setup installers.
+├── releases/                             [SUPPORT]    Compiled standalone Windows setup installers.
+│   └── OMML_Converter_Setup_v11.18.2026.exe [SUPPORT] Single-file Windows setup installer for OMML Converter v11.18.2026.
+├── screenshots/                          [SUPPORT]    Cropped app screenshots (PNG, transparent rounded corners) used as README figures.
+│   ├── Figure_Docx_1.png                 [SUPPORT]    Figure: FILE tab with batch DOCX inputs and Edge WebView2 PDF preview.
+│   ├── Figure_Docx_2.png                 [SUPPORT]    Figure: FILE tab second view of batch DOCX conversion and preview.
+│   ├── Figure_IMAGE.png                  [SUPPORT]    Figure: IMAGE tab offline math OCR studio.
+│   ├── Figure_ISO.png                    [SUPPORT]    Figure: ISO 80000 typography specification view.
+│   └── Figure_LaTeX.png                  [SUPPORT]    Figure: LATEX tab live KaTeX render and OMML copy studio.
+├── app/                                  [CORE]       Python application source (GUI + conversion engines).
+│   ├── app.py                            [CORE]       Entry point. PyQt5 main window, JS<->Python bridge (QWebChannel), batch DOCX conversion, Word COM live preview, PDF cache, image-OCR worker, XSLT locator.
+│   ├── latex_omml_engine.py              [CORE]       Direct LaTeX -> AST -> OMML compiler (lexer, parser, OMML/MathML builders). No XSL needed; used by LaTeX tab & image engine.
+│   ├── image_omml_engine.py              [IMPORTANT]  Offline math-OCR: image preprocessing (Rust/OpenCV), PaddleOCR recognition, LaTeX normalization, then OMML via latex_omml_engine.
+│   └── edge_pdf_viewer.py                [IMPORTANT]  Embeds Edge WebView2 (ctypes COM) in a Qt widget to show PDF previews natively.
+├── core/                                 [IMPORTANT]  Optional Rust accelerator, built as the Python package quast_core.
+│   ├── Cargo.toml                        [CONFIG]     Rust crate manifest (PyO3, rayon, zip, quick-xml, regex, image).
+│   ├── Cargo.lock                        [CONFIG]     Pinned Rust dependency versions for reproducible builds.
+│   ├── pyproject.toml                    [CONFIG]     maturin build config (module quast_core._quast_core).
+│   ├── python/                           [IMPORTANT]  Python side of the extension package.
+│   │   └── quast_core/                   [IMPORTANT]  Importable package quast_core.
+│   │       ├── __init__.py               [IMPORTANT]  Loads the native module, exposes HAS_RUST_CORE and a pure-Python fallback batch converter.
+│   │       └── _quast_core.pyi           [SUPPORT]    Type stubs for the native extension.
+│   └── src/                              [CORE]       Rust source code.
+│       ├── lib.rs                        [CORE]       PyO3 module entry; registers functions and init_thread_pool.
+│       ├── error.rs                      [SUPPORT]    Shared error type (QuastError / QuastResult).
+│       ├── docx_engine/                  [CORE]       DOCX processing.
+│       │   ├── mod.rs                    [IMPORTANT]  Python-facing DOCX functions (extract, convert batch, patch).
+│       │   ├── batch_runner.rs           [IMPORTANT]  Parallel (rayon) batch conversion of multiple DOCX files.
+│       │   ├── xml_stream.rs             [CORE]       Streaming scan/transform of word/document.xml for formulas.
+│       │   └── preview_patch.rs          [SUPPORT]    Patches DOCX settings so previews render correctly.
+│       ├── image_proc/                   [IMPORTANT]  Image preprocessing for OCR.
+│       │   ├── mod.rs                    [IMPORTANT]  Pipeline entry (preprocess_formula_image).
+│       │   ├── binarize.rs               [SUPPORT]    Otsu / Sauvola thresholding.
+│       │   ├── crop.rs                   [SUPPORT]    Auto-crop of the formula region.
+│       │   └── denoise.rs                [SUPPORT]    3x3 median denoising.
+│       └── tokenizer/                    [CORE]       LaTeX formula detection in text.
+│           ├── mod.rs                    [IMPORTANT]  Python-facing scan_formulas / is_latex_formula.
+│           ├── scanner.rs                [CORE]       Fast detector of $...$ and $$...$$ segments.
+│           └── normalizer.rs             [SUPPORT]    Normalizes extracted LaTeX before conversion.
+└── resources/                            [CORE]       Static assets loaded at runtime via resource_path().
+    ├── UI/                               [CORE]       Front-end.
+    │   ├── UI.html                       [CORE]       Single-page UI (tabs, theme, drag & drop, preview) loaded by QWebEngineView; talks to Python via QWebChannel.
+    │   └── assets/                       [SUPPORT]    Offline libraries and images used by UI.html.
+    │       ├── tailwind.js               [IMPORTANT]  Tailwind CSS runtime (offline).
+    │       ├── fontawesome.min.css       [SUPPORT]    Font Awesome icon styles.
+    │       ├── logo.png                  [SUPPORT]    App logo / favicon.
+    │       ├── iso.svg                   [SUPPORT]    ISO logo shown in the standards section.
+    │       ├── vscode-markdown.css       [SUPPORT]    Official VS Code markdown preview styles for README page.
+    │       ├── github-markdown.min.css   [SUPPORT]    GitHub Markdown stylesheets for README page.
+    │       ├── github-dark.min.css       [SUPPORT]    Dark theme syntax highlighting styles for code snippets.
+    │       ├── github.min.css            [SUPPORT]    Light theme syntax highlighting styles for code snippets.
+    │       ├── highlight.min.js          [IMPORTANT]  Highlight.js syntax highlighting engine for README code blocks.
+    │       ├── markdown-it.min.js        [IMPORTANT]  Markdown-it engine (VS Code standard parser) for README page.
+    │       ├── marked.min.js             [IMPORTANT]  Marked.js markdown parser engine fallback for README.md.
+    │       ├── mermaid.min.js            [IMPORTANT]  Mermaid vector diagram engine for architecture flowcharts.
+    │       ├── readme_bundle.js          [SUPPORT]    Bundled offline data URIs and verbatim README text fallback.
+    │       ├── shields_map.json          [SUPPORT]    Offline metadata map for cached shields badges.
+    │       ├── shields/                  [SUPPORT]    Directory containing 19 offline SVG shields badges.
+    │       ├── katex/                    [IMPORTANT]  KaTeX renderer.
+    │       │   ├── katex.min.js          [IMPORTANT]  Renders formulas inside the UI.
+    │       │   ├── katex.min.css         [IMPORTANT]  KaTeX styles.
+    │       │   └── fonts/                [SUPPORT]    20 KaTeX_*.woff2 fonts required by katex.min.css (not listed individually).
+    │       └── webfonts/                 [SUPPORT]    Font Awesome web fonts.
+    │           ├── fa-regular-400.woff2  [SUPPORT]    Regular glyphs.
+    │           └── fa-solid-900.woff2    [SUPPORT]    Solid glyphs.
+    ├── xsl/                              [IMPORTANT]  Microsoft conversion stylesheets.
+    │   ├── MML2OMML.XSL                  [IMPORTANT]  MathML -> OMML stylesheet (fallback when Office is not found).
+    │   └── OMML2MML.XSL                  [SUPPORT]    OMML -> MathML stylesheet.
+    ├── bin/                              [IMPORTANT]  Native binaries.
+    │   └── WebView2Loader.dll            [IMPORTANT]  Loader for Edge WebView2 (used by edge_pdf_viewer.py).
+    ├── icons/                            [SUPPORT]    Images for documentation and application branding.
+    │   ├── app.ico                       [IMPORTANT]  Multi-resolution Windows application icon (16x16 to 256x256).
+    │   ├── author_avatar.jpg             [SUPPORT]    Author Capoo avatar displayed in documentation and profile.
+    │   └── logo.jpg                      [SUPPORT]    Logo displayed in README.md.
+    └── files/                            [SUPPORT]    Sample data.
+        └── 10000_Formulas.docx           [SUPPORT]    Large sample DOCX for manual / stress testing.
+
+CORE FILES: HOW THEY WORK AND CONNECT
+=====================================
+
++--------------------------------------+----------------------------------------------------------------+----------------------------------------------+
+| File                                 | How it works                                                   | Connects to                                  |
++--------------------------------------+----------------------------------------------------------------+----------------------------------------------+
+| run.bat                              | Starts pythonw app\app.py without a console window.            | app/app.py                                   |
++--------------------------------------+----------------------------------------------------------------+----------------------------------------------+
+| package.bat                          | Runs build_release.py to build standalone installer.           | build_release.py, releases/                  |
++--------------------------------------+----------------------------------------------------------------+----------------------------------------------+
+| build_release.py                     | Automates PyInstaller freezing and Inno Setup 6 compilation.   | app/app.py, tools/InnoSetup, releases/       |
++--------------------------------------+----------------------------------------------------------------+----------------------------------------------+
+| install.bat + requirements.txt       | Installs Python libraries; optionally builds/installs the Rust | core/pyproject.toml, core/Cargo.toml         |
+|                                      | wheel with maturin.                                            |                                              |
++--------------------------------------+----------------------------------------------------------------+----------------------------------------------+
+| app/app.py                           | Entry point. Creates the Qt window, loads UI.html, exposes     | UI.html, latex_omml_engine,                  |
+|                                      | Backend to JavaScript, runs conversion / preview / OCR in      | image_omml_engine, edge_pdf_viewer,          |
+|                                      | QThreads, pre-warms Word (COM) for live preview.               | quast_core, XSL                              |
++--------------------------------------+----------------------------------------------------------------+----------------------------------------------+
+| resources/UI/UI.html                 | Front-end. Calls Python slots (convert files, compile LaTeX,   | app/app.py, katex, tailwind, fontawesome     |
+|                                      | OCR image, preview) over QWebChannel and renders results.      |                                              |
++--------------------------------------+----------------------------------------------------------------+----------------------------------------------+
+| app/latex_omml_engine.py             | Tokenizes LaTeX, builds an AST and emits OMML XML directly (no | Imported by app.py and image_omml_engine.py  |
+|                                      | XSL). Also builds MathML previews.                             |                                              |
++--------------------------------------+----------------------------------------------------------------+----------------------------------------------+
+| app/image_omml_engine.py             | Image -> preprocess (Rust or OpenCV) -> PaddleOCR LaTeX ->     | quast_core (optional), latex_omml_engine,    |
+|                                      | normalize -> OMML.                                             | app.py                                       |
++--------------------------------------+----------------------------------------------------------------+----------------------------------------------+
+| app/edge_pdf_viewer.py               | Hosts an Edge WebView2 control in a Qt widget to show PDFs     | WebView2Loader.dll, app.py                   |
+|                                      | made by the Word preview engine.                               |                                              |
++--------------------------------------+----------------------------------------------------------------+----------------------------------------------+
+| core/python/quast_core/__init__.py   | Imports the compiled Rust module, sets HAS_RUST_CORE, provides | app.py, image_omml_engine.py,                |
+|                                      | a pure-Python fallback for batch DOCX conversion.              | core/src/lib.rs                              |
++--------------------------------------+----------------------------------------------------------------+----------------------------------------------+
+| core/src/lib.rs                      | PyO3 module root; registers docx_engine, image_proc, tokenizer | docx_engine/, image_proc/, tokenizer/        |
+|                                      | functions and the thread pool.                                 |                                              |
++--------------------------------------+----------------------------------------------------------------+----------------------------------------------+
+| core/src/docx_engine/xml_stream.rs   | Streams word/document.xml, finds LaTeX formulas and rewrites   | tokenizer/scanner.rs, batch_runner.rs        |
+|                                      | them as OMML (parallel via batch_runner.rs).                   |                                              |
++--------------------------------------+----------------------------------------------------------------+----------------------------------------------+
+| core/src/tokenizer/scanner.rs        | Fast scanner for $...$ / $$...$$ segments; normalizer.rs       | docx_engine/, Python wrapper                 |
+|                                      | cleans the extracted LaTeX.                                    |                                              |
++--------------------------------------+----------------------------------------------------------------+----------------------------------------------+
+| resources/xsl/MML2OMML.XSL           | XSLT for the MathML -> OMML route when Office's own copy is    | app.py (locate_xslt)                         |
+|                                      | not found.                                                     |                                              |
++--------------------------------------+----------------------------------------------------------------+----------------------------------------------+
+
+Runtime flow:
+  run.bat -> app/app.py -> loads resources/UI/UI.html (QWebEngine) -> user action in UI
+  -> Backend slot in app.py ->
+       LaTeX text : latex_omml_engine
+       DOCX batch : quast_core (Rust) or Python fallback
+       Image      : image_omml_engine
+  -> OMML written into DOCX / copied to clipboard.
+  DOCX preview: Word COM -> PDF -> Edge WebView2.

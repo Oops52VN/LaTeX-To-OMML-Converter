@@ -1,0 +1,104 @@
+================================================================================
+CONVERSATION PROMPT HISTORY — 01_11_2026_C12
+================================================================================
+Conversation ID       : bda1e123-59d8-45b7-9ca3-ec62bcbaab5c
+Session Title         : Fix PDF Preview Display, Progress Milestones & DOCX/PDF Speed Optimization
+Initiation Timestamp  : 2026-11-01 21:25:31 UTC+0
+Session Sequence (No) : C12 (2026-11-01)
+Workspace             : E:\Documents\Q7 LaTeX To OMML Python
+Total Prompts         : 8
+Note                  : All user prompts below have been normalized, spell-checked,
+                        expanded into detailed technical specifications, and
+                        translated into 100% professional English per Rule 4 & Rule 6.
+================================================================================
+
+[PROMPT #01]
+Timestamp (UTC+0) : 2026-11-01 21:25:31 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 1174.0s
+Tokens Consumed   : 290,097 tokens
+Normalized Prompt :
+Diagnose and fix the defect where the embedded PDF Preview fails to display inside the `#view-pdf` container after loading or converting a `.docx` file.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #02]
+Timestamp (UTC+0) : 2026-11-01 21:56:24 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 814.0s
+Tokens Consumed   : 183,717 tokens
+Normalized Prompt :
+Fix the layout misalignment and eliminate the multi-second delay before the processing spinner appears after the user clicks the conversion/preview button.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #03]
+Timestamp (UTC+0) : 2026-11-01 22:04:40 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 399.0s
+Tokens Consumed   : 117,122 tokens
+Normalized Prompt :
+Design and implement a progression of static status messages for the batch conversion progress bar:
+1. Define monotonically increasing percentage milestones from `0%` to `100%` where each milestone increments by at least 15% over the previous step (`0% -> 18% -> 35% -> 52% -> 70% -> 85% -> 100%`).
+2. Pair each milestone with a concise, static status label without dynamic ETA or throughput variables.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #04]
+Timestamp (UTC+0) : 2026-11-01 22:22:19 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 481.0s
+Tokens Consumed   : 231,603 tokens
+Normalized Prompt :
+Execute the following UI and PDF preview performance optimizations:
+1. File List UI: Remove default list bullet markers (`list-style: none`), retaining only the file format icon and filename with clean alignment.
+2. Preview State & Transitions: Remove all CSS blur effects from the preview area and cleanly hide/unmount the preview container (`display: none`) when no document is loaded.
+3. Minimalist Loading Spinner: Redesign the loading indicator with a thin-stroke minimalist aesthetic, enlarged and centered inside the preview pane.
+4. Progressive PDF Rendering: Prioritize parsing and displaying Page 1 immediately for instant user feedback while asynchronously rendering and caching the remaining pages in the background without blocking the main thread.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #05]
+Timestamp (UTC+0) : 2026-11-01 22:36:11 UTC+0
+AI Model          : Gemini 4 Argon (Low)
+Execution Time    : 211.0s
+Tokens Consumed   : 252,817 tokens
+Normalized Prompt :
+Formulate an implementation plan (`/plan`) to accelerate `.docx` batch formula conversion throughput and reduce post-conversion PDF preview rendering latency.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #06]
+Timestamp (UTC+0) : 2026-11-01 22:40:51 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 729.0s
+Tokens Consumed   : 185,931 tokens
+Normalized Prompt :
+Approve and execute the DOCX Processing & PDF Preview Performance Optimization plan: implement the 2-tier `FormulaOmmlCache`, optimize `fix_mathml_tree` from $O(N^2)$ to single-pass $O(N)$, remove `doc.ComputeStatistics(2)`, disable unnecessary `OpenAndRepair=True` overhead, and add queue pre-emption in `PersistentWordPdfEngine`.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #07]
+Timestamp (UTC+0) : 2026-11-01 23:09:46 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 1108.0s
+Tokens Consumed   : 320,255 tokens
+Normalized Prompt :
+Diagnose and resolve the issue where the PDF preview rendering process hangs indefinitely after completing the formula conversion step on large `.docx` files (caused by Windows `os error 32` file sharing locks and blocking COM pagination). Isolate Word COM opens using `%TEMP%` copies and add a safety timeout guard.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #08]
+Timestamp (UTC+0) : 2026-11-01 23:32:09 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 544.0s
+Tokens Consumed   : 129,123 tokens
+Normalized Prompt :
+Remove the single-page (`Page 1`) pre-rendering stage so that the PDF preview pipeline exports the complete document directly and displays the full PDF upon completion.
+
+================================================================================
+SESSION TOTALS (01_11_2026_C12)
+Total Prompts Logged       : 8
+Total Execution Time       : 5460.0s
+Total Tokens Consumed      : 1,710,665 tokens
+================================================================================

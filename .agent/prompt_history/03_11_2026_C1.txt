@@ -1,0 +1,45 @@
+================================================================================
+CONVERSATION PROMPT RECORD
+================================================================================
+Timestamp (UTC+0): 2026-11-03 11:22:00 UTC+0
+AI Model: Gemini 3.8 Flash
+Execution Duration: 12.5 seconds
+Token Consumption: 4,820 tokens
+
+--------------------------------------------------------------------------------
+TRANSFORMED & NORMALIZED TECHNICAL SPECIFICATION (ENGLISH)
+--------------------------------------------------------------------------------
+Role & Scope:
+Act as a Full-Stack Python and JavaScript Engineering Specialist. The user is developing a Python desktop application with an embedded WebView component designed to render `README.md` content dynamically. The current implementation suffers from critical UI/UX rendering defects: broken layout styling, unrendered mathematical expressions (LaTeX/OMML), absence of code syntax highlighting, and failed local image loading due to unresolved relative paths.
+
+The application leverages local assets situated in `resources/UI/assets/`:
+- `tailwind.js`
+- `github-markdown.min.css`
+- `marked.min.js` (marked v15+)
+- `katex/` (`katex.min.js`, `katex.min.css`)
+- `highlight.min.js` (highlight.js v11+)
+- `mermaid.min.js`
+
+Provide a complete, production-grade implementation containing both a self-contained `UI.html` file (HTML, CSS, JavaScript) and the accompanying Python data processing logic to resolve all reported defects conforming strictly to the following technical constraints:
+
+1. CSS Conflict Resolution & Tailwind Preflight Containment:
+   - Encapsulate markdown rendered output within a dedicated `<div class="markdown-body">` wrapper.
+   - Enforce proper isolation ensuring `github-markdown.min.css` functions flawlessly without being overridden or cleared by Tailwind CSS's reset/preflight mechanics.
+
+2. Markdown Parser & Syntax Highlighting Configuration:
+   - Configure `marked.min.js` as the core Markdown compilation engine.
+   - Override/extend `marked` options and renderer methods to integrate `highlight.min.js`, enabling automatic language detection and syntax highlighting across code blocks.
+
+3. Strict Synchronous Render Pipeline Order:
+   Implement an explicit JavaScript pipeline orchestrating sequential processing:
+   - Step 1: Execute `marked` to compile Markdown text into HTML markup and mount into the target DOM element.
+   - Step 2: Invoke KaTeX `renderMathInElement` to render inline and display math expressions, supporting delimiters: `$$...$$`, `$...$`, `\[...\]`, and `\(...\)`.
+   - Step 3: Trigger `mermaid.init` to render architectural and flowchart diagrams.
+
+4. Character Escape & Serialization Safeguards (Python to JS Bridge):
+   - Formulate Python backend logic to read `README.md` in UTF-8 and encode its entire payload as Base64 to prevent backslash (`\`) escape sequence corruption during Python-to-WebView IPC transmission.
+   - Formulate corresponding JavaScript logic to safely decode the Base64 stream into a native UTF-8 string prior to initiating the rendering pipeline.
+
+5. Local Image Path Resolution:
+   - Implement a custom `image` token renderer within `marked.js` that intercepts relative paths (e.g., `./screenshots/image.png`, `screenshots/image.png`) and resolves them into absolute `file:///` URLs anchored to the application's base directory provided by Python.
+================================================================================

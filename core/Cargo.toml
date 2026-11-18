@@ -1,0 +1,38 @@
+[package]
+name = "quast_core"
+version = "0.1.0"
+edition = "2021"
+authors = ["QUAST Architecture Team"]
+
+[lib]
+name = "_quast_core"
+path = "src/lib.rs"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+# PyO3 FFI
+pyo3 = { version = "0.22", features = ["extension-module", "abi3-py38"] }
+
+# Concurrency & Multithreading
+rayon = "1.10"
+crossbeam-channel = "0.5"
+thiserror = "1.0"
+once_cell = "1.20"
+
+# Block 1: Word I/O & XML Streaming
+zip = { version = "2.2", default-features = false, features = ["deflate"] }
+quick-xml = "0.36"
+
+# Block 2: Tokenizer & Normalization
+regex = "1.11"
+memchr = "2.7"
+
+# Block 3: Image Preprocessing (Pure Rust, no OpenCV dependency)
+image = { version = "0.25", default-features = false, features = ["png", "jpeg", "bmp", "webp"] }
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = true

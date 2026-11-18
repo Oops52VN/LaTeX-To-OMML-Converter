@@ -1,0 +1,98 @@
+================================================================================
+CONVERSATION PROMPT HISTORY — 01_11_2026_C13
+================================================================================
+Conversation ID       : 40888de1-4258-4cdb-bcb3-ef99e08d4539
+Session Title         : Application Branding, Window Icon Removal & Adaptive Header Logo
+Initiation Timestamp  : 2026-11-01 21:57:47 UTC+0
+Session Sequence (No) : C13 (2026-11-01)
+Workspace             : E:\Documents\Q7 LaTeX To OMML Python
+Total Prompts         : 8
+Note                  : All user prompts below have been normalized, spell-checked,
+                        expanded into detailed technical specifications, and
+                        translated into 100% professional English per Rule 4 & Rule 6.
+================================================================================
+
+[PROMPT #01]
+Timestamp (UTC+0) : 2026-11-01 21:57:47 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 393.0s
+Tokens Consumed   : 98,785 tokens
+Normalized Prompt :
+Update the application logo, shortcut icon, and header branding to use the newly provided `logo.jpg` asset.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #02]
+Timestamp (UTC+0) : 2026-11-01 22:05:16 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 239.0s
+Tokens Consumed   : 136,855 tokens
+Normalized Prompt :
+Remove the application icon from the native Windows title bar while keeping the taskbar icon intact.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #03]
+Timestamp (UTC+0) : 2026-11-01 22:06:41 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 402.0s
+Tokens Consumed   : 169,545 tokens
+Normalized Prompt :
+Enlarge the application logo inside the HTML header bar so that its top and bottom edges align flush with the top and bottom boundaries of the header bar.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #04]
+Timestamp (UTC+0) : 2026-11-01 22:17:01 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 228.0s
+Tokens Consumed   : 189,820 tokens
+Normalized Prompt :
+Strip the remaining system icon from the native Windows title bar using Win32 API window styles (`GWL_EXSTYLE` / `WS_EX_DLGMODALFRAME` + `WM_SETICON`), and remove the border frame around the logo inside the HTML header bar.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #05]
+Timestamp (UTC+0) : 2026-11-01 22:23:18 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 134.0s
+Tokens Consumed   : 194,458 tokens
+Normalized Prompt :
+Remove the text title from the native Windows title bar (`setWindowTitle("")`).
+
+--------------------------------------------------------------------------------
+
+[PROMPT #06]
+Timestamp (UTC+0) : 2026-11-01 22:23:47 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 152.0s
+Tokens Consumed   : 189,858 tokens
+Normalized Prompt :
+Remove the outer border/ring styling around the logo image element in the HTML header bar.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #07]
+Timestamp (UTC+0) : 2026-11-01 22:33:59 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 206.0s
+Tokens Consumed   : 224,141 tokens
+Normalized Prompt :
+Extract the background from the header logo to make it transparent and apply adaptive CSS filter styling so the logo automatically inverts between black and white when toggling between Light Mode and Dark Mode.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #08]
+Timestamp (UTC+0) : 2026-11-01 22:38:32 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 60.0s
+Tokens Consumed   : 218,262 tokens
+Normalized Prompt :
+Restore the `"LATEX TO OMML CONVERTER"` application title text next to the logo inside the HTML header bar.
+
+================================================================================
+SESSION TOTALS (01_11_2026_C13)
+Total Prompts Logged       : 8
+Total Execution Time       : 1814.0s
+Total Tokens Consumed      : 1,421,724 tokens
+================================================================================

@@ -1,0 +1,48 @@
+================================================================================
+CONVERSATION PROMPT HISTORY — 01_11_2026_C1
+================================================================================
+Conversation ID       : 89928bb0-ec8f-43e1-8e21-9ffb1bcf26f4
+Session Title         : Refactor Python App Architecture
+Initiation Timestamp  : 2026-11-01 10:07:51 UTC+0
+Session Sequence (No) : C1 (2026-11-01)
+Workspace             : E:\Documents\Q7 LaTeX To OMML Python
+Total Prompts         : 2
+Note                  : All user prompts below have been normalized, spell-checked,
+                        expanded into detailed technical specifications, and
+                        translated into 100% professional English per Rule 4 & Rule 6.
+================================================================================
+
+[PROMPT #01]
+Timestamp (UTC+0) : 2026-11-01 10:07:51 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 399.0s
+Tokens Consumed   : 148,604 tokens
+Normalized Prompt :
+Act as a Senior Python Software Architect and formulate a comprehensive implementation plan (`/plan`) to refactor the monolithic `app.py` codebase into a clean, modular architecture:
+1. Resource & Directory Cleanup:
+   - Scan the entire repository to identify and remove redundant, temporary, and unused files.
+   - Audit the `icons/` directory, list unreferenced raster images/icons for deletion, and standardize active icons to SVG format (updating all path references in code).
+2. Legacy Feature Removal:
+   - Completely remove all UI components and backend logic associated with the experimental "Vibe" and "Settings" tabs, leaving zero dead code.
+3. Modular Codebase Restructuring (`source_app/`):
+   - UI Modules: Separate controllers and views for the "File", "LaTeX", and "Image" tabs.
+   - Business Logic / Service Modules: Isolate LaTeX parsing, MathML/OMML conversion, DOCX XML processing, and background worker threads.
+   - Entry Point: Reduce `app.py` to a concise bootstrapper that initializes the environment and launches the main window.
+Present the proposed directory tree, the icon standardization checklist, and a step-by-step migration plan prior to code execution.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #02]
+Timestamp (UTC+0) : 2026-11-01 10:16:44 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 423.0s
+Tokens Consumed   : 219,098 tokens
+Normalized Prompt :
+Grant workspace access to the target project directory and approve the refactoring implementation plan for immediate execution.
+
+================================================================================
+SESSION TOTALS (01_11_2026_C1)
+Total Prompts Logged       : 2
+Total Execution Time       : 822.0s
+Total Tokens Consumed      : 367,702 tokens
+================================================================================

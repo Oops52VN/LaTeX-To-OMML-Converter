@@ -1,0 +1,68 @@
+================================================================================
+CONVERSATION PROMPT HISTORY — 01_11_2026_C9
+================================================================================
+Conversation ID       : 13675536-2837-4652-b9ec-aa5987a9bd8c
+Session Title         : Direct LaTeX-to-OMML AST Compiler Plan & Word Clipboard Integration
+Initiation Timestamp  : 2026-11-01 17:28:33 UTC+0
+Session Sequence (No) : C9 (2026-11-01)
+Workspace             : E:\Documents\Q7 LaTeX To OMML Python
+Total Prompts         : 5
+Note                  : All user prompts below have been normalized, spell-checked,
+                        expanded into detailed technical specifications, and
+                        translated into 100% professional English per Rule 4 & Rule 6.
+================================================================================
+
+[PROMPT #01]
+Timestamp (UTC+0) : 2026-11-01 17:28:33 UTC+0
+AI Model          : Gemini 4 Argon (Low)
+Execution Time    : 294.0s
+Tokens Consumed   : 112,777 tokens
+Normalized Prompt :
+Formulate an implementation plan (`/plan`) to design a dedicated, standalone Direct LaTeX-to-OMML AST Compiler (`latex_omml_engine.py`) exclusively for the `LATEX` tab, completely replacing the legacy `latex2mathml` + `MML2OMML.XSL` conversion pipeline on that tab while keeping the `FILE` tab pipeline isolated.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #02]
+Timestamp (UTC+0) : 2026-11-01 17:33:45 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 450.0s
+Tokens Consumed   : 222,926 tokens
+Normalized Prompt :
+Approve and execute the Direct LaTeX-to-OMML AST Compiler implementation plan: build `latex_omml_engine.py`, wire it into `app.py` and `UI/UI_updated.html` for the `LATEX` tab, and verify with automated unit tests.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #03]
+Timestamp (UTC+0) : 2026-11-01 17:42:56 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 236.0s
+Tokens Consumed   : 220,643 tokens
+Normalized Prompt :
+Diagnose and fix the runtime conversion error occurring on the `LATEX` tab when compiling raw multi-line LaTeX input.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #04]
+Timestamp (UTC+0) : 2026-11-01 17:49:07 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 216.0s
+Tokens Consumed   : 240,900 tokens
+Normalized Prompt :
+Fix the `"Copy OMML"` button defect where clicking Copy and pasting into Microsoft Word pastes an old clipboard screenshot instead of the equation. Move clipboard handling from sandboxed JavaScript (`navigator.clipboard`) to the Python backend (`win32clipboard`) and register both `"MathML Presentation"` and `CF_UNICODETEXT` formats so Word pastes a native 2D equation.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #05]
+Timestamp (UTC+0) : 2026-11-01 17:54:58 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 1377.0s
+Tokens Consumed   : 285,707 tokens
+Normalized Prompt :
+Fix the equation alignment behavior when copying from the `LATEX` tab and pasting into Microsoft Word: raw LaTeX expressions not wrapped in display delimiters (`$$...$$` or `\[...\]`) must generate `display="inline"` MathML and inline `<m:oMath>` so they paste inline (`wdOMathJcInline`) rather than forcing block-level center alignment (`wdOMathJcCenter`).
+
+================================================================================
+SESSION TOTALS (01_11_2026_C9)
+Total Prompts Logged       : 5
+Total Execution Time       : 2573.0s
+Total Tokens Consumed      : 1,082,953 tokens
+================================================================================

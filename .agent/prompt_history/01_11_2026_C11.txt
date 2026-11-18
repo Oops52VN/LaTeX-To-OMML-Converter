@@ -1,0 +1,91 @@
+================================================================================
+CONVERSATION PROMPT HISTORY — 01_11_2026_C11
+================================================================================
+Conversation ID       : 901e290d-1609-4115-88c5-2986fc0c7b61
+Session Title         : Offline Math Image OCR to OMML Engine Plan & Image Tab Refinements
+Initiation Timestamp  : 2026-11-01 19:30:49 UTC+0
+Session Sequence (No) : C11 (2026-11-01)
+Workspace             : E:\Documents\Q7 LaTeX To OMML Python
+Total Prompts         : 6
+Note                  : All user prompts below have been normalized, spell-checked,
+                        expanded into detailed technical specifications, and
+                        translated into 100% professional English per Rule 4 & Rule 6.
+================================================================================
+
+[PROMPT #01]
+Timestamp (UTC+0) : 2026-11-01 19:30:49 UTC+0
+AI Model          : Gemini 4 Argon (Low)
+Execution Time    : 341.0s
+Tokens Consumed   : 144,328 tokens
+Normalized Prompt :
+Formulate a comprehensive implementation plan (`/plan`) to design and program an offline Mathematical Image OCR-to-OMML conversion engine (`image_omml_engine.py`) for the `IMAGE` tab, combining Rust `quast_core` image preprocessing (dark-background auto-inversion, 3x3 median filter, Sauvola adaptive binarization, auto-crop), multi-tier formula recognition (`PP-FormulaNet` / 2D spatial layout analyzer), post-OCR LaTeX normalization, and direct AST-to-OMML compilation.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #02]
+Timestamp (UTC+0) : 2026-11-01 19:37:53 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 594.0s
+Tokens Consumed   : 241,938 tokens
+Normalized Prompt :
+Approve and execute the Mathematical Image OCR-to-OMML implementation plan: update `rust_core/src/image_proc/mod.rs` with dark-mode auto-inversion, implement `image_omml_engine.py`, integrate `ImageOcrWorker` into `app.py`, wire up the `IMAGE` tab UI, and verify with automated pytest suites.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #03]
+Timestamp (UTC+0) : 2026-11-01 20:11:59 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 257.0s
+Tokens Consumed   : 275,822 tokens
+Normalized Prompt :
+Refine the `IMAGE` tab interface and optimize OCR runtime resource usage:
+UI Refinements:
+1. Remove the `'Browse'`, `'Enhance'`, `'Original'`, `'OMML XML'`, and `'save.docx'` buttons.
+2. Remove the pixel dimension indicator `(px)` and `'Enhanced'` status badge from the image input column.
+3. Style the `'COPY OMML'` button with a green background and white text.
+4. Rename the `"SCAN / OCR"` button to `"SCAN"`.
+5. Separate `'VISUAL RENDER'` and `'LATEX'` into two distinct button blocks and rename `'LATEX'` to `'LATEX CODE'`.
+6. Convert the `'PNG, JPG, BMP, Webp'` badge into a green file-picker button with white text and add a recommendation note advising users to select a single-formula image per conversion.
+7. Add an `"Auto-convert on image input"` checkbox below the left input column, enabled (`checked`) by default.
+8. Display a centered loading spinner overlay in the right output column throughout image OCR processing.
+9. Rename the left column header from `'FORMULA IMAGE SOURCE'` to `'FORMULA IMAGE INPUT'`.
+Performance & Memory Optimization:
+- Prioritize 60 FPS UI smoothness and low CPU/GPU utilization over raw OCR speed by throttling worker threads (`QThread.LowPriority`, single-threaded OpenMP/BLAS).
+- Prevent memory leaks and release RAM (`gc.collect()`) immediately after each OCR cycle completes.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #04]
+Timestamp (UTC+0) : 2026-11-01 20:20:04 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 146.0s
+Tokens Consumed   : 49,228 tokens
+Normalized Prompt :
+Translate the `"Auto-convert on image import"` checkbox label and associated UI text on the `IMAGE` tab into English so the interface language is 100% consistent.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #05]
+Timestamp (UTC+0) : 2026-11-01 20:46:56 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 312.0s
+Tokens Consumed   : 122,999 tokens
+Normalized Prompt :
+Fix the positioning and flex layout alignment of the loading spinner overlay on the `IMAGE` tab so it centers accurately inside the right-hand output container.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #06]
+Timestamp (UTC+0) : 2026-11-01 20:55:37 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 803.0s
+Tokens Consumed   : 221,085 tokens
+Normalized Prompt :
+Fix the clipboard copy behavior on the `IMAGE` tab (and `LATEX` tab) so that copying an OMML equation and pasting it into Microsoft Word inserts an inline equation (`display="inline"`) rather than automatically centering the formula on a new line.
+
+================================================================================
+SESSION TOTALS (01_11_2026_C11)
+Total Prompts Logged       : 6
+Total Execution Time       : 2453.0s
+Total Tokens Consumed      : 1,055,400 tokens
+================================================================================

@@ -1,0 +1,70 @@
+================================================================================
+CONVERSATION PROMPT HISTORY — 01_11_2026_C5
+================================================================================
+Conversation ID       : 476cee72-412f-4d62-9906-fde1e0bc6355
+Session Title         : UI Minimalist Redesign, Color Palette & Dark Mode Toggle
+Initiation Timestamp  : 2026-11-01 11:37:15 UTC+0
+Session Sequence (No) : C5 (2026-11-01)
+Workspace             : E:\Documents\Q7 LaTeX To OMML Python
+Total Prompts         : 4
+Note                  : All user prompts below have been normalized, spell-checked,
+                        expanded into detailed technical specifications, and
+                        translated into 100% professional English per Rule 4 & Rule 6.
+================================================================================
+
+[PROMPT #01]
+Timestamp (UTC+0) : 2026-11-01 11:37:15 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 389.0s
+Tokens Consumed   : 171,710 tokens
+Normalized Prompt :
+Execute a minimalist UI redesign across the application:
+1. Simplify Animations:
+   - Strip out decorative animations and retain only essential interactive feedback (button press states, fade-in transitions, and a clean circular arc loading spinner overlay for the preview pane).
+2. Header Redesign:
+   - Change the header title from `"QUAST LATEX TO OMML CONVERTER"` to `"LATEX TO OMML CONVERTER"`.
+   - Blend the header seamlessly into the background by removing the dark header box and glowing border effects.
+3. Color Palette Standardization:
+   - Transition the interface background from blue-tinted tones to a neutral dark gray palette using a disciplined 5-color design system.
+4. Toolbar Cleanup:
+   - Permanently remove the legacy `"Vibe"` and `"Setting"` navigation buttons.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #02]
+Timestamp (UTC+0) : 2026-11-01 11:52:21 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 135.0s
+Tokens Consumed   : 162,937 tokens
+Normalized Prompt :
+Adjust the application background color palette from the overly dark tone to match the softer neutral reference palette provided in the attached screenshot.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #03]
+Timestamp (UTC+0) : 2026-11-01 12:34:59 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 283.0s
+Tokens Consumed   : 227,192 tokens
+Normalized Prompt :
+Refine the visual ergonomics and header alignment:
+1. Tone down the light background brightness to prevent eye strain.
+2. Align the left edge of the 4 functional header navigation buttons precisely with the left edge of the main preview pane below.
+3. Implement a dual-theme Dark Mode / Light Mode system and place the theme toggle button in the header navigation bar.
+
+--------------------------------------------------------------------------------
+
+[PROMPT #04]
+Timestamp (UTC+0) : 2026-11-01 12:38:04 UTC+0
+AI Model          : Gemini 3.8 Flash (High)
+Execution Time    : 803.0s
+Tokens Consumed   : 99,098 tokens
+Normalized Prompt :
+Fix the layout and styling regressions on the `LATEX` and `IMAGE` tabs so both views render properly across Light Mode and Dark Mode.
+
+================================================================================
+SESSION TOTALS (01_11_2026_C5)
+Total Prompts Logged       : 4
+Total Execution Time       : 1610.0s
+Total Tokens Consumed      : 660,937 tokens
+================================================================================
