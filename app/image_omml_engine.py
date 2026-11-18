@@ -26,6 +26,7 @@ import re
 import time
 import io
 import base64
+import tempfile
 from typing import Dict, Any, Optional, Tuple, List, Union
 
 import numpy as np
@@ -44,6 +45,12 @@ os.environ["HF_HUB_OFFLINE"] = "1"
 os.environ["TRANSFORMERS_OFFLINE"] = "1"
 os.environ["FLAGS_fraction_of_gpu_memory_to_use"] = "0.05"
 os.environ["FLAGS_allocator_strategy"] = "auto_growth"
+if not os.environ.get("PADDLE_PDX_CACHE_HOME"):
+    _default_pdx_cache = os.path.join(os.path.expanduser("~"), ".paddlex")
+    try:
+        os.makedirs(_default_pdx_cache, exist_ok=True)
+    except Exception:
+        os.environ["PADDLE_PDX_CACHE_HOME"] = os.path.join(tempfile.gettempdir(), "quast_paddlex_cache")
 import gc
 
 def release_memory():
@@ -424,14 +431,15 @@ class MathImageOCREngine:
 
     def recognize(self, image_np: np.ndarray) -> Dict[str, Any]:
         """
-        Runs mathematical OCR on input image numpy array:
-        First tries Tier 1 (PP-FormulaNet Deep Model).
-        If unavailable, seamlessly falls back to Tier 2 (2D Structural Layout Extractor).
+        Runs mathematical OCR on input image numpy array using the bundled
+        PP-FormulaNet deep model and surfaces initialization/inference errors
+        instead of fabricating placeholder output.
         """
         t0 = time.perf_counter()
         self._ensure_predictor()
 
         # --- TIER 1: Deep Formula OCR ---
+        last_error: Optional[str] = None
         if self._predictor is not None:
             try:
                 results = self._predictor.predict(image_np)
@@ -447,12 +455,19 @@ class MathImageOCREngine:
                             "engine": "PP-FormulaNet",
                             "time_ms": elapsed
                         }
+                last_error = "PP-FormulaNet returned no recognized formula."
             except Exception as e:
-                # Log and fallback to Tier 2
-                pass
+                last_error = str(e)
+        else:
+            last_error = self._init_error or "PP-FormulaNet predictor failed to initialize."
 
-        # --- TIER 2: 2D Structural Math Layout Extractor Fallback ---
-        return self._recognize_structural_2d(image_np, t0)
+        elapsed = round((time.perf_counter() - t0) * 1000.0, 2)
+        return {
+            "success": False,
+            "error": last_error or "Math OCR recognition failed.",
+            "engine": "PP-FormulaNet-Error",
+            "time_ms": elapsed,
+        }
 
     def _recognize_structural_2d(self, image_np: np.ndarray, t0: float) -> Dict[str, Any]:
         """

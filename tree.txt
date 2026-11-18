@@ -18,7 +18,8 @@ PATH                                      IMPORTANCE   PURPOSE
 ├── .agent/                               [CONFIG]     AI orientation, workflow rules, prompt history, implementation plans, and walkthrough logs.
 ├── tools/                                [CONFIG]     Build toolchain directory containing portable Inno Setup compiler.
 │   └── InnoSetup/                        [CONFIG]     Bundled Inno Setup 6 compiler (ISCC.exe) for compiling Windows setup installers.
-├── releases/                             [SUPPORT]    Compiled standalone Windows setup installers (currently empty).
+├── releases/                             [SUPPORT]    Compiled standalone Windows setup installers.
+│   └── OMML_Converter_Setup_v11.18.2026.exe [SUPPORT] Single-file Windows setup installer for OMML Converter v11.18.2026.
 ├── screenshots/                          [SUPPORT]    Cropped app screenshots (PNG, transparent rounded corners) used as README figures.
 │   ├── Figure_Docx_1.png                 [SUPPORT]    Figure: FILE tab with batch DOCX inputs and Edge WebView2 PDF preview.
 │   ├── Figure_Docx_2.png                 [SUPPORT]    Figure: FILE tab second view of batch DOCX conversion and preview.

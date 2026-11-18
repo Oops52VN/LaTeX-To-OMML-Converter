@@ -19,6 +19,8 @@ import os
 import sys
 import shutil
 import hashlib
+import importlib.util
+import importlib.metadata
 import subprocess
 import urllib.request
 from pathlib import Path
@@ -33,6 +35,7 @@ RESOURCES_DIR = PROJECT_ROOT / "resources"
 ICONS_DIR = RESOURCES_DIR / "icons"
 APP_ICO = ICONS_DIR / "app.ico"
 LOGO_PNG = RESOURCES_DIR / "UI" / "assets" / "logo.png"
+LOGO_JPG = ICONS_DIR / "logo.jpg"
 
 APP_NAME = "OMML Converter"
 APP_VERSION = "11.18.2026"
@@ -46,15 +49,42 @@ def log(msg: str):
     print(f"[build_release] {msg}")
 
 
+def _ico_has_transparency(ico_path: Path) -> bool:
+    """Return True if any frame inside ico_path contains transparent pixels."""
+    from PIL import Image
+    with Image.open(ico_path) as ico:
+        sizes = ico.info.get("sizes") or [ico.size]
+        for s in sizes:
+            ico.size = s
+            ico.load()
+            rgba = ico.convert("RGBA")
+            alpha_extrema = rgba.getchannel("A").getextrema()
+            if alpha_extrema[0] < 255:
+                return True
+    return False
+
+
 def ensure_icon():
-    """Ensure resources/icons/app.ico exists; generate from logo.png if missing."""
+    """Ensure resources/icons/app.ico exists with an opaque white background."""
     if APP_ICO.exists():
-        return
-    log(f"Generating icon {APP_ICO} from {LOGO_PNG}...")
+        try:
+            if not _ico_has_transparency(APP_ICO):
+                return
+            log(f"Existing {APP_ICO} has transparent background; regenerating with white background...")
+        except Exception:
+            pass
+    log(f"Generating opaque white-background icon {APP_ICO}...")
     ICONS_DIR.mkdir(parents=True, exist_ok=True)
     try:
         from PIL import Image
-        img = Image.open(LOGO_PNG)
+        if LOGO_PNG.exists():
+            fg = Image.open(LOGO_PNG).convert("RGBA")
+            white_bg = Image.new("RGBA", fg.size, (255, 255, 255, 255))
+            img = Image.alpha_composite(white_bg, fg).convert("RGB")
+        elif LOGO_JPG.exists():
+            img = Image.open(LOGO_JPG).convert("RGB")
+        else:
+            raise FileNotFoundError(f"No source logo found at {LOGO_PNG} or {LOGO_JPG}")
         sizes = [(16, 16), (24, 24), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)]
         img.save(str(APP_ICO), format="ICO", sizes=sizes)
         log(f"Generated {APP_ICO} successfully.")
@@ -116,6 +146,43 @@ def clean_intermediate_artifacts():
             pass
 
 
+def _collect_installed_ocr_metadata() -> list[str]:
+    """Collect distribution names whose .dist-info metadata PaddleX/PaddleOCR check at runtime."""
+    dist_candidates = {
+        "aiohttp", "aistudio-sdk", "attrs", "bce-python-sdk", "certifi",
+        "chardet", "charset-normalizer", "colorlog", "filelock", "ftfy",
+        "httpx", "huggingface-hub", "idna", "imagesize", "Jinja2",
+        "latex2mathml", "lxml", "modelscope", "numpy", "opencv-contrib-python",
+        "opencv-python", "openpyxl", "opt-einsum", "packaging", "paddleocr",
+        "paddlepaddle", "paddlex", "pandas", "pillow", "prettytable",
+        "py-cpuinfo", "pyclipper", "pydantic", "pydantic-core", "pypdfium2",
+        "python-bidi", "python-docx", "PyYAML", "quast-core", "requests",
+        "ruamel.yaml", "safetensors", "shapely", "tokenizers", "tqdm",
+        "typing-extensions", "ujson", "urllib3", "yarl",
+    }
+    try:
+        import paddlex.utils.deps as pdx_deps
+        dist_candidates.update(pdx_deps.BASE_DEP_SPECS.keys())
+        for extra_map in pdx_deps.EXTRAS.values():
+            dist_candidates.update(extra_map.keys())
+    except Exception:
+        pass
+
+    installed = []
+    seen = set()
+    for name in sorted(dist_candidates, key=str.lower):
+        try:
+            dist = importlib.metadata.distribution(name)
+            canonical = dist.metadata["Name"]
+            key = canonical.lower()
+            if key not in seen:
+                seen.add(key)
+                installed.append(canonical)
+        except importlib.metadata.PackageNotFoundError:
+            pass
+    return installed
+
+
 def run_pyinstaller() -> Path:
     """Freeze application into dist/OMML Converter via PyInstaller."""
     log("Running PyInstaller to compile application binaries...")
@@ -129,6 +196,25 @@ def run_pyinstaller() -> Path:
         Path.home() / ".paddlex" / "official_models" / "PP-FormulaNet_plus-M",
     ]
     local_formula_model = next((p for p in model_candidates if p.is_dir()), None)
+
+    collect_packages = [
+        "quast_core",
+        "docx",
+        "latex2mathml",
+        "paddle",
+        "paddleocr",
+        "paddlex",
+        "cv2",
+        "tokenizers",
+        "safetensors",
+        "pypdfium2",
+        "pypdfium2_raw",
+        "ftfy",
+        "shapely",
+        "pyclipper",
+        "imagesize",
+        "scipy",
+    ]
 
     cmd = [
         sys.executable,
@@ -147,22 +233,13 @@ def run_pyinstaller() -> Path:
         f"{PROJECT_ROOT / 'screenshots'};screenshots",
         "--add-data",
         f"{PROJECT_ROOT / 'README.md'};.",
-        "--collect-all",
-        "quast_core",
-        "--collect-all",
-        "docx",
-        "--collect-all",
-        "latex2mathml",
-        "--collect-all",
-        "paddle",
-        "--collect-all",
-        "paddleocr",
-        "--collect-all",
-        "paddlex",
-        "--collect-all",
-        "scipy",
-        "--collect-all",
-        "cv2",
+    ]
+    for pkg in collect_packages:
+        if importlib.util.find_spec(pkg) is not None:
+            cmd.extend(["--collect-all", pkg])
+    for dist_name in _collect_installed_ocr_metadata():
+        cmd.extend(["--copy-metadata", dist_name])
+    cmd.extend([
         "--paths",
         str(PROJECT_ROOT / "app"),
         "--exclude-module",
@@ -171,7 +248,7 @@ def run_pyinstaller() -> Path:
         "maturin",
         "--exclude-module",
         "torch",
-    ]
+    ])
     if local_formula_model is not None:
         log(f"Bundling offline formula OCR model: {local_formula_model}")
         cmd.extend(["--add-data", f"{local_formula_model};resources/models/PP-FormulaNet_plus-M"])

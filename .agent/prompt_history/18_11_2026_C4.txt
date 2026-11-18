@@ -1,0 +1,20 @@
+=== PROMPT HISTORY RECORD ===
+UTC+0 Timestamp   : 2026-11-18 18:42:21 UTC+0
+AI Model          : Gemini 4 Hydrogen (High)
+Execution Duration: ~2100.0s (root-cause diagnosis in frozen PyInstaller environment, icon regeneration, metadata/dependency bundling fixes, full Inno Setup rebuild, E2E installed-app verification, and documentation logging)
+Token Consumption : ~26,000 tokens (estimated)
+
+--- NORMALIZED & EXPANDED TECHNICAL PROMPT ---
+Investigate and resolve two defects reported in the packaged Windows installer build of OMML Converter:
+1. Application Icon Regression: Restore the original solid white background of the application icon (`resources/icons/app.ico`), which was inadvertently converted to a transparent background during packaging.
+2. IMAGE Tab Formula OCR Failure: Diagnose why image-based mathematical OCR and LaTeX/OMML conversion fail in the installed packaged application, fix all packaging/runtime root causes, rebuild the standalone Windows installer (`releases/OMML_Converter_Setup_v11.18.2026.exe`), and verify both fixes end-to-end on the installed executable.
+
+
+=== PROMPT HISTORY RECORD (TURN 2) ===
+UTC+0 Timestamp   : 2026-11-18 19:40:00 UTC+0
+AI Model          : Gemini 4 Hydrogen (High)
+Execution Duration: ~120.0s (git commit, main/tag push to origin, and GitHub Release v11.18.2026 installer asset replacement)
+Token Consumption : ~4,500 tokens (estimated)
+
+--- NORMALIZED & EXPANDED TECHNICAL PROMPT ---
+Commit all source fixes and documentation updates, push `main` and update tag `v11.18.2026` on GitHub (`https://github.com/Oops52VN/LaTeX-To-OMML-Converter`), and replace the `OMML_Converter_Setup_v11.18.2026.exe` asset on GitHub Release `v11.18.2026` with the newly rebuilt installer.

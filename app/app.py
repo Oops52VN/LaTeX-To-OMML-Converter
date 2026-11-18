@@ -1,6 +1,12 @@
 import sys
 import os
 
+# In PyInstaller --windowed builds, sys.stdout/sys.stderr are None; guard libraries that write to them.
+if sys.stdout is None:
+    sys.stdout = open(os.devnull, "w", encoding="utf-8")
+if sys.stderr is None:
+    sys.stderr = open(os.devnull, "w", encoding="utf-8")
+
 # Guarantee current script directory ('app') and workspace root are in sys.path
 _current_app_dir = os.path.dirname(os.path.abspath(__file__))
 if _current_app_dir not in sys.path:
@@ -1392,9 +1398,11 @@ class Backend(QObject):
         def on_done(res_json):
             js_call = f"if(typeof window.onImageOcrFinished === 'function') window.onImageOcrFinished({json.dumps(res_json)});"
             self.window.run_js(js_call)
+        def on_finished():
             if worker in getattr(self.window, 'active_workers', []):
                 self.window.active_workers.remove(worker)
         worker.result_signal.connect(on_done)
+        worker.finished.connect(on_finished)
         if hasattr(self.window, 'active_workers'):
             self.window.active_workers.append(worker)
         worker.start()
@@ -1530,12 +1538,15 @@ class Backend(QObject):
     def get_readme_markdown(self):
         """Read the live README.md file directly from disk and return its verbatim text."""
         try:
-            readme_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "README.md")
-            if not os.path.exists(readme_path):
-                readme_path = os.path.abspath("README.md")
-            if os.path.exists(readme_path):
-                with open(readme_path, "r", encoding="utf-8") as f:
-                    return f.read()
+            candidates = []
+            if hasattr(sys, "_MEIPASS"):
+                candidates.append(os.path.join(sys._MEIPASS, "README.md"))
+            candidates.append(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "README.md"))
+            candidates.append(os.path.abspath("README.md"))
+            for readme_path in candidates:
+                if os.path.exists(readme_path):
+                    with open(readme_path, "r", encoding="utf-8") as f:
+                        return f.read()
         except Exception as e:
             print(f"[get_readme_markdown] Error reading README.md: {e}")
         return ""
@@ -2347,6 +2358,29 @@ class WebMainWindow(QMainWindow):
 
 
 if __name__ == "__main__":
+    if len(sys.argv) >= 3 and sys.argv[1] == "--check-ocr":
+        img_path = sys.argv[2]
+        out_path = sys.argv[3] if len(sys.argv) >= 4 else None
+        res = image_omml_engine.recognize_formula_image_to_omml(img_path)
+        payload = json.dumps(
+            {
+                "success": res.get("success"),
+                "engine": res.get("engine"),
+                "latex": res.get("latex"),
+                "has_omml": bool(res.get("omml")),
+                "has_mathml": bool(res.get("mathml")),
+                "error": res.get("error"),
+                "init_error": image_omml_engine.MathImageOCREngine.get_instance()._init_error,
+            },
+            ensure_ascii=False,
+        )
+        if out_path:
+            with open(out_path, "w", encoding="utf-8") as f:
+                f.write(payload)
+        else:
+            print(payload)
+        sys.exit(0 if res.get("success") else 1)
+
     QApplication.setAttribute(Qt.AA_ShareOpenGLContexts, True)
     QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
     QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
