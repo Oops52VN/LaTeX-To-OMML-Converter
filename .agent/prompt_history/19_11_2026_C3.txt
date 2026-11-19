@@ -1,0 +1,8 @@
+=== PROMPT HISTORY RECORD ===
+UTC+0 Timestamp   : 2026-11-19 13:03:31 UTC+0
+AI Model          : Gemini 4 Hydrogen (High)
+Execution Duration: ~170.0s (Win32 title bar icon diagnosis via PrintWindow, 16x16 transparent ICON_SMALL implementation in app/app.py, live verification, and documentation logging)
+Token Consumption : ~8,000 tokens (estimated)
+
+--- NORMALIZED & EXPANDED TECHNICAL PROMPT ---
+Hide the application icon on the native Windows title bar of `WebMainWindow` in `app/app.py` while keeping `resources/icons/app.ico` visible on the Windows Taskbar and Alt+Tab switcher, and verify the rendered title bar visually.

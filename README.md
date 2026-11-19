@@ -60,7 +60,7 @@ A 100% offline desktop application built around two core capabilities:
 | :--- | :--- |
 | **Official Project Title** | **Q7 LaTeX To OMML** |
 | **Author & Architect** | **OOPS52 - QUAST** *(Represented by Capoo Avatar)* |
-| **Version** | `v11.18.2026` |
+| **Version** | `v.11.19.26` |
 | **Target Operating System** | Windows 10 / Windows 11 (64-bit) |
 | **Security Architecture** | **100% Offline / Air-Gapped Verified** (`OfflineInterceptor` Blocks All Outgoing Traffic) |
 | **Core Runtime Stack** | Hybrid Python (`PyQt5`, `lxml`, `pywin32`, `PaddleOCR`) + Native Rust (`quast_core` via `PyO3` / `Maturin`, `rayon`, `quick-xml`, `zip`, `image`) |

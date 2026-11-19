@@ -2174,10 +2174,53 @@ class WebMainWindow(QMainWindow):
             except Exception: 
                 pass
 
+    def _get_transparent_small_hicon(self):
+        """Create and cache a 16x16 transparent HICON so Windows hides the titlebar icon without falling back to ICON_BIG."""
+        cached = getattr(self, "_transparent_small_hicon", None)
+        if cached:
+            return cached
+        from ctypes import wintypes
+
+        class ICONINFO(ctypes.Structure):
+            _fields_ = [
+                ("fIcon", wintypes.BOOL),
+                ("xHotspot", wintypes.DWORD),
+                ("yHotspot", wintypes.DWORD),
+                ("hbmMask", wintypes.HBITMAP),
+                ("hbmColor", wintypes.HBITMAP),
+            ]
+
+        user32 = ctypes.windll.user32
+        gdi32 = ctypes.windll.gdi32
+        gdi32.CreateBitmap.argtypes = [ctypes.c_int, ctypes.c_int, wintypes.UINT, wintypes.UINT, ctypes.c_void_p]
+        gdi32.CreateBitmap.restype = wintypes.HBITMAP
+        gdi32.DeleteObject.argtypes = [wintypes.HGDIOBJ]
+        gdi32.DeleteObject.restype = wintypes.BOOL
+        user32.CreateIconIndirect.argtypes = [ctypes.POINTER(ICONINFO)]
+        user32.CreateIconIndirect.restype = wintypes.HICON
+
+        size = 16
+        and_mask = (ctypes.c_ubyte * (size * 4))(*([0xFF] * (size * 4)))
+        xor_mask = (ctypes.c_ubyte * (size * size * 4))(*([0x00] * (size * size * 4)))
+        hbm_mask = gdi32.CreateBitmap(size, size, 1, 1, and_mask)
+        hbm_color = gdi32.CreateBitmap(size, size, 1, 32, xor_mask)
+        try:
+            ii = ICONINFO(True, 0, 0, hbm_mask, hbm_color)
+            hicon = user32.CreateIconIndirect(ctypes.byref(ii))
+        finally:
+            if hbm_mask:
+                gdi32.DeleteObject(hbm_mask)
+            if hbm_color:
+                gdi32.DeleteObject(hbm_color)
+        self._transparent_small_hicon = hicon
+        return hicon
+
     def _remove_titlebar_icon(self, hwnd=None):
         try:
             if hwnd is None:
                 hwnd = int(self.winId())
+            from ctypes import wintypes
+            user32 = ctypes.windll.user32
             GWL_STYLE = -16
             GWL_EXSTYLE = -20
             WS_MAXIMIZEBOX = 0x00010000
@@ -2187,22 +2230,33 @@ class WebMainWindow(QMainWindow):
             SWP_NOMOVE = 0x0002
             SWP_NOZORDER = 0x0004
             SWP_FRAMECHANGED = 0x0020
-            GCLP_HICON = -14
+            WM_SETICON = 0x0080
+            ICON_SMALL = 0
             GCLP_HICONSM = -34
 
             # Lock window size (remove maximize button and resize borders)
-            style = ctypes.windll.user32.GetWindowLongW(hwnd, GWL_STYLE)
+            style = user32.GetWindowLongW(hwnd, GWL_STYLE)
             style &= ~WS_MAXIMIZEBOX
             style &= ~WS_THICKFRAME
-            ctypes.windll.user32.SetWindowLongW(hwnd, GWL_STYLE, style)
+            user32.SetWindowLongW(hwnd, GWL_STYLE, style)
 
-            # Set WS_EX_DLGMODALFRAME so Windows suppresses caption icon while preserving taskbar icon
-            ex_style = ctypes.windll.user32.GetWindowLongW(hwnd, GWL_EXSTYLE)
+            # Set WS_EX_DLGMODALFRAME and assign a transparent 16x16 ICON_SMALL while preserving ICON_BIG for taskbar/Alt+Tab
+            ex_style = user32.GetWindowLongW(hwnd, GWL_EXSTYLE)
             ex_style |= WS_EX_DLGMODALFRAME
-            ctypes.windll.user32.SetWindowLongW(hwnd, GWL_EXSTYLE, ex_style)
+            user32.SetWindowLongW(hwnd, GWL_EXSTYLE, ex_style)
 
-            ctypes.windll.user32.SetWindowTextW(hwnd, "")
-            ctypes.windll.user32.SetWindowPos(hwnd, 0, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED)
+            transparent_hicon = self._get_transparent_small_hicon()
+            if transparent_hicon:
+                user32.SendMessageW.argtypes = [wintypes.HWND, wintypes.UINT, wintypes.WPARAM, wintypes.LPARAM]
+                user32.SendMessageW.restype = ctypes.c_ssize_t
+                user32.SendMessageW(hwnd, WM_SETICON, ICON_SMALL, transparent_hicon)
+                SetClassLongPtr = getattr(user32, 'SetClassLongPtrW', user32.SetClassLongW)
+                SetClassLongPtr.argtypes = [wintypes.HWND, ctypes.c_int, ctypes.c_ssize_t]
+                SetClassLongPtr.restype = ctypes.c_ssize_t
+                SetClassLongPtr(hwnd, GCLP_HICONSM, transparent_hicon)
+
+            user32.SetWindowTextW(hwnd, "")
+            user32.SetWindowPos(hwnd, 0, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED)
         except Exception:
             pass
 
@@ -2354,6 +2408,15 @@ class WebMainWindow(QMainWindow):
             except Exception: 
                 pass
         
+        # 6. Release cached transparent titlebar HICON handle if allocated
+        hicon = getattr(self, '_transparent_small_hicon', None)
+        if hicon:
+            try:
+                ctypes.windll.user32.DestroyIcon(hicon)
+                self._transparent_small_hicon = None
+            except Exception:
+                pass
+
         super().closeEvent(event)
 
 

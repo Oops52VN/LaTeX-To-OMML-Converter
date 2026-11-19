@@ -1,0 +1,8 @@
+=== PROMPT HISTORY RECORD ===
+UTC+0 Timestamp   : 2026-11-19 13:07:12 UTC+0
+AI Model          : Gemini 4 Neon (Medium)
+Execution Duration: ~1150.0s (v.11.19.26 installer rebuild with titlebar icon fix, Git commit & push to main, deletion of old GitHub release/tag v11.18.2026, creation & asset upload of GitHub Release v.11.19.26, and documentation logging)
+Token Consumption : ~10,000 tokens (estimated)
+
+--- NORMALIZED & EXPANDED TECHNICAL PROMPT ---
+Rebuild the `v.11.19.26` Windows installer (`releases/OMML_Converter_Setup_v.11.19.26.exe`) to include the latest Windows title bar icon suppression change, push all updated source code to the GitHub repository (`Oops52VN/LaTeX-To-OMML-Converter`), delete all previous GitHub Releases and obsolete tags (`v11.18.2026`), and publish the new `v.11.19.26` GitHub Release with the compiled installer attached.

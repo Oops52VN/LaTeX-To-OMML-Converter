@@ -1,0 +1,8 @@
+=== PROMPT HISTORY RECORD ===
+UTC+0 Timestamp   : 2026-11-19 12:11:35 UTC+0
+AI Model          : Gemini 4 Hydrogen (High)
+Execution Duration: ~820.0s (version bump to v.11.19.26, PyInstaller + Inno Setup installer build, silent-install E2E verification, and documentation logging)
+Token Consumption : ~12,000 tokens (estimated)
+
+--- NORMALIZED & EXPANDED TECHNICAL PROMPT ---
+Package and build the standalone Windows setup installer for version `v.11.19.26` of the OMML Converter application (`releases/OMML_Converter_Setup_v.11.19.26.exe`), synchronize `build_release.py`, `README.md`, `tree.txt`, and `.agent/` logs, and verify the compiled installer end-to-end.

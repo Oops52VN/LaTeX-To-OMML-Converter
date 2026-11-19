@@ -1,0 +1,8 @@
+=== PROMPT HISTORY RECORD ===
+UTC+0 Timestamp   : 2026-11-19 12:06:50 UTC+0
+AI Model          : Gemini 4 Neon (Medium)
+Execution Duration: ~145.0s (context review, logo geometry measurement, build_release.py rounded-icon generator update, app.ico regeneration across 7 resolutions, visual preview rendering, and .agent governance logging)
+Token Consumption : ~12,500 tokens (estimated)
+
+--- NORMALIZED & EXPANDED TECHNICAL PROMPT ---
+Round the corners of the Windows application icon (`resources/icons/app.ico`) while preserving its opaque white interior background and bottom-left badge, update the icon generation logic in `build_release.py` so future builds preserve the rounded-corner icon, and display a visual preview of the resulting icon.

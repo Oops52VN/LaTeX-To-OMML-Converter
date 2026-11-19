@@ -3,7 +3,7 @@
 build_release.py
 Automated release packaging pipeline for OMML Converter.
 Compiles the full application into a standalone single-file Windows installer:
-    releases/OMML_Converter_Setup_v11.18.2026.exe
+    releases/OMML_Converter_Setup_v.11.19.26.exe
 
 Pipeline Steps:
 1. Environment & Pre-requisite Verification (PyInstaller, PyQt5, etc.)
@@ -11,7 +11,7 @@ Pipeline Steps:
 3. Portable Inno Setup 6 Toolchain Resolution (auto-installs to tools/InnoSetup if missing)
 4. PyInstaller Staging Compilation (frozen application in dist/OMML Converter/)
 5. Inno Setup Script Generation (OMML_Converter.iss)
-6. Single-File Windows Installer Compilation (releases/OMML_Converter_Setup_v11.18.2026.exe)
+6. Single-File Windows Installer Compilation (releases/OMML_Converter_Setup_v.11.19.26.exe)
 7. Deterministic Post-Build Artifact Cleanup (removes build/, dist/, .spec, .iss)
 """
 
@@ -38,8 +38,8 @@ LOGO_PNG = RESOURCES_DIR / "UI" / "assets" / "logo.png"
 LOGO_JPG = ICONS_DIR / "logo.jpg"
 
 APP_NAME = "OMML Converter"
-APP_VERSION = "11.18.2026"
-RELEASE_TAG = f"v{APP_VERSION}"
+APP_VERSION = "11.19.26"
+RELEASE_TAG = f"v.{APP_VERSION}"
 INSTALLER_BASENAME = f"OMML_Converter_Setup_{RELEASE_TAG}"
 
 INNO_SETUP_DOWNLOAD_URL = "https://github.com/jrsoftware/issrc/releases/download/is-6_3_3/innosetup-6.3.3.exe"
@@ -49,45 +49,85 @@ def log(msg: str):
     print(f"[build_release] {msg}")
 
 
-def _ico_has_transparency(ico_path: Path) -> bool:
-    """Return True if any frame inside ico_path contains transparent pixels."""
+ICON_CORNER_RADIUS_RATIO = 0.20
+
+
+def _build_rounded_icon_rgba(source: "Image.Image", size: int, radius_ratio: float = ICON_CORNER_RADIUS_RATIO) -> "Image.Image":
+    """Composite source onto an opaque white background and apply anti-aliased rounded corners."""
+    from PIL import Image, ImageDraw
+
+    # Work at high resolution (4x supersampling) for crisp anti-aliased corner edges
+    scale = 4
+    hi_size = max(size * scale, 256)
+    fg = source.convert("RGBA").resize((hi_size, hi_size), Image.Resampling.LANCZOS)
+    white_bg = Image.new("RGBA", (hi_size, hi_size), (255, 255, 255, 255))
+    composited = Image.alpha_composite(white_bg, fg)
+
+    radius = max(1, round(hi_size * radius_ratio))
+    mask = Image.new("L", (hi_size, hi_size), 0)
+    draw = ImageDraw.Draw(mask)
+    draw.rounded_rectangle([(0, 0), (hi_size - 1, hi_size - 1)], radius=radius, fill=255)
+
+    composited.putalpha(mask)
+    if hi_size != size:
+        composited = composited.resize((size, size), Image.Resampling.LANCZOS)
+    return composited
+
+
+def _ico_is_valid_rounded(ico_path: Path) -> bool:
+    """Return True if app.ico has transparent rounded corners and an opaque white interior."""
     from PIL import Image
+
     with Image.open(ico_path) as ico:
         sizes = ico.info.get("sizes") or [ico.size]
-        for s in sizes:
-            ico.size = s
-            ico.load()
-            rgba = ico.convert("RGBA")
-            alpha_extrema = rgba.getchannel("A").getextrema()
-            if alpha_extrema[0] < 255:
-                return True
-    return False
+        if (256, 256) not in sizes:
+            return False
+        ico.size = (256, 256)
+        ico.load()
+        rgba = ico.convert("RGBA")
+        # Outer 4 corners must be transparent
+        corners = [
+            rgba.getpixel((0, 0))[3],
+            rgba.getpixel((255, 0))[3],
+            rgba.getpixel((0, 255))[3],
+            rgba.getpixel((255, 255))[3],
+        ]
+        # Interior white region (top-center) must be fully opaque white
+        top_center = rgba.getpixel((128, 12))
+        return all(a == 0 for a in corners) and top_center == (255, 255, 255, 255)
 
 
-def ensure_icon():
-    """Ensure resources/icons/app.ico exists with an opaque white background."""
-    if APP_ICO.exists():
+def ensure_icon(force: bool = False):
+    """Ensure resources/icons/app.ico exists with opaque white body and rounded corners."""
+    if not force and APP_ICO.exists():
         try:
-            if not _ico_has_transparency(APP_ICO):
+            if _ico_is_valid_rounded(APP_ICO):
                 return
-            log(f"Existing {APP_ICO} has transparent background; regenerating with white background...")
+            log(f"Existing {APP_ICO} does not have rounded white-background corners; regenerating...")
         except Exception:
             pass
-    log(f"Generating opaque white-background icon {APP_ICO}...")
+    log(f"Generating rounded white-background icon {APP_ICO}...")
     ICONS_DIR.mkdir(parents=True, exist_ok=True)
     try:
         from PIL import Image
+
         if LOGO_PNG.exists():
-            fg = Image.open(LOGO_PNG).convert("RGBA")
-            white_bg = Image.new("RGBA", fg.size, (255, 255, 255, 255))
-            img = Image.alpha_composite(white_bg, fg).convert("RGB")
+            source = Image.open(LOGO_PNG).convert("RGBA")
         elif LOGO_JPG.exists():
-            img = Image.open(LOGO_JPG).convert("RGB")
+            source = Image.open(LOGO_JPG).convert("RGBA")
         else:
             raise FileNotFoundError(f"No source logo found at {LOGO_PNG} or {LOGO_JPG}")
-        sizes = [(16, 16), (24, 24), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)]
-        img.save(str(APP_ICO), format="ICO", sizes=sizes)
-        log(f"Generated {APP_ICO} successfully.")
+
+        sizes = [16, 24, 32, 48, 64, 128, 256]
+        frames = [_build_rounded_icon_rgba(source, s) for s in sizes]
+        # Save largest frame as primary and attach all smaller supersampled frames
+        frames[-1].save(
+            str(APP_ICO),
+            format="ICO",
+            append_images=frames[:-1],
+            sizes=[(s, s) for s in sizes],
+        )
+        log(f"Generated rounded {APP_ICO} successfully.")
     except Exception as e:
         log(f"Warning: Failed to generate app.ico: {e}")
 
